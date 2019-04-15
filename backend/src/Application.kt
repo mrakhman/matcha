@@ -1,16 +1,28 @@
 package cf.coffeebreak42
 
+import cf.coffeebreak42.model.NewUser
 import cf.coffeebreak42.service.DatabaseFactory
 import cf.coffeebreak42.service.UserService
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.features.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.auth.*
-import com.fasterxml.jackson.databind.*
-import io.ktor.jackson.*
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.features.CORS
+import io.ktor.features.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.jackson.jackson
+import io.ktor.request.receive
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.route
+import io.ktor.routing.routing
 import java.util.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -68,10 +80,9 @@ fun Application.module(testing: Boolean = false) {
     val userService = UserService()
 
     userService.createTable()
-    DatabaseFactory.dbUpdate("insert into User values (1, 'test@test.xyz');")
-    DatabaseFactory.dbUpdate("insert into User values (2, 'test2@emample.com');")
-    DatabaseFactory.dbUpdate("insert into User values (3, 'masha@emample.com');")
-
+    userService.addUser(NewUser("test@test.xyz"))
+    userService.addUser(NewUser("test2@emample.com"))
+    userService.addUser(NewUser("masha@emample.com"))
 
 
     routing {
@@ -99,6 +110,24 @@ fun Application.module(testing: Boolean = false) {
         route("/users") {
             get("/") {
                 call.respond(mapOf("users" to userService.getAllUsers()))
+            }
+            post("/") {
+                val post = try {
+                    call.receive<NewUser>()
+                } catch (e: MissingKotlinParameterException) {
+                    null
+                } catch (e: MismatchedInputException) {
+                    null
+                }
+                if (post != null) {
+                    val user = userService.addUser(post)
+                    if (user != null)
+                        call.respond(mapOf("user" to user))
+                    else
+                        call.respond("Error")
+                }
+                else
+                    call.respond("Error")
             }
             get("/{userId}") {
                 val userId = call.parameters["userID"]?.toIntOrNull()

@@ -5,9 +5,10 @@ import cf.coffeebreak42.model.User
 import java.sql.ResultSet
 
 class UserService {
+    private val dbName = "User"
 
-    suspend fun getAllUsers(): List<User> {
-        val result = DatabaseFactory.dbQuery("SELECT * FROM User")
+    fun getAllUsers(): List<User> {
+        val result = DatabaseFactory.dbQuery("SELECT * FROM $dbName")
         val users = ArrayList<User>()
         if (result != null) {
             while (result.next()) {
@@ -17,8 +18,8 @@ class UserService {
         return users
     }
 
-    suspend fun getUser(userId: Int): User? {
-        val result = DatabaseFactory.dbQuery("SELECT * FROM User WHERE User.userId = ?")
+    fun getUser(userId: Int): User? {
+        val result = DatabaseFactory.dbQuery("SELECT * FROM $dbName WHERE User.userId = ?")
         {
             it.setInt(1, userId)
         }
@@ -30,17 +31,20 @@ class UserService {
         return null
     }
 
-    fun addUser(user: NewUser): User {
-        val result = DatabaseFactory.dbUpdate("INSERT INTO Users VALUES (?, ?)")
-        {
-
-        }
+    fun addUser(user: NewUser): User? {
+        val result = DatabaseFactory.dbInsert("INSERT INTO $dbName (email) VALUES (?)", {
+//            it.setInt(1, user.userId!!) // @TODO: Alarm!
+            it.setString(1, user.email)
+        })
+        if (result != null)
+            return User(result, user.email)
+        return null
     }
 
     fun createTable() {
         DatabaseFactory.dbUpdate("""
-            |CREATE TABLE User(
-            |userId numeric,
+            |CREATE TABLE $dbName(
+            |userId SERIAL PRIMARY KEY,
             |email varchar(20)
             |);""".trimMargin())
     }

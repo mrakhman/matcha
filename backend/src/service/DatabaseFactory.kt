@@ -57,6 +57,20 @@ object DatabaseFactory {
         return null
     }
 
+    // If inserted many -> returns only first id!
+    fun dbInsert(query: String, prepare: ((PreparedStatement) -> Unit)? = null, columnIndex: Int = 1): Int? {
+        val pst = connection.prepareStatement(query)
+        if (pst != null) {
+            if (prepare != null)
+                prepare(pst)
+            pst.execute()
+            val rs = pst.generatedKeys
+            if (rs.next())
+                return rs.getInt(columnIndex)
+        }
+        return null
+    }
+
     fun dbUpdate(query: String, prepare: ((PreparedStatement) -> Unit)? = null): Boolean {
         val pst = connection.prepareStatement(query)
         if (pst != null) {

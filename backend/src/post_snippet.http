@@ -10,3 +10,9 @@ Content-Type: application/json
 {"snippet": {"text": "my_text2"}}
 
 ###
+POST http://127.0.0.1:8081/users
+Content-Type: application/json
+
+{"email": "mashka@rakhmashka.ru"}
+
+###
