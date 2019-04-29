@@ -1,23 +1,35 @@
-
 <template>
   <div id="app">
-    <AddTodo v-on:add-todo="addTodo"/>
-    <Todos v-bind:todos="todos" v-on:del-todo="deleteTodo"/>
+    <Header/>
+    <div class="main">
+      <Register/>
+      <br><hr>
+      <MyProfile/>
+    </div>
+
+
+    <Footer/>
   </div>
 </template>
 
 <script>
 // import HelloWorld from './components/Hello World.vue'
 
-import Todos from "./components/Todos";
-import AddTodo from "./components/AddTodo";
+// import Todos from "./components/Todos";
+// import AddTodo from "./components/AddTodo";
 import axios from 'axios';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Register from "./components/Register";
+import MyProfile from "./components/MyProfile";
 
 export default {
   name: 'app',
   components: {
-      Todos,
-      AddTodo
+    Header,
+    Footer,
+    Register,
+    MyProfile
   },
     data() {
       return {
@@ -56,11 +68,13 @@ export default {
 
 <style>
 #app {
-  font-family: Sans-Serif;
-  /*-webkit-font-smoothing: antialiased;*/
-  /*-moz-osx-font-smoothing: grayscale;*/
-  /*text-align: center;*/
-  /*color: #2c3e50;*/
-  /*margin-top: 60px;*/
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+  .main {
+    margin: 15px;
+  }
+
+
 </style>
