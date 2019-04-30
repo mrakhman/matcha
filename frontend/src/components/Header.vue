@@ -8,7 +8,11 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item href="#">My profile</b-nav-item>
+                    <b-nav-item-dropdown text="My profile" left>
+                        <b-dropdown-item href="#">About me</b-dropdown-item>
+                        <b-dropdown-item href="#">Settings</b-dropdown-item>
+                    </b-nav-item-dropdown>
+<!--                    <b-nav-item href="#">My profile</b-nav-item>-->
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
                 </b-navbar-nav>
 
