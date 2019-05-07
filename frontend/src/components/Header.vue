@@ -1,18 +1,19 @@
 <template>
     <div id="header">
         <b-navbar toggleable="lg" variant="light">
-            <img alt="Time Club logo" src="../assets/timeclub-logo_orange.png" width="40">
-            <h1 class="header_text"> Matcha </h1>
+            <a href="/"><img alt="Time Club logo" src="../assets/timeclub-logo_orange.png" width="40"></a>
+            <h1 class="header_text"> <a href="/"> Matcha </a></h1>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item-dropdown text="My profile" left>
-                        <b-dropdown-item href="#">About me</b-dropdown-item>
-                        <b-dropdown-item href="#">Settings</b-dropdown-item>
+                        <b-dropdown-item href="/my_profile">About me</b-dropdown-item>
+                        <b-dropdown-item href="/my_profile">Settings</b-dropdown-item>
                     </b-nav-item-dropdown>
 <!--                    <b-nav-item href="#">My profile</b-nav-item>-->
+                    <b-nav-item href="/my_profile">My profile</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
                 </b-navbar-nav>
 
@@ -40,7 +41,9 @@
                         <b-button type="submit" variant="outline-primary" size="sm">Login</b-button>
                     </b-form>
                     <b-nav-item href="#"><font size="-1">Forgot password</font></b-nav-item>
-                    <b-button variant="outline-primary" size="sm">Logout</b-button>
+                    <b-form inline>
+                        <b-button type="submit" variant="outline-primary" size="sm">Logout</b-button>
+                    </b-form>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -71,7 +74,11 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    @import '../assets/_custom.scss';
+    @import '~bootstrap/scss/bootstrap.scss';
+    @import '~bootstrap-vue/src/index.scss';
+
     #header {
         background-color: #f8f9fa;
         padding: 5px;
@@ -82,9 +89,19 @@
     }
 
     .header_text {
+        color: black;
         font-size: 24px;
         margin: 5px;
         font-weight: lighter;
+    }
+
+    .header_text a {
+        color: black;
+        text-decoration: none;
+    }
+
+    .header_text a:hover {
+        color: #396;
     }
 
     .header_flex_start {
@@ -108,21 +125,6 @@
         height: 40px;
     }
 
-    .btn-mygreen {
-        color: #396;
-        border-color: #396;
-        font-weight: bold;
-        height: 40px;
-    }
-    .btn-mygreen:hover {
-        color: white;
-        border-color: #396;
-        background-color: #396;
-    }
-
-    a {
-        color: #396;
-    }
-
 
 </style>
+

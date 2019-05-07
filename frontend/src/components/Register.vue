@@ -71,6 +71,9 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    @import '../assets/_custom.scss';
+    @import '~bootstrap/scss/bootstrap.scss';
+    @import '~bootstrap-vue/src/index.scss';
 
 </style>

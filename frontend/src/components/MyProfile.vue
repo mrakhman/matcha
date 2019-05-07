@@ -1,6 +1,11 @@
 <template>
-<div>
-    <h3>My profile</h3>
+<div class="main">
+    <h3 class="title"> My profile </h3>
+
+
+    <a href="#">hello</a>
+
+
     <b-tabs content-class="mt-3">
         <b-tab title="About me" active>
             <div>
@@ -48,7 +53,8 @@
 
 
 
-        <b-tab title="Settings" active>
+<!--        <b-tab title="Settings" href="#settings" aria-label="Anchor">-->
+        <b-tab title="Settings" >
             <div>
 
                 <b-container class="bv-example-row"><b-row><b-col xl="8">
@@ -157,7 +163,11 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    @import '../assets/_custom.scss';
+    @import '~bootstrap/scss/bootstrap.scss';
+    @import '~bootstrap-vue/src/index.scss';
+
     #profile_image {
         padding: 10px;
     }
@@ -169,4 +179,10 @@
     .card_section {
         margin-bottom: 20px;
     }
+
+    .title {
+        padding-bottom: 20px;
+        padding-left: 15px;
+    }
+    $link-color: #396;
 </style>

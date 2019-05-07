@@ -1,10 +1,11 @@
 <template>
   <div id="app">
     <Header/>
+    <router-view></router-view><!-- Main routing enter point -->
     <div class="main">
       <Register/>
       <br><hr>
-      <MyProfile/>
+<!--      <MyProfile/>-->
     </div>
 
 
@@ -21,15 +22,16 @@ import axios from 'axios';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Register from "./components/Register";
-import MyProfile from "./components/MyProfile";
+// import MyProfile from "./components/MyProfile";
+// import './assets/_custom.scss'
 
 export default {
   name: 'app',
   components: {
     Header,
     Footer,
-    Register,
-    MyProfile
+    Register
+    // MyProfile
   },
     data() {
       return {
@@ -66,7 +68,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  @import 'assets/_custom.scss';
+  @import '~bootstrap/scss/bootstrap.scss';
+  @import '~bootstrap-vue/src/index.scss';
 #app {
   font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -74,6 +79,11 @@ export default {
 }
   .main {
     margin: 15px;
+  }
+
+
+  a {
+    color: #339966;
   }
 
 
