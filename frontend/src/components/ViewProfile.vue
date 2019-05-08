@@ -1,10 +1,9 @@
 <template>
     <div class="main">
-        <h3 class="title"> View profile </h3>
+        <h3 class="title"> View profile: <b>{{ profile.username }}</b> </h3>
 <!--        <b-img src="'../../img/' + {{profile.profile_image}}" fluid alt="Profile image"></b-img>-->
         <b-row id="photos">
             <b-col>
-                <div class="username"> Username: {{ profile.username }} </div>
                 <b-img v-bind:src="profile.profile_image" fluid alt="Profile image" width="450"></b-img>
             </b-col>
             <b-col>
@@ -15,6 +14,9 @@
                 </b-row>
             </b-col>
         </b-row>
+<!--        Hey, look at bootstrap margin + padding!!!!! -->
+<!--        <h3 class="title"> Details: </h3>-->
+<!--        <h3 class="ml-auto"> Details: </h3>-->
         <b-row><b-col cols="10">
             <div class="details"> <b> Name: </b> {{profile.first_name}} {{profile.last_name}} </div>
             <div class="details"> <b> Gender: </b> {{profile.gender}} </div>
@@ -30,13 +32,22 @@
                 </ul>
             </div>
         </b-col></b-row>
-        <div class="details">
-            <p class="one_line">Did you like my profile?</p>
-            <div v-on:click="has_like = !has_like">
-                <img v-if="has_like" src="../../img/heart_red.png" width="40">
-                <img v-else src="../../img/heart_white.png" width="40">
-            </div>
-        </div>
+        <b-row>
+            <b-col><div class="details">
+                <p class="one_line">Did you like my profile?</p>
+                <div v-on:click="has_like = !has_like">
+                    <img v-if="has_like" src="../../img/heart_red.png" width="40">
+                    <img v-else src="../../img/heart_white.png" width="40">
+                </div>
+            </div></b-col>
+            <b-col><div class="details">
+                <p class="one_line">Do you want a match?</p>
+                <div v-on:click="has_match = !has_match">
+                    <img v-if="has_match" src="../../img/please_yes.png" width="40">
+                    <img v-else src="../../img/please_no.png" width="40">
+                </div>
+            </div></b-col>
+        </b-row>
 
     </div>
 </template>
@@ -49,6 +60,7 @@
                 big_photo: '',
                 i_date: '',
                 has_like: true,
+                has_match: false,
                 profile: {
                     first_name: 'Masha',
                     last_name: 'Rakhmasha',
@@ -100,10 +112,6 @@
 
     #big_photo {
         max-height: 200px;
-    }
-
-    .username {
-        padding-left: 100px;
     }
 
     #photos {

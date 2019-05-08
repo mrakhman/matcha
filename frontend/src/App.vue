@@ -82,7 +82,7 @@ export default {
   }
 
   .title {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     padding-left: 15px;
   }
 
