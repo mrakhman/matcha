@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="main">
+        <h3 class="title"> Register </h3>
         <b-container class="bv-example-row">
             <b-row>
                 <b-col xl="9">
@@ -44,7 +45,7 @@
                         <b-form-input type="password"></b-form-input>
                         <b-form-text>Repeat your password</b-form-text>
                     </b-form-group>
-                    <b-button variant="primary">Register</b-button>
+                    <b-button type="submit" variant="primary" v-on:click="sumbitRegister" disabled>Register</b-button>
 
                     <pre class="mt-3 mb-0">{{ form }}</pre>
 
@@ -67,6 +68,11 @@
                     password: ''
                 }
             }
+        },
+        methods: {
+            submitRegister() {
+
+            }
         }
     }
 </script>
@@ -75,5 +81,11 @@
     @import '../assets/_custom.scss';
     @import '~bootstrap/scss/bootstrap.scss';
     @import '~bootstrap-vue/src/index.scss';
+
+
+    .title {
+        padding-bottom: 20px;
+        padding-left: 15px;
+    }
 
 </style>

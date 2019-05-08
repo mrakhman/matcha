@@ -2,11 +2,11 @@
   <div id="app">
     <Header/>
     <router-view></router-view><!-- Main routing enter point -->
-    <div class="main">
-      <Register/>
+<!--    <div class="main">-->
+<!--      <Register/>-->
       <br><hr>
 <!--      <MyProfile/>-->
-    </div>
+<!--    </div>-->
 
 
     <Footer/>
@@ -21,7 +21,7 @@
 import axios from 'axios';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Register from "./components/Register";
+// import Register from "./components/Register";
 // import MyProfile from "./components/MyProfile";
 // import './assets/_custom.scss'
 
@@ -29,8 +29,8 @@ export default {
   name: 'app',
   components: {
     Header,
-    Footer,
-    Register
+    Footer
+    // Register
     // MyProfile
   },
     data() {
@@ -81,10 +81,15 @@ export default {
     margin: 15px;
   }
 
-
-  a {
-    color: #339966;
+  .title {
+    padding-bottom: 20px;
+    padding-left: 15px;
   }
+
+
+  /*a {*/
+  /*  color: #339966;*/
+  /*}*/
 
 
 </style>

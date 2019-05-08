@@ -88,7 +88,7 @@
                             <b-form-text>You will receive email confirmation link</b-form-text>
                         </b-form-group>
 
-                        <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
+                        <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
                             <b-form-input v-model="form.password" type="password"></b-form-input>
                             <b-form-text>Confirm with your password</b-form-text>
                         </b-form-group>
@@ -184,5 +184,4 @@
         padding-bottom: 20px;
         padding-left: 15px;
     }
-    $link-color: #396;
 </style>
