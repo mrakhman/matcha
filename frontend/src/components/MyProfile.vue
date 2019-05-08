@@ -131,7 +131,6 @@
         data() {
             return {
                 form: {
-                    food: null,
                     gender_selected: null,
                     sexual_selected: null,
                     tags_selected: [],
@@ -149,7 +148,7 @@
                 //     { value: 'gay', text: 'gay'},
                 //     { value: 'bi-sexual', text: 'bi-sexual'}
                 // ]
-                sexual_pref: ['straight', 'gay', 'bi-sexual'],
+                sexual_pref: ['hetero', 'homo', 'bi'],
                 tags: [
                     { text: '#vegan', value: 'vegan' },
                     { text: '#geek', value: 'geek' },
