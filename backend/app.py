@@ -5,6 +5,7 @@ from flask import request
 from flask.logging import default_handler
 from werkzeug.exceptions import HTTPException
 
+from tree.auth import auth
 from tree.users import users
 
 APP_NAME = "matcha"
@@ -30,6 +31,7 @@ def app_factory(name):
     flask_app.config.from_object('config.DevelopmentConfig')
 
     flask_app.register_blueprint(users, url_prefix="/users")
+    flask_app.register_blueprint(auth,  url_prefix="/auth")
     return flask_app
 
 
@@ -43,6 +45,11 @@ def not_found(error):
         "error": error.name,
         "description": error.description
     }), error.code
+
+
+@app.route('/')
+def root_handler():
+    return "Hello World!"
 
 
 if __name__ == '__main__':

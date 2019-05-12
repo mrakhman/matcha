@@ -10,6 +10,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SECRET_KEY = "HelloWorld!"
 
 
 class TestingConfig(Config):
