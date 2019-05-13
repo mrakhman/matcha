@@ -3,7 +3,7 @@ import logging
 from flask import Flask, jsonify
 from flask import request
 from flask.logging import default_handler
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, abort
 
 from tree.auth import auth
 from tree.users import users
@@ -50,6 +50,11 @@ def not_found(error):
 @app.route('/')
 def root_handler():
     return "Hello World!"
+
+
+@app.route('/teapot')
+def teapot():
+    abort(418)
 
 
 if __name__ == '__main__':

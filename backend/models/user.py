@@ -3,7 +3,11 @@ import random
 from .model import Model
 from datetime import date, timedelta
 
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
+
 temp_users = {}
+
 
 class User(Model):
     _fields = {
@@ -49,6 +53,12 @@ class User(Model):
             'default': [],
             'type': dict,
             'validator': None
+        },
+        'pw_hash': {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
         }
     }
 
@@ -88,8 +98,14 @@ class User(Model):
             age -= 1
         return age
 
+    def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
+
+    def set_password(self, password):
+        self.pw_hash = generate_password_hash(password)
+
     @classmethod
-    def from_db(cls, obj_id):
+    def from_db(cls, obj_id: int):
         # TODO
         import names
         if obj_id > 100:
@@ -105,5 +121,7 @@ class User(Model):
         obj.last_name = names.get_last_name()
         obj.birthday = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
         obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
+        password = f"Matreshka{obj.id}"
+        obj.set_password(password)
         temp_users[obj_id] = obj
         return obj
