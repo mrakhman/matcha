@@ -2,8 +2,17 @@
     <div class="main">
         <h3 class="title"> Register </h3>
         <b-container class="bv-example-row">
-            <b-row>
-                <b-col xl="9">
+            <b-row><b-col xl="9">
+                <b-alert show variant="danger">Empty input field</b-alert>
+                <b-alert show variant="danger">2 passwords didn't match</b-alert>
+                <b-alert show variant="danger">Invalid input characters</b-alert>
+                <b-alert show variant="danger">Don't use spaces</b-alert>
+                <b-alert show variant="danger">Username and email must only include [a-z + A-Z] [0-9] and @</b-alert>
+                <b-alert show variant="danger">Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
+                <b-alert show variant="danger">User already exists</b-alert>
+
+                <b-alert show variant="success">User created! Check your email to activate account</b-alert>
+                <b-form v-on:submit.prevent="submitRegister">
                     <b-form-group
                             id="1"
                             label-cols-sm="2"
@@ -45,12 +54,11 @@
                         <b-form-input type="password"></b-form-input>
                         <b-form-text>Repeat your password</b-form-text>
                     </b-form-group>
-                    <b-button type="submit" variant="primary" v-on:click="submitRegister" >Register</b-button>
+                    <b-button type="submit" variant="primary">Register</b-button>
 
                     <pre class="mt-3 mb-0">{{ form }}</pre>
-
-                </b-col>
-            </b-row>
+                </b-form>
+            </b-col></b-row>
         </b-container>
     </div>
 </template>
@@ -73,21 +81,25 @@ import axios from 'axios';
             }
         },
         methods: {
+            // submitRegister() {
+            //     axios.post('http://localhost:8080', {
+            //         first_name: this.form.first_name,
+            //         last_name: this.form.last_name,
+            //         email: this.form.email,
+            //         username: this.form.username,
+            //         password: this.form.password
+            //     }).then(response => {
+            //         console.log(response)
+            //     }).catch(error => {
+            //         console.log(error)
+            //     })
+            // },
             submitRegister() {
-                axios.post('http://localhost:8080', {
-                    first_name: this.form.first_name,
-                    last_name: this.form.last_name,
-                    email: this.form.email,
-                    username: this.form.username,
-                    password: this.form.password
-                }).then(response => {
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error)
-                })
+                alert((JSON.stringify(this.form)))
             }
         }
     }
+
 </script>
 
 <style lang="scss" scoped>

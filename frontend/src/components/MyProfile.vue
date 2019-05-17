@@ -56,8 +56,21 @@
 <!--        <b-tab title="Settings" href="#settings" aria-label="Anchor">-->
         <b-tab title="Settings" >
             <div>
-
                 <b-container class="bv-example-row"><b-row><b-col xl="8">
+                    <b-alert show variant="danger">Empty input field</b-alert>
+                    <b-alert show variant="danger">2 passwords didn't match</b-alert>
+                    <b-alert show variant="danger">Wrong password</b-alert>
+                    <b-alert show variant="danger">Invalid input characters</b-alert>
+                    <b-alert show variant="danger">Don't use spaces</b-alert>
+                    <b-alert show variant="danger">Username and email must only include [a-z + A-Z] [0-9] and @</b-alert>
+                    <b-alert show variant="danger">Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
+                    <b-alert show variant="danger">Username already exists</b-alert>
+                    <b-alert show variant="danger">Another user has this email</b-alert>
+                    <b-alert show variant="danger">Old and new emails are the same</b-alert>
+
+                    <b-alert show variant="success">Saved!</b-alert>
+                    <b-alert show variant="success">Email will be changed after you confirm it, check your email!</b-alert>
+                    <b-alert show variant="success">Password changed!</b-alert>
                     <b-card class="card_section" bg-variant="light">
                         <h4 align="center">Name</h4>
                         <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal" required>
