@@ -15,6 +15,7 @@
 <!--                    <b-nav-item href="#">My profile</b-nav-item>-->
                     <b-nav-item href="/my_profile">My profile</b-nav-item>
                     <b-nav-item href="/view_profile">View profile</b-nav-item>
+                    <b-nav-item href="/users_list">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
                 </b-navbar-nav>
 
