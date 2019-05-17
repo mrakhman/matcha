@@ -45,7 +45,7 @@
                         <b-form-input type="password"></b-form-input>
                         <b-form-text>Repeat your password</b-form-text>
                     </b-form-group>
-                    <b-button type="submit" variant="primary" v-on:click="sumbitRegister" disabled>Register</b-button>
+                    <b-button type="submit" variant="primary" v-on:click="submitRegister" >Register</b-button>
 
                     <pre class="mt-3 mb-0">{{ form }}</pre>
 
@@ -56,6 +56,9 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+
     export default {
         name: "Register.vue",
         data() {
@@ -71,7 +74,17 @@
         },
         methods: {
             submitRegister() {
-
+                axios.post('http://localhost:8080', {
+                    first_name: this.form.first_name,
+                    last_name: this.form.last_name,
+                    email: this.form.email,
+                    username: this.form.username,
+                    password: this.form.password
+                }).then(response => {
+                    console.log(response)
+                }).catch(error => {
+                    console.log(error)
+                })
             }
         }
     }

@@ -41,7 +41,7 @@
 
                         <b-button type="submit" variant="outline-primary" size="sm">Login</b-button>
                     </b-form>
-                    <b-nav-item href="#"><font size="-1">Forgot password</font></b-nav-item>
+                    <b-nav-item href="/forgot_password"><font size="-1">Forgot password</font></b-nav-item>
                     <b-form inline>
                         <b-button type="submit" variant="outline-primary" size="sm">Logout</b-button>
                     </b-form>
