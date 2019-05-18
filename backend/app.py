@@ -3,6 +3,7 @@ import logging
 from flask import Flask, jsonify
 from flask import request
 from flask.logging import default_handler
+from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from tree.auth import auth
@@ -32,6 +33,8 @@ def app_factory(name):
 
     flask_app.register_blueprint(users, url_prefix="/users")
     flask_app.register_blueprint(auth,  url_prefix="/auth")
+
+    CORS(flask_app)
     return flask_app
 
 
