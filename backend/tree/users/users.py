@@ -16,6 +16,15 @@ def get_user_by_id(user_id):
     abort(404)
 
 
+@users.route('/page/<int:page_number>', methods=['GET'])
+def get_users_page(page_number):
+    if page_number < 0:
+        page_number = 0
+
+    users = [User.from_db(i).get_view("public") for i in range(1 + 10 * page_number, 11 + 10 * page_number)]
+    return jsonify({"users": users})
+
+
 @users.route('/me', methods=['GET'])
 def get_me():
     if 'username' in session and session['username']:

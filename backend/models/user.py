@@ -1,5 +1,6 @@
 import random
 
+from utils.images import get_dog_image
 from .model import Model
 from datetime import date, timedelta
 
@@ -60,6 +61,12 @@ class User(Model):
             'type': dict,
             'validator': None
         },
+        'profile_image': {
+            'required': False,
+            'default': "",
+            'type': str,
+            'validator': None
+        },
         'pw_hash': {
             'required': False,
             'default': None,
@@ -78,7 +85,8 @@ class User(Model):
                 'bio_text',
                 'gender',
                 'sex_pref',
-                'tags'
+                'tags',
+                'profile_image'
             ]
         },
         'public': {
@@ -90,7 +98,8 @@ class User(Model):
                 'bio_text',
                 'gender',
                 'sex_pref',
-                'tags'
+                'tags',
+                'profile_image'
             ]
         }
     }
@@ -116,7 +125,7 @@ class User(Model):
     def from_db(cls, obj_id: int):
         # TODO
         import names
-        if obj_id > 100:
+        if obj_id > 1000:
             return None
 
         if obj_id in temp_users:
@@ -131,6 +140,7 @@ class User(Model):
         obj.username = obj.username.lower()
         obj.birthday = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
         obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
+        obj.profile_image = get_dog_image()
         password = f"_{obj.id}"
         obj.set_password(password)
         temp_users[obj_id] = obj
