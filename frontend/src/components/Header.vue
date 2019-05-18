@@ -17,6 +17,7 @@
                     <b-nav-item href="/view_profile">View profile</b-nav-item>
                     <b-nav-item href="/users_list">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
+
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -26,6 +27,7 @@
                         <b-button href="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
+                    <b-nav-item>Hello, {{ session.context.first_name }}</b-nav-item>
                     <Logout/>
 
                 </b-navbar-nav>
@@ -37,6 +39,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import Logout from "./Logout";
 
     export default {
@@ -46,8 +49,23 @@
         },
         data () {
             return {
-
+                session: {
+                    'user_id': null,
+                    'context': {
+                        'first_name': '',
+                        'last_name': '',
+                        'username': ''
+                    }
+                }
             }
+        },
+        created() {
+            axios.get('http://localhost:5000/auth/whoami', {withCredentials: true})
+                .then(response => this.session = response.data)
+                // .then(response => console.log(response.data))
+                // TODO: console
+                // eslint-disable-next-line
+                .catch(error => console.log(error));
         }
     }
 </script>

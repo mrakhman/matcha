@@ -16,12 +16,12 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-const authData = localStorage.getItem('auth');
+// const authData = localStorage.getItem('auth');
 
 new Vue({
   render: h => h(App),
-  router: router,
-  data: {
-    auth: authData ? JSON.parse(authData) : {}
-  }
+  router: router
+  // data: {
+  //   auth: authData ? JSON.parse(authData) : {}
+  // }
 }).$mount('#app');

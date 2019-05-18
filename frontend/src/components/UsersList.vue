@@ -2,37 +2,39 @@
     <div class="main">
         <h3> Users List </h3>
         <b-row>
-            <b-card v-bind:title="user.first_name + ' ' + user.last_name"
-                    v-bind:img-src="profile_image"
-                    img-alt="profile picture"
-                    style="max-width: 15rem;"
-                    class="mb-2 add_space"
-            >
-                <b-card-text>
-                    {{user.age}} <br>
-                    {{user.gender}} <br>
-                    {{user.tags}} <br>
-                    {{user.sex_pref}}
-                </b-card-text>
+            <div v-for="user in users" :key="user.id">
+                <b-card v-bind:title="user.first_name + ' ' + user.last_name"
+                        v-bind:img-src="user.profile_image"
+                        img-alt="profile picture"
+                        style="max-width: 15rem;"
+                        class="mb-2 add_space"
+                >
+                    <b-card-text>
+                        {{user.age}} <br>
+                        {{user.gender}} <br>
+                        {{user.tags}} <br>
+                        {{user.sex_pref}}
+                    </b-card-text>
 
-                <b-button href="#" variant="primary">Open</b-button>
-            </b-card>
+                    <b-button href="#" variant="primary">Open</b-button>
+                </b-card>
+            </div>
 
-            <b-card v-bind:title="user.first_name + ' ' + user.last_name"
-                    v-bind:img-src="photos[1].link"
-                    img-alt="profile picture"
-                    style="max-width: 15rem;"
-                    class="mb-2 add_space"
-            >
-                <b-card-text>
-                    {{user.age}} <br>
-                    {{user.gender}} <br>
-                    {{user.tags}} <br>
-                    {{user.sex_pref}}
-                </b-card-text>
+<!--            <b-card v-bind:title="user.first_name + ' ' + user.last_name"-->
+<!--                    v-bind:img-src="photos[1].link"-->
+<!--                    img-alt="profile picture"-->
+<!--                    style="max-width: 15rem;"-->
+<!--                    class="mb-2 add_space"-->
+<!--            >-->
+<!--                <b-card-text>-->
+<!--                    {{user.age}} <br>-->
+<!--                    {{user.gender}} <br>-->
+<!--                    {{user.tags}} <br>-->
+<!--                    {{user.sex_pref}}-->
+<!--                </b-card-text>-->
 
-                <b-button href="#" variant="primary">Open</b-button>
-            </b-card>
+<!--                <b-button href="#" variant="primary">Open</b-button>-->
+<!--            </b-card>-->
         </b-row>
         <div>
 
@@ -48,7 +50,7 @@ export default {
 
     data() {
         return {
-            user: [],
+            users: [],
             profile_image: require('../../img/face.jpg'),
             photos: [
                 {link: require('../../img/face.jpg')},
@@ -64,8 +66,9 @@ export default {
     },
 
     created() {
-        axios.get('http://localhost:5000/users/1')
-            .then(res => this.user = res.data)
+        axios.get('http://localhost:5000/users/page/1')
+            .then(res => this.users = res.data["users"])
+            .then(res => console.log(res))
             .catch(err => console.log(err));
     }
 }
