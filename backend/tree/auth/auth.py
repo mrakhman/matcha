@@ -8,7 +8,7 @@ auth = blueprints.Blueprint("auth", __name__)
 @auth.route('/login', methods=['POST'])
 def pseudo_login():
     # TODO: if not json -> fail silently
-    login = request.json.get('login')
+    login = request.json.get('username')
     pw = request.json.get('password')
     if not (login and pw and login.isdigit()):
         abort(400)
@@ -17,7 +17,7 @@ def pseudo_login():
     login = int(login)
     current_user = User.from_db(login)
     if current_user and current_user.check_password(pw):
-        session['user_id'] = login
+        session['user_id'] = current_user.id
         return jsonify({'status': 'ok'})
     abort(401)
 
@@ -31,4 +31,17 @@ def logout():
 
 @auth.route('/whoami', methods=['GET'])
 def whoami():
-    return jsonify({'user_id': session.get('user_id')})
+    context = {}
+    current_user_id = session.get('user_id')
+    if current_user_id:
+        current_user = User.from_db(int(current_user_id))
+        if current_user:
+            context = {
+                'first_name': current_user.first_name,
+                'last_name': current_user.last_name,
+                'username': current_user.username
+            }
+    return jsonify({
+        'user_id': session.get('user_id'),
+        'context': context
+    })

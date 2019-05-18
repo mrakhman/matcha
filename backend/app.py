@@ -21,7 +21,7 @@ class RequestFormatter(logging.Formatter):
 
 
 formatter = RequestFormatter(
-    '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
+    '|||[ART]||| [%(asctime)s] %(remote_addr)s requested %(url)s\n'
     '%(levelname)s in %(module)s: %(message)s'
 )
 default_handler.setFormatter(formatter)
@@ -34,7 +34,7 @@ def app_factory(name):
     flask_app.register_blueprint(users, url_prefix="/users")
     flask_app.register_blueprint(auth,  url_prefix="/auth")
 
-    CORS(flask_app)
+    CORS(flask_app, supports_credentials=True)
     return flask_app
 
 

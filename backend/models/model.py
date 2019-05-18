@@ -33,7 +33,7 @@ class Model:
             if props['required'] and not getattr(self, f, None):
                 raise ValueError(f"{f} is required for {self.__class__.__name__}")
 
-            if props['validator'] and not props['validator'](getattr(self, f, None)):
+            if props['required'] and props['validator'] and not props['validator'](getattr(self, f, None)):
                 raise ValueError(f"{f}({getattr(self, f)}) did not pass validator for {self.__class__.__name__}")
 
     def is_valid(self):

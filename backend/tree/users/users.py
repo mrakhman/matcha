@@ -1,6 +1,7 @@
-from flask import blueprints, jsonify, abort, current_app, session
+from flask import blueprints, jsonify, abort, current_app, session, request
 
 from models.user import User
+from utils.form_validator import check_fields
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -20,3 +21,51 @@ def get_me():
     if 'username' in session and session['username']:
         return jsonify({'my_username': session['username']})
     abort(401)
+
+
+@users.route('/register', methods=['POST'])
+def create_user():
+    # first_name = request.json.get("first_name")
+    # last_name = request.json.get("last_name")
+    # email = request.json.get("email")
+    # username = request.json.get("username")
+    # password = request.json.get("password")
+    req_data = request.get_json()
+    form_values = {
+        "first_name": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "last_name": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "email": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': lambda x: '@' in x
+        },
+        "username": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "password": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    new_user = User.from_dict(req_data)
+    new_user.set_password(req_data["password"])
+    new_user.create()
+    return jsonify({"ok": True, "user": new_user.get_view("public")})

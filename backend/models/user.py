@@ -23,6 +23,12 @@ class User(Model):
             'type': str,
             'validator': None
         },
+        'username': {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
         'birthday': {
             'required': False,
             'default': None,
@@ -65,6 +71,7 @@ class User(Model):
     _views = {
         'personal': {
             'fields': [
+                'id',
                 'first_name',
                 'last_name',
                 'birthday',
@@ -76,6 +83,7 @@ class User(Model):
         },
         'public': {
             'fields': [
+                'id',
                 'first_name',
                 'last_name',
                 'age',
@@ -119,9 +127,18 @@ class User(Model):
         obj.gender = random.choice(['female', 'male'])
         obj.first_name = names.get_first_name(obj.gender)
         obj.last_name = names.get_last_name()
+        obj.username = obj.first_name[0] + obj.last_name
+        obj.username = obj.username.lower()
         obj.birthday = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
         obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
-        password = f"Matreshka{obj.id}"
+        password = f"_{obj.id}"
         obj.set_password(password)
         temp_users[obj_id] = obj
         return obj
+
+    def create(self):
+        self.id = 1
+        while self.id in temp_users:
+            self.id += 1
+
+        temp_users[self.id] = self
