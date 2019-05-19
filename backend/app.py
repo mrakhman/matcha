@@ -4,6 +4,7 @@ from flask import Flask, jsonify
 from flask import request
 from flask.logging import default_handler
 from flask_cors import CORS
+from db import db
 from werkzeug.exceptions import HTTPException, abort
 
 from tree.auth import auth
@@ -35,6 +36,7 @@ def app_factory(name):
     flask_app.register_blueprint(auth,  url_prefix="/auth")
 
     CORS(flask_app, supports_credentials=True)
+    db.init_app(flask_app)
     return flask_app
 
 
@@ -52,6 +54,7 @@ def not_found(error):
 
 @app.route('/')
 def root_handler():
+    db.connection.execute("SELECT * FROM Users")
     return "Hello World!"
 
 

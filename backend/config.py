@@ -1,16 +1,23 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
-    DATABASE_URI = 'sqlite:///:memory:'
+    PSQL_DATABASE_URI = 'sqlite:///:memory:'
 
 
 class ProductionConfig(Config):
-    DATABASE_URI = 'mysql://user@localhost/foo'
+    PSQL_DATABASE_URI = 'mysql://user@localhost/foo'
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SECRET_KEY = "HelloWorld!"
+    PSQL_DATABASE_URI = os.getenv('DB_URI')
 
 
 class TestingConfig(Config):

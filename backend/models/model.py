@@ -10,10 +10,10 @@ class Model:
         self.id = None
 
     def create(self):
-        pass
+        raise NotImplemented()
 
     def update(self):
-        pass
+        raise NotImplemented()
 
     @classmethod
     def from_dict(cls, d):
@@ -26,7 +26,7 @@ class Model:
 
     @classmethod
     def from_db(cls, obj_id):
-        return cls()
+        raise NotImplemented()
 
     def check_attributes(self):
         for f, props in self._fields.items():
