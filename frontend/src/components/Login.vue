@@ -47,7 +47,7 @@
 
 
             login() {
-                axios.post('http://localhost:5000/auth/login', {
+                axios.post(this.$root.API_URL + '/auth/login', {
                     username: this.form.username,
                     password: this.form.password
                 }, {withCredentials: true})
@@ -62,7 +62,9 @@
                         // TODO: console
                         // eslint-disable-next-line
                         alert('Couldn`t login')
-                })
+                });
+
+                this.$router.push('my_profile');
             },
 
             // whoami() {

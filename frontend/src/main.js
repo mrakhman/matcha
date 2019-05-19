@@ -20,7 +20,10 @@ const router = new VueRouter({
 
 new Vue({
   render: h => h(App),
-  router: router
+  router: router,
+  data: {
+    API_URL: "http://ivart:5000"
+  }
   // data: {
   //   auth: authData ? JSON.parse(authData) : {}
   // }

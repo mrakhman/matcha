@@ -10,6 +10,13 @@
 
 
     <Footer/>
+
+    <Header
+            :user_id="user_id"
+            :first_name="first_name"
+            :last_name="last_name"
+            :username="username"
+    />
   </div>
 </template>
 
@@ -35,7 +42,15 @@ export default {
   },
     data() {
       return {
-          todos: []
+        todos: [],
+        session: {
+          'user_id': null,
+          'context': {
+            'first_name': '',
+            'last_name': '',
+            'username': ''
+          }
+        }
       }
     },
 

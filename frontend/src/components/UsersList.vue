@@ -66,7 +66,7 @@ export default {
     },
 
     created() {
-        axios.get('http://localhost:5000/users/page/1')
+        axios.get(this.$root.API_URL + '/users/page/1')
             .then(res => this.users = res.data["users"])
             .then(res => console.log(res))
             .catch(err => console.log(err));

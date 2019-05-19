@@ -28,7 +28,7 @@ import axios from 'axios';
         },
         methods: {
             submitForgotPassword() {
-                axios.post("http://artem_localhost:5000/api/auth/forgot_password", {
+                axios.post(this.$root.API_URL + "/api/auth/forgot_password", {
                     email: this.form.email
                 }).then(response => {
                     console.log(response)
