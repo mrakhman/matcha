@@ -22,13 +22,13 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                    <b-button-group v-if="!sessionUser">
+                    <b-button-group v-if="!session.user_id">
                         <b-button href="/register" variant="outline-primary">Register</b-button>
                         <b-button href="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
-                    <b-nav-item v-if="sessionUser">Hello, {{ first_name }}</b-nav-item>
-                    <Logout v-if="sessionUser"/>
+                    <b-nav-item v-if="session.user_id">Hello, {{ session.context.first_name }}!</b-nav-item>
+                    <Logout v-if="session.user_id" v-on:del_session="$emit('del_session')"/>
 
                 </b-navbar-nav>
             </b-collapse>
@@ -52,20 +52,15 @@
 
             }
         },
-        props: ['user_id', 'first_name', 'last_name', 'username'],
-        created() {
-            axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
-                .then(response => this.session = response.data)
-                // .then(response => console.log(response.data))
-                // TODO: console
-                // eslint-disable-next-line
-                .catch(error => console.log(error));
+        props: {
+            session: Object
         },
-        computed: {
-            sessionUser() {
-                return this.user_id;
-            }
-        }
+        // computed: {
+        //     sessionUser() {
+        //         return this.session.user_id;
+        //
+        //     }
+        // }
     }
 </script>
 

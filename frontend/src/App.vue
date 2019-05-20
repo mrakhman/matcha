@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Header/>
+    <app_header v-bind:session="session" v-on:del_session="deleteSession"/>
+
     <router-view></router-view><!-- Main routing enter point -->
 <!--    <div class="main">-->
 <!--      <Register/>-->
@@ -11,12 +12,7 @@
 
     <Footer/>
 
-    <Header
-            :user_id="user_id"
-            :first_name="first_name"
-            :last_name="last_name"
-            :username="username"
-    />
+
   </div>
 </template>
 
@@ -35,7 +31,7 @@ import Footer from "./components/Footer";
 export default {
   name: 'app',
   components: {
-    Header,
+    app_header: Header,
     Footer
     // Register
     // MyProfile
@@ -45,11 +41,7 @@ export default {
         todos: [],
         session: {
           'user_id': null,
-          'context': {
-            'first_name': '',
-            'last_name': '',
-            'username': ''
-          }
+          'context': {}
         }
       }
     },
@@ -73,13 +65,27 @@ export default {
               .catch(err => console.log(err));
 
           // this.todos = [...this.todos, newTodo];
+      },
+
+      deleteSession() {
+        this.session.user_id = null;
+        this.session.context = {}
       }
     },
-    created() {
-      axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
-        .then(res => this.todos = res.data)
-        .catch(err => console.log(err));
-    }
+    // created() {
+    //   axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
+    //     .then(res => this.todos = res.data)
+    //     .catch(err => console.log(err));
+    // }
+
+      created() {
+        axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
+            .then(response => this.session = response.data)
+            // .then(response => console.log(response.data))
+            // TODO: console
+            // eslint-disable-next-line
+            .catch(error => console.log(error));
+      }
 }
 </script>
 
