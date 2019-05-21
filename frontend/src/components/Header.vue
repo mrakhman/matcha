@@ -16,14 +16,15 @@
                     <b-nav-item href="/my_profile">My profile</b-nav-item>
                     <b-nav-item href="/users">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
+                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH</b-nav-item>
 
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
                     <b-button-group v-if="!session.user_id">
-                        <b-button href="/register" variant="outline-primary">Register</b-button>
-                        <b-button href="/login" variant="outline-primary">Login</b-button>
+                        <b-button to="/register" variant="outline-primary">Register</b-button>
+                        <b-button to="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
                     <b-nav-item v-if="session.user_id">Hello, {{ session.context.first_name }}!</b-nav-item>
@@ -38,7 +39,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import Logout from "./Logout";
 
     export default {
@@ -48,7 +48,7 @@
         },
         data () {
             return {
-
+                auth: this.$root.$data.Auth
             }
         },
         props: {

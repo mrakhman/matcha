@@ -3,6 +3,7 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './router'
+import {Auth} from './auth'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -15,6 +16,8 @@ const router = new VueRouter({
   routes: Routes,
   mode: 'history'
 });
+
+Auth.loggedIn = true;
 
 // const ifAuthenticated = (to, from, next) => {
 //   if (document.cookie)
@@ -42,7 +45,8 @@ new Vue({
   render: h => h(App),
   router: router,
   data: {
-    API_URL: "http://localhost:5000"
+    API_URL: "http://localhost:5000",
+    Auth: Auth
   }
   // data: {
   //   auth: authData ? JSON.parse(authData) : {}

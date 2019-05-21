@@ -8,11 +8,13 @@ import UsersList from "./components/UsersList";
 import Login from "./components/Login";
 // import Settings from "./components/Settings";
 // import AboutMe from "./components/AboutMe";
+import {Auth} from './auth'
 
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
 
 const ifAuthenticated = (to, from, next) => {
+
     if (document.cookie)
     {
         next();
@@ -22,6 +24,8 @@ const ifAuthenticated = (to, from, next) => {
 };
 
 const ifNotAuthenticated = (to, from, next) => {
+    console.log("HELLO");
+    console.log(Auth.loggedIn);
     if (!document.cookie)
     {
         next();
@@ -31,7 +35,7 @@ const ifNotAuthenticated = (to, from, next) => {
 };
 
 export default [
-    { path: '/register', component: Register},
+    { path: '/register', component: Register, beforeEnter: ifNotAuthenticated},
     { path: '/', component: Register},
     { path: '/login', component: Login},
     { path: '/my_profile', component: MyProfile},
