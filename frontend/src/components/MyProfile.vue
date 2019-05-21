@@ -1,7 +1,13 @@
 <template>
 <div class="main">
     <h3 class="title"> My profile </h3>
-
+    <b-alert show variant="danger" dismissible>Username already exists</b-alert>
+    <b-alert show variant="danger" dismissible>Another user has this email</b-alert>
+    <b-alert show variant="danger" dismissible>Old and new emails are the same</b-alert>
+    <b-alert show variant="danger" dismissible>Wrong password</b-alert>
+    <b-alert show variant="success" dismissible>Saved!</b-alert>
+    <b-alert show variant="success" dismissible>Email will be changed after you confirm it, check your email!</b-alert>
+    <b-alert show variant="success" dismissible>Password changed!</b-alert>
 
     <a href="#">hello</a>
 
@@ -57,74 +63,72 @@
         <b-tab title="Settings" >
             <div>
                 <b-container class="bv-example-row"><b-row><b-col xl="8">
-                    <b-alert show variant="danger">Empty input field</b-alert>
-                    <b-alert show variant="danger">2 passwords didn't match</b-alert>
-                    <b-alert show variant="danger">Wrong password</b-alert>
-                    <b-alert show variant="danger">Invalid input characters</b-alert>
-                    <b-alert show variant="danger">Don't use spaces</b-alert>
-                    <b-alert show variant="danger">Username and email must only include [a-z + A-Z] [0-9] and @</b-alert>
-                    <b-alert show variant="danger">Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
-                    <b-alert show variant="danger">Username already exists</b-alert>
-                    <b-alert show variant="danger">Another user has this email</b-alert>
-                    <b-alert show variant="danger">Old and new emails are the same</b-alert>
+                    <b-alert v-model="errors.empty_input" variant="danger" dismissible>Empty input field</b-alert>
+                    <b-alert v-model="errors.password_repeat" variant="danger" dismissible>2 passwords didn't match</b-alert>
+                    <b-alert v-model="errors.invalid_symbols" variant="danger" dismissible>Names and email must only include [a-z + A-Z] [0-9] and @</b-alert>
+                    <b-alert v-model="errors.spaces" variant="danger" dismissible>Don't use spaces</b-alert>
+                    <b-alert v-model="errors.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, number</b-alert>
 
-                    <b-alert show variant="success">Saved!</b-alert>
-                    <b-alert show variant="success">Email will be changed after you confirm it, check your email!</b-alert>
-                    <b-alert show variant="success">Password changed!</b-alert>
-                    <b-card class="card_section" bg-variant="light">
-                        <h4 align="center">Name</h4>
-                        <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal" required>
-                            <b-form-input
-                                    v-model="form.first_name"
-                                    type="text"
-                            ></b-form-input>
+                    <b-form v-on:submit.prevent="submitChangeNames">
+                        <b-card class="card_section" bg-variant="light">
+                            <h4 align="center">Name</h4>
+                            <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal" required>
+                                <b-form-input
+                                        v-model="form.first_name"
+                                        type="text"
+                                ></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group id="2" label-cols-sm="2" label-cols-lg="2" label="Last name" label-for="input-horizontal" required>
+                                <b-form-input
+                                        v-model="form.last_name"
+                                        type="text"
+                                ></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
+                                <b-form-input v-model="form.username" type="text"></b-form-input>
+                                <b-form-text>This will be your displayed name</b-form-text>
+                            </b-form-group>
+                            <b-button type="submit" variant="primary">Save</b-button>
+                        </b-card>
+                    </b-form>
+
+                    <b-form v-on:submit.prevent="submitChangeEmail">
+                        <b-card class="card_section" bg-variant="light">
+                            <h4 align="center">Email</h4>
+                            <b-form-group id="4" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
+                                <b-form-input v-model="form.email" type="email"></b-form-input>
+                                <b-form-text>You will receive email confirmation link</b-form-text>
+                            </b-form-group>
+
+                            <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
+                                <b-form-input v-model="form.password" type="password"></b-form-input>
+                                <b-form-text>Confirm with your password</b-form-text>
+                            </b-form-group>
+                            <b-button type="submit" variant="primary">Save</b-button>
+                        </b-card>
+                    </b-form>
+
+                    <b-form v-on:submit.prevent="submitChangePassword">
+                        <b-card class="card_section" bg-variant="light">
+                            <h4 align="center">Password</h4>
+                            <b-form-group id="6" label-cols-sm="2" label-cols-lg="2" label="Old password" label-for="input-horizontal" required>
+                            <b-form-input type="password"></b-form-input>
                         </b-form-group>
 
-                        <b-form-group id="2" label-cols-sm="2" label-cols-lg="2" label="Last name" label-for="input-horizontal" required>
-                            <b-form-input
-                                    v-model="form.last_name"
-                                    type="text"
-                            ></b-form-input>
-                        </b-form-group>
+                            <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
+                                <b-form-input v-model="form.password" type="password" disabled></b-form-input>
+                                <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
+                            </b-form-group>
 
-                        <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
-                            <b-form-input v-model="form.username" type="text"></b-form-input>
-                            <b-form-text>This will be your displayed name</b-form-text>
-                        </b-form-group>
-                        <b-button variant="primary">Save</b-button>
-                    </b-card>
-
-                    <b-card class="card_section" bg-variant="light">
-                        <h4 align="center">Email</h4>
-                        <b-form-group id="4" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
-                            <b-form-input v-model="form.email" type="email"></b-form-input>
-                            <b-form-text>You will receive email confirmation link</b-form-text>
-                        </b-form-group>
-
-                        <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
-                            <b-form-input v-model="form.password" type="password"></b-form-input>
-                            <b-form-text>Confirm with your password</b-form-text>
-                        </b-form-group>
-                        <b-button variant="primary">Save</b-button>
-                    </b-card>
-
-                    <b-card class="card_section" bg-variant="light">
-                        <h4 align="center">Password</h4>
-                        <b-form-group id="6" label-cols-sm="2" label-cols-lg="2" label="Old password" label-for="input-horizontal" required>
-                        <b-form-input type="password"></b-form-input>
-                    </b-form-group>
-
-                        <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
-                            <b-form-input v-model="form.password" type="password" disabled></b-form-input>
-                            <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
-                        </b-form-group>
-
-                        <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
-                            <b-form-input type="password" disabled></b-form-input>
-                            <b-form-text>Repeat your new password</b-form-text>
-                        </b-form-group>
-                        <b-button variant="primary">Save</b-button>
-                    </b-card>
+                            <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
+                                <b-form-input type="password" disabled></b-form-input>
+                                <b-form-text>Repeat your new password</b-form-text>
+                            </b-form-group>
+                            <b-button type="submit" variant="primary">Save</b-button>
+                        </b-card>
+                    </b-form>
 
                     <pre class="mt-3 mb-0">{{ form }}</pre>
 
@@ -167,9 +171,51 @@
                     { text: '#geek', value: 'geek' },
                     { text: '#tattoos', value: 'tattoos' },
                     { text: '#eco', value: 'eco' }
-                ]
+                ],
+                errors: {
+                    empty_input: false,
+                    password_repeat: false,
+                    invalid_symbols: false,
+                    spaces: false,
+                    weak_password: false
+                },
+            }
+        },
+        methods: {
+            submitPassword() {
+                // Show alert on empty input
+                if (!this.form.first_name || !this.form.last_name || !this.form.email || !this.form.username || !this.form.password || !this.form.repeat_password)
+                {
+                    return this.errors.empty_input = true;
+                }
 
+                // Show alert if passwords don't match
+                if (this.form.password !== this.form.repeat_password)
+                    return this.errors.password_repeat = true;
 
+                // Show alert on space
+                if (this.form.first_name.match(/( )/) || this.form.last_name.match(/( )/) || this.form.email.match(/( )/) || this.form.username.match(/( )/) || this.form.password.match(/( )/))
+                {
+                    return this.errors.spaces = true;
+                }
+
+                // Show alert on unwanted characters
+                var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
+                if (this.form.first_name.match(reg1) || this.form.last_name.match(reg1) || this.form.email.match(reg1) || this.form.username.match(reg1))
+                {
+                    return this.errors.invalid_symbols = true;
+                }
+
+                // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // // Show alert on weak password
+                // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+                // if (!this.form.password.match(reg2))
+                // {
+                //     return this.errors.weak_password = true;
+                // }
+
+                else
+                    alert((JSON.stringify(this.form)))
             }
         }
     }
