@@ -58,7 +58,7 @@
                     repeat_password: '',
                 },
 
-                user: {
+                user_data: {
                     gender: [
                         { value: 'female', text: 'Female'},
                         { value: 'male', text: 'Male'},

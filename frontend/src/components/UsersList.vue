@@ -16,21 +16,22 @@
                         {{user.sex_pref}}
                     </b-card-text>
 
-                    <b-button href="#" variant="primary">Open</b-button>
+                    <router-link v-bind:to="'users/' + user.id"><b-button href="'users/' + user.id" variant="primary">Open</b-button></router-link>
+
                 </b-card>
             </div>
 
-<!--            <b-card v-bind:title="user.first_name + ' ' + user.last_name"-->
+<!--            <b-card v-bind:title="user_data.first_name + ' ' + user_data.last_name"-->
 <!--                    v-bind:img-src="photos[1].link"-->
-<!--                    img-alt="profile picture"-->
+<!--                    img-alt="user_data picture"-->
 <!--                    style="max-width: 15rem;"-->
 <!--                    class="mb-2 add_space"-->
 <!--            >-->
 <!--                <b-card-text>-->
-<!--                    {{user.age}} <br>-->
-<!--                    {{user.gender}} <br>-->
-<!--                    {{user.tags}} <br>-->
-<!--                    {{user.sex_pref}}-->
+<!--                    {{user_data.age}} <br>-->
+<!--                    {{user_data.gender}} <br>-->
+<!--                    {{user_data.tags}} <br>-->
+<!--                    {{user_data.sex_pref}}-->
 <!--                </b-card-text>-->
 
 <!--                <b-button href="#" variant="primary">Open</b-button>-->
@@ -68,7 +69,9 @@ export default {
     created() {
         axios.get(this.$root.API_URL + '/users/page/1')
             .then(res => this.users = res.data["users"])
-            .then(res => console.log(res))
+            // .then(res => console.log(res))
+            // TODO: console
+            // eslint-disable-next-line
             .catch(err => console.log(err));
     }
 }

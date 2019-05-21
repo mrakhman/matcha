@@ -1,16 +1,16 @@
 <template>
     <div class="main">
-        <h3 class="title"> View profile: <b>{{ profile.username }}</b> </h3>
-<!--        <b-img src="'../../img/' + {{profile.profile_image}}" fluid alt="Profile image"></b-img>-->
+        <h3 class="title"> View profile: <b>{{ user_data.username }}</b> </h3>
+<!--        <b-img src="'../../img/' + {{user_data.profile_image}}" fluid alt="Profile image"></b-img>-->
         <b-row id="photos">
             <b-col>
-                <b-img v-bind:src="profile.profile_image" fluid alt="Profile image" width="450"></b-img>
+                <b-img v-bind:src="user_data.profile_image" fluid alt="Profile image" width="450"></b-img>
             </b-col>
             <b-col>
-                <b-img ref="big_photo" id="big_photo" v-bind:src="profile.photos[0].link" fluid alt="First image" ></b-img>
+                <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" ></b-img>
                 <b-row hei></b-row>
                 <b-row>
-                    <img v-on:click="selectPhoto(photo.link)" v-for="photo in profile.photos" v-bind:src="photo.link" alt="image" height="100"/>
+                    <img v-on:click="selectPhoto(photo.link)" v-for="photo in photos" v-bind:src="photo.link" alt="image" height="100"/>
                 </b-row>
             </b-col>
         </b-row>
@@ -18,16 +18,16 @@
 <!--        <h3 class="title"> Details: </h3>-->
 <!--        <h3 class="ml-auto"> Details: </h3>-->
         <b-row><b-col cols="10">
-            <div class="details"> <b> Name: </b> {{profile.first_name}} {{profile.last_name}} </div>
-            <div class="details"> <b> Gender: </b> {{profile.gender}} </div>
-            <div class="details"> <b> Age: </b> {{profile.age}} </div>
-            <div class="details" v-if="sexualPref(profile.sexual_pref, profile.gender)"> <b> I date: </b> {{i_date}} </div>
+            <div class="details"> <b> Name: </b> {{user_data.first_name}} {{user_data.last_name}}</div>
+            <div class="details"> <b> Gender: </b> {{user_data.gender}}</div>
+            <div class="details"> <b> Age: </b> {{user_data.age}}</div>
+            <div class="details" v-if="sexualPref(user_data.sexual_pref, user_data.gender)"> <b> I date: </b> {{i_date}} </div>
             <div class="details"><b-col><b-row>
-                <b> About me: </b><b-col cols="11">{{profile.bio_text}}</b-col>
+                <b> About me: </b><b-col cols="11">{{user_data.bio_text}}</b-col>
             </b-row></b-col></div>
             <div class="details">
                 <p class="one_line"><b> I like: </b></p>
-                <ul class="tags" v-for="tag in profile.tags">
+                <ul class="tags" v-for="tag in user_data.tags">
                     <li> {{tag}} </li>
                 </ul>
             </div>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "CheckProfile.vue",
         data() {
@@ -61,22 +63,47 @@
                 i_date: '',
                 has_like: true,
                 has_match: false,
-                profile: {
-                    first_name: 'Masha',
-                    last_name: 'Rakhmasha',
-                    username: 'pupok',
-                    gender: 'female',
-                    age: '23',
-                    sexual_pref: 'hetero',
-                    bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
-                    tags: ['hoho', 'haha', 'hihi'],
-                    profile_image: require('../../img/face.jpg'),
-                    photos: [
-                        {link: require('../../img/face.jpg')},
-                        {link: require('../../img/qr.png')},
-                        {link: require('../../img/computer.png')}
-                    ]
-                }
+                // user_data: {
+                //     id: null,
+                //     first_name: 'Masha',
+                //     last_name: 'Rakhmasha',
+                //     username: 'pupok',
+                //     gender: 'female',
+                //     age: '23',
+                //     sexual_pref: 'hetero',
+                //     bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
+                //     tags: ['hoho', 'haha', 'hihi'],
+                //     profile_image: require('../../img/face.jpg'),
+                //     photos: [
+                //         {link: require('../../img/face.jpg')},
+                //         {link: require('../../img/qr.png')},
+                //         {link: require('../../img/computer.png')}
+                //     ]
+                // }
+
+                id: this.$route.params.id,
+                user_data: {
+
+                    // first_name: '',
+                    // last_name: '',
+                    // username: '',
+                    // gender: '',
+                    // age: '',
+                    // sex_pref: '',
+                    // bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
+                    // tags: ['hoho', 'haha', 'hihi'],
+                    // profile_image: '',
+                    // photos: [
+                    //     {link: require('../../img/face.jpg')},
+                    //     {link: require('../../img/qr.png')},
+                    //     {link: require('../../img/computer.png')}
+                    // ]
+                },
+                photos: [
+                    {link: require('../../img/face.jpg')},
+                    {link: require('../../img/qr.png')},
+                    {link: require('../../img/computer.png')}
+                ]
             }
         },
         methods: {
@@ -102,8 +129,13 @@
                 }
             }
         },
-        mounted() {
-
+        created() {
+            axios.get(this.$root.API_URL + '/users/' + this.id, {withCredentials: true})
+                .then(response => this.user_data = response.data)
+                // .then(response => console.log(response.data))
+                // TODO: console
+                // eslint-disable-next-line
+                .catch(error => console.log(error));
         }
     }
 </script>

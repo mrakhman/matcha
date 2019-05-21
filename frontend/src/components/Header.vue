@@ -12,10 +12,9 @@
                         <b-dropdown-item href="/my_profile">About me</b-dropdown-item>
                         <b-dropdown-item href="/my_profile">Settings</b-dropdown-item>
                     </b-nav-item-dropdown>
-<!--                    <b-nav-item href="#">My profile</b-nav-item>-->
+<!--                    <b-nav-item href="#">My user_data</b-nav-item>-->
                     <b-nav-item href="/my_profile">My profile</b-nav-item>
-                    <b-nav-item href="/view_profile">View profile</b-nav-item>
-                    <b-nav-item href="/users_list">Users_list</b-nav-item>
+                    <b-nav-item href="/users">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
 
                 </b-navbar-nav>

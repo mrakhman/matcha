@@ -19,8 +19,9 @@ export default [
     { path: '/my_profile', component: MyProfile},
     // { path: '/my_profile/settings', component: Settings},
     // { path: '/my_profile/about_me', component: AboutMe},
-    { path: '/view_profile', component: ViewProfile},
+    { path: '/view_profile', component: ViewProfile}, // This can be deleted
     { path: '/header', component: Header},
     { path: '/forgot_password', component: ForgotPassword},
-    { path: '/users_list', component: UsersList}
+    { path: '/users', component: UsersList},
+    { path: '/users/:id', component: ViewProfile}
 ]
