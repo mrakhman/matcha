@@ -47,7 +47,7 @@
         name: "AboutMe.vue",
         props: {
             form: Object,
-            user_data: Object
+            user: Object
         }
     }
 </script>

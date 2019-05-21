@@ -1,10 +1,10 @@
 <template>
     <div class="main">
-        <h3 class="title"> View profile: <b>{{ user_data.username }}</b> </h3>
-<!--        <b-img src="'../../img/' + {{user_data.profile_image}}" fluid alt="Profile image"></b-img>-->
+        <h3 class="title"> View profile: <b>{{ user.username }}</b> </h3>
+<!--        <b-img src="'../../img/' + {{user.profile_image}}" fluid alt="Profile image"></b-img>-->
         <b-row id="photos">
             <b-col>
-                <b-img v-bind:src="user_data.profile_image" fluid alt="Profile image" width="450"></b-img>
+                <b-img v-bind:src="user.profile_image" fluid alt="Profile image" width="450"></b-img>
             </b-col>
             <b-col>
                 <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" ></b-img>
@@ -18,16 +18,16 @@
 <!--        <h3 class="title"> Details: </h3>-->
 <!--        <h3 class="ml-auto"> Details: </h3>-->
         <b-row><b-col cols="10">
-            <div class="details"> <b> Name: </b> {{user_data.first_name}} {{user_data.last_name}}</div>
-            <div class="details"> <b> Gender: </b> {{user_data.gender}}</div>
-            <div class="details"> <b> Age: </b> {{user_data.age}}</div>
-            <div class="details" v-if="sexualPref(user_data.sexual_pref, user_data.gender)"> <b> I date: </b> {{i_date}} </div>
+            <div class="details"> <b> Name: </b> {{user.first_name}} {{user.last_name}}</div>
+            <div class="details"> <b> Gender: </b> {{user.gender}}</div>
+            <div class="details"> <b> Age: </b> {{user.age}}</div>
+            <div class="details" v-if="sexualPref(user.sexual_pref, user.gender)"> <b> I date: </b> {{i_date}} </div>
             <div class="details"><b-col><b-row>
-                <b> About me: </b><b-col cols="11">{{user_data.bio_text}}</b-col>
+                <b> About me: </b><b-col cols="11">{{user.bio_text}}</b-col>
             </b-row></b-col></div>
             <div class="details">
                 <p class="one_line"><b> I like: </b></p>
-                <ul class="tags" v-for="tag in user_data.tags">
+                <ul class="tags" v-for="tag in user.tags">
                     <li> {{tag}} </li>
                 </ul>
             </div>
@@ -63,7 +63,7 @@
                 i_date: '',
                 has_like: true,
                 has_match: false,
-                // user_data: {
+                // user: {
                 //     id: null,
                 //     first_name: 'Masha',
                 //     last_name: 'Rakhmasha',
@@ -82,7 +82,7 @@
                 // }
 
                 id: this.$route.params.id,
-                user_data: {
+                user: {
 
                     // first_name: '',
                     // last_name: '',
@@ -131,7 +131,7 @@
         },
         created() {
             axios.get(this.$root.API_URL + '/users/' + this.id, {withCredentials: true})
-                .then(response => this.user_data = response.data)
+                .then(response => this.user = response.data)
                 // .then(response => console.log(response.data))
                 // TODO: console
                 // eslint-disable-next-line
