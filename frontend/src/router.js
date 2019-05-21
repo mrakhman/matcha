@@ -12,6 +12,24 @@ import Login from "./components/Login";
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
 
+const ifAuthenticated = (to, from, next) => {
+    if (document.cookie)
+    {
+        next();
+        return
+    }
+    next('/login')
+};
+
+const ifNotAuthenticated = (to, from, next) => {
+    if (!document.cookie)
+    {
+        next();
+        return
+    }
+    next('/')
+};
+
 export default [
     { path: '/register', component: Register},
     { path: '/', component: Register},

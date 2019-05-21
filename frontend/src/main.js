@@ -16,6 +16,26 @@ const router = new VueRouter({
   mode: 'history'
 });
 
+// const ifAuthenticated = (to, from, next) => {
+//   if (document.cookie)
+//   {
+//     next();
+//     return
+//   }
+//   next('/login')
+// };
+//
+// const ifNotAuthenticated = (to, from, next) => {
+//   if (!document.cookie)
+//   {
+//     next();
+//     return
+//   }
+//   next('/')
+// };
+//
+// const isAuth = this.session;
+
 // const authData = localStorage.getItem('auth');
 
 new Vue({

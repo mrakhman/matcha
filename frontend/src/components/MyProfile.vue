@@ -86,6 +86,9 @@
                 },
             }
         },
+        created() {
+            // From here
+        }
 
     }
 </script>
