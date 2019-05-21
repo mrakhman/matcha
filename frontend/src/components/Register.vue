@@ -18,12 +18,9 @@
 
                     <b-alert v-model="errors.empty_input" variant="danger" dismissible>Empty input field</b-alert>
                     <b-alert v-model="errors.password_repeat" variant="danger" dismissible>2 passwords didn't match</b-alert>
-
-                    // To be done
-<!--                <b-alert show variant="danger">Invalid input characters</b-alert>-->
-<!--                <b-alert show variant="danger">Don't use spaces</b-alert>-->
-<!--                <b-alert show variant="danger">Username and email must only include [a-z + A-Z] [0-9] and @</b-alert>-->
-<!--                <b-alert show variant="danger">Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>-->
+                    <b-alert v-model="errors.spaces" variant="danger" dismissible>Don't use spaces</b-alert>
+                    <b-alert v-model="errors.invalid_symbols" variant="danger" dismissible>Names and email must only include [a-z + A-Z] [0-9] and @</b-alert>
+                    <b-alert v-model="errors.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
 
 
 
@@ -53,7 +50,7 @@
                         ></b-form-input>
                     </b-form-group>
                     <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
-                        <b-form-input required v-model="form.email" type="text"></b-form-input>
+                        <b-form-input required v-model="form.email" type="email"></b-form-input>
                         <b-form-text>You will receive email confirmation link</b-form-text>
                     </b-form-group>
                     <b-form-group id="4" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
@@ -62,7 +59,7 @@
                     </b-form-group>
                     <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
                         <b-form-input required v-model="form.password" type="password"></b-form-input>
-                        <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
+                        <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, number</b-form-text>
                     </b-form-group>
                     <b-form-group id="6" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
                         <b-form-input required v-model="form.repeat_password" type="password"></b-form-input>
@@ -97,6 +94,9 @@
                 errors: {
                     empty_input: false,
                     password_repeat: false,
+                    invalid_symbols: false,
+                    spaces: false,
+                    weak_password: false
                 },
                 // errors: []
 
@@ -117,38 +117,36 @@
             //     })
             // },
             submitRegister() {
-                // Show alert if passwords dont match
-                if (this.form.password !== this.form.repeat_password)
-                    return this.errors.password_repeat = true;
-
                 // Show alert on empty input
                 if (!this.form.first_name || !this.form.last_name || !this.form.email || !this.form.username || !this.form.password || !this.form.repeat_password)
                 {
                     return this.errors.empty_input = true;
                 }
 
+                // Show alert if passwords don't match
+                if (this.form.password !== this.form.repeat_password)
+                    return this.errors.password_repeat = true;
 
+                // Show alert on space
+                if (this.form.first_name.match(/( )/) || this.form.last_name.match(/( )/) || this.form.email.match(/( )/) || this.form.username.match(/( )/) || this.form.password.match(/( )/))
+                {
+                    return this.errors.spaces = true;
+                }
 
-                // if (!this.form.first_name || !this.form.last_name)
-                // {
-                //     this.errors.push('Empty name');
-                // }
-                //
-                // if (!this.form.email || !this.form.username)
-                // {
-                //     this.errors.push('Empty email or username');
-                // }
-                //
-                // if (!this.form.password || !this.form.repeat_password)
-                // {
-                //     this.errors.push('Empty password');
-                // }
+                // Show alert on unwanted characters
+                var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
+                if (this.form.first_name.match(reg1) || this.form.last_name.match(reg1) || this.form.email.match(reg1) || this.form.username.match(reg1))
+                {
+                    return this.errors.invalid_symbols = true;
+                }
 
-                // if (this.form.password !== this.form.repeat_password)
+        // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // // Show alert on weak password
+                // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+                // if (!this.form.password.match(reg2))
                 // {
-                //     this.errors.push('2 passwords didn\'t match');
+                //     return this.errors.weak_password = true;
                 // }
-
 
                 else
                     alert((JSON.stringify(this.form)))
