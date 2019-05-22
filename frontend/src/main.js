@@ -17,7 +17,7 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-Auth.loggedIn = true;
+// Auth.loggedIn = false; // !!!!!!!!!!!!!
 
 // const ifAuthenticated = (to, from, next) => {
 //   if (document.cookie)

@@ -1,5 +1,5 @@
 import MyProfile from './components/MyProfile.vue';
-import Header from "./components/Header";
+// import Header from "./components/Header";
 // import Login from "./components/Login";
 import Register from "./components/Register";
 import ViewProfile from "./components/ViewProfile";
@@ -15,7 +15,7 @@ import {Auth} from './auth'
 
 const ifAuthenticated = (to, from, next) => {
 
-    if (document.cookie)
+    if (Auth.loggedIn)
     {
         next();
         return
@@ -26,24 +26,29 @@ const ifAuthenticated = (to, from, next) => {
 const ifNotAuthenticated = (to, from, next) => {
     console.log("HELLO");
     console.log(Auth.loggedIn);
-    if (!document.cookie)
+    if (!Auth.loggedIn)
     {
         next();
         return
     }
+    // if (!document.cookie)
+    // {
+    //     next();
+    //     return
+    // }
     next('/')
 };
 
 export default [
     { path: '/register', component: Register, beforeEnter: ifNotAuthenticated},
-    { path: '/', component: Register},
-    { path: '/login', component: Login},
-    { path: '/my_profile', component: MyProfile},
+    { path: '/login', component: Login, beforeEnter: ifNotAuthenticated},
+    { path: '/my_profile', component: MyProfile, beforeEnter: ifAuthenticated},
+    { path: '/forgot_password', component: ForgotPassword, beforeEnter: ifNotAuthenticated},
+    { path: '/users', component: UsersList, beforeEnter: ifAuthenticated},
+    { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},
+    { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
+    // { path: '/', component: Register},
     // { path: '/my_profile/settings', component: Settings},
     // { path: '/my_profile/about_me', component: AboutMe},
-    { path: '/view_profile', component: ViewProfile}, // This can be deleted
-    { path: '/header', component: Header},
-    { path: '/forgot_password', component: ForgotPassword},
-    { path: '/users', component: UsersList},
-    { path: '/users/:id', component: ViewProfile}
+    // { path: '/header', component: Header}
 ]

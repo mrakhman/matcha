@@ -16,6 +16,8 @@
                     <b-nav-item href="/my_profile">My profile</b-nav-item>
                     <b-nav-item href="/users">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
+
+
                     <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH</b-nav-item>
 
                 </b-navbar-nav>
