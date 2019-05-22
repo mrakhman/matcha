@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <app_header v-bind:session="session" v-on:del_session="deleteSession"/>
+    <AppHeader v-bind:session="session" v-on:del_session="deleteSession"/>
 
     <router-view></router-view><!-- Main routing enter point -->
+
 <!--    <div class="main">-->
 <!--      <Register/>-->
-      <br><hr>
+<!--      <br><hr>-->
 <!--      <MyProfile/>-->
 <!--    </div>-->
 
@@ -31,7 +32,7 @@ import Footer from "./components/Footer";
 export default {
   name: 'app',
   components: {
-    app_header: Header,
+    AppHeader: Header,
     Footer
     // Register
     // MyProfile

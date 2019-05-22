@@ -54,8 +54,7 @@
     export default {
         name: "Header.vue",
         components: {
-            Logout,
-            MyProfile
+            Logout
         },
         data () {
             return {

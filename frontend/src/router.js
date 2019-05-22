@@ -9,6 +9,7 @@ import Login from "./components/Login";
 // import Settings from "./components/Settings";
 // import AboutMe from "./components/AboutMe";
 import {Auth} from './auth'
+import Home from "./components/Home";
 
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
@@ -48,7 +49,8 @@ export default [
     { path: '/users', component: UsersList, beforeEnter: ifAuthenticated},
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},
     { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
-    // { path: '/', component: Register},
+    { path: '/', component: Home},
+    { path: '/home', component: Home},
     // { path: '/my_profile/settings', component: Settings},
     // { path: '/my_profile/about_me', component: AboutMe},
     // { path: '/header', component: Header}
