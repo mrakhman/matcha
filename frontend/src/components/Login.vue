@@ -16,6 +16,7 @@
                 <b-form-group id="login_username" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
                     <b-form-input v-model="form.username" type="text"></b-form-input>
                     <b-form-text>This is your displayed name</b-form-text>
+                    <small class="text-danger">hello</small> // Can be deleted
                 </b-form-group>
                     <b-form-group id="login_password" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
                     <b-form-input v-model="form.password" type="password"></b-form-input>
@@ -38,7 +39,9 @@
                     password: ''
                 },
                 login_success: false,
-                input_error: false
+                input_error: false,
+
+                errors: [] // Can be deleted
             }
         },
         methods: {
