@@ -8,12 +8,19 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item-dropdown text="My profile" left>
-                        <b-dropdown-item href="/my_profile">About me</b-dropdown-item>
-                        <b-dropdown-item href="/my_profile">Settings</b-dropdown-item>
-                    </b-nav-item-dropdown>
+<!--                    <b-nav-item-dropdown text="My profile" left>-->
+<!--                        <b-dropdown-item href="/my_profile">About me</b-dropdown-item>-->
+<!--                        <b-dropdown-item href="/my_profile">Settings</b-dropdown-item>-->
+<!--                    </b-nav-item-dropdown>-->
 <!--                    <b-nav-item href="#">My user</b-nav-item>-->
-                    <b-nav-item href="/my_profile">My profile</b-nav-item>
+
+
+<!--                    <b-nav-item v-if="session.user_id" to="/my_profile">My profile</b-nav-item>-->
+<!--                    What should I put inside ???????? -->
+                    <b-nav-item><router-link v-bind:to="'my_profile/' + session.user_id">My prof</router-link></b-nav-item>
+                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>
+
+
                     <b-nav-item href="/users">Users_list</b-nav-item>
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
 
@@ -42,11 +49,13 @@
 
 <script>
     import Logout from "./Logout";
+    import MyProfile from "./MyProfile";
 
     export default {
         name: "Header.vue",
         components: {
-            Logout
+            Logout,
+            MyProfile
         },
         data () {
             return {

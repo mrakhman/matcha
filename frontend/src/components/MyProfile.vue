@@ -13,7 +13,7 @@
         <b-tab title="About me" active>
             <AboutMe
                     v-bind:form="form"
-                    v-bind:user="user"
+                    v-bind:user_details="user_details"
             />
         </b-tab>
 
@@ -32,6 +32,8 @@
 <script>
     import AboutMe from "./AboutMe";
     import Settings from "./Settings";
+    import axios from 'axios';
+
     export default {
         name: "MyProfile.vue",
         components: {
@@ -40,12 +42,17 @@
         },
         data() {
             return {
+
+                user_id: this.$route.params.user_id,
+                user_details: {},
+
+
                 form: {
                     gender_selected: null,
                     sexual_selected: null,
                     tags_selected: [],
                     bio_text: '',
-                    birthday: ''
+                    dob: ''
                 },
 
                 form_edit: {
@@ -58,20 +65,20 @@
                     repeat_password: '',
                 },
 
-                user: {
-                    gender: [
-                        { value: 'female', text: 'Female'},
-                        { value: 'male', text: 'Male'},
-                        { value: 'not mention', text: 'Not mentioned'}
-                    ],
-                    sexual_pref: ['hetero', 'homo', 'bi'],
-                    tags: [
-                        { text: '#vegan', value: 'vegan' },
-                        { text: '#geek', value: 'geek' },
-                        { text: '#tattoos', value: 'tattoos' },
-                        { text: '#eco', value: 'eco' }
-                    ]
-                },
+                // options: {
+                //     gender: [
+                //         { value: 'female', text: 'Female'},
+                //         { value: 'male', text: 'Male'},
+                //         { value: 'not mention', text: 'Not mentioned'}
+                //     ],
+                //     sex_pref: ['hetero', 'homo', 'bi'],
+                //     tags: [
+                //         { text: '#vegan', value: 'vegan' },
+                //         { text: '#geek', value: 'geek' },
+                //         { text: '#tattoos', value: 'tattoos' },
+                //         { text: '#eco', value: 'eco' }
+                //     ]
+                // },
                 alerts: {
                     empty_input: false,
                     password_repeat: false,
@@ -88,6 +95,12 @@
         },
         created() {
             // From here
+            axios.get(this.$root.API_URL + '/users/' + this.user_id, {withCredentials: true})
+                .then(response => this.user_details = response.data)
+                .then(response => console.log(response.data))
+                // TODO: console
+                // eslint-disable-next-line
+                .catch(error => console.log(error));
         }
 
     }
@@ -114,4 +127,9 @@
         padding-bottom: 20px;
         padding-left: 15px;
     }
+
+    /*v-bind:options="options"*/
 </style>
+
+
+

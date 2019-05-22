@@ -16,7 +16,7 @@
                         {{user.sex_pref}}
                     </b-card-text>
 
-                    <router-link v-bind:to="'users/' + user.id"><b-button href="'users/' + user.id" variant="primary">Open</b-button></router-link>
+                    <router-link v-bind:to="'users/' + user.id"><b-button variant="primary">Open</b-button></router-link>
 
                 </b-card>
             </div>

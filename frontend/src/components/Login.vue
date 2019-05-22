@@ -29,7 +29,6 @@
 
 <script>
     import axios from 'axios';
-    import {Auth} from "../auth";
     export default {
         name: "Login.vue",
         data () {

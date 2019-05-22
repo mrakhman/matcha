@@ -81,6 +81,7 @@ export default {
       created() {
         axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
             .then(response => this.session = response.data)
+
             // .then(response => console.log(response.data))
             // TODO: console
             // eslint-disable-next-line
