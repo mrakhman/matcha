@@ -1,7 +1,6 @@
 <template>
 <div class="main">
     <h3 class="title"> My profile </h3>
-    <small class="text-danger">hello</small>
     <b-alert show variant="danger" dismissible>Username already exists</b-alert>
     <b-alert show variant="danger" dismissible>Another user has this email</b-alert>
     <b-alert show variant="danger" dismissible>Old and new emails are the same</b-alert>

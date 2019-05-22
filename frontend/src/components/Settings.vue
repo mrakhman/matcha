@@ -40,12 +40,12 @@
                 <b-card class="card_section" bg-variant="light">
                     <h4 align="center">Email</h4>
                     <b-form-group id="4" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.email" type="email"></b-form-input>
+                        <b-form-input required v-model="form_edit.email" type="email"></b-form-input>
                         <b-form-text>You will receive email confirmation link</b-form-text>
                     </b-form-group>
 
                     <b-form-group id="5" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.password" type="password"></b-form-input>
+                        <b-form-input required v-model="form_edit.password" type="password"></b-form-input>
                         <b-form-text>Confirm with your password</b-form-text>
                     </b-form-group>
                     <b-button type="submit" variant="primary">Save</b-button>
@@ -56,16 +56,16 @@
                 <b-card class="card_section" bg-variant="light">
                     <h4 align="center">Password</h4>
                     <b-form-group id="6" label-cols-sm="2" label-cols-lg="2" label="Old password" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.old_password" type="password"></b-form-input>
+                        <b-form-input required v-model="form_edit.old_password" type="password"></b-form-input>
                     </b-form-group>
 
                     <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.password" type="password" disabled></b-form-input>
+                        <b-form-input required v-model="form_edit.password" type="password" disabled></b-form-input>
                         <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
                     </b-form-group>
 
                     <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.repeat_password" type="password" disabled></b-form-input>
+                        <b-form-input required v-model="form_edit.repeat_password" type="password" disabled></b-form-input>
                         <b-form-text>Repeat your new password</b-form-text>
                     </b-form-group>
                     <b-button type="submit" variant="primary">Save</b-button>
