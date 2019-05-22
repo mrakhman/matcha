@@ -1,6 +1,7 @@
 <template>
 <div class="main">
     <h3 class="title"> My profile </h3>
+    <small class="text-danger">hello</small>
     <b-alert show variant="danger" dismissible>Username already exists</b-alert>
     <b-alert show variant="danger" dismissible>Another user has this email</b-alert>
     <b-alert show variant="danger" dismissible>Old and new emails are the same</b-alert>
@@ -22,6 +23,7 @@
             <Settings
                     v-bind:form_edit="form_edit"
                     v-bind:alerts="alerts"
+                    v-bind:user_details="user_details"
             />
         </b-tab>
         <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>

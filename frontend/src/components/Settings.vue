@@ -15,6 +15,8 @@
                         <b-form-input
                                 v-model="form_edit.first_name"
                                 type="text"
+                                v-bind:placeholder="user_details.first_name"
+
                         ></b-form-input>
                     </b-form-group>
 
@@ -22,6 +24,7 @@
                         <b-form-input
                                 v-model="form_edit.last_name"
                                 type="text"
+                                v-bind:placeholder="user_details.last_name"
                         ></b-form-input>
                     </b-form-group>
 
@@ -82,25 +85,27 @@
         name: "Settings.vue",
         props: {
             form_edit: Object,
-            alerts: Object
+            alerts: Object,
+            user_details: Object
         },
         methods: {
             submitChangeNames() {
                 // Show alert on empty input
-                if (!this.form_edit.first_name || !this.form_edit.last_name || !this.form_edit.email || !this.form_edit.username || !this.form_edit.password || !this.form_edit.repeat_password)
+                // I let 2 out of 3 be empty cause I might want to change just one. On backend: if field is empty - keep old value
+                if (!this.form_edit.first_name && !this.form_edit.last_name && !this.form_edit.username)
                 {
                     return this.alerts.empty_input = true;
                 }
 
                 // Show alert on space
-                if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.email.match(/( )/) || this.form_edit.username.match(/( )/) || this.form_edit.password.match(/( )/))
+                if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.username.match(/( )/))
                 {
                     return this.alerts.spaces = true;
                 }
 
                 // Show alert on unwanted characters
                 var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
-                if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.email.match(reg1) || this.form_edit.username.match(reg1))
+                if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.username.match(reg1))
                 {
                     return this.alerts.invalid_symbols = true;
                 }
@@ -108,20 +113,20 @@
 
             submitChangeEmail() {
                 // Show alert on empty input
-                if (!this.form_edit.first_name || !this.form_edit.last_name || !this.form_edit.email || !this.form_edit.username || !this.form_edit.password || !this.form_edit.repeat_password)
+                if (!this.form_edit.email || !this.form_edit.password)
                 {
                     return this.alerts.empty_input = true;
                 }
 
                 // Show alert on space
-                if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.email.match(/( )/) || this.form_edit.username.match(/( )/) || this.form_edit.password.match(/( )/))
+                if (this.form_edit.email.match(/( )/) || this.form_edit.password.match(/( )/))
                 {
                     return this.alerts.spaces = true;
                 }
 
                 // Show alert on unwanted characters
                 var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
-                if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.email.match(reg1) || this.form_edit.username.match(reg1))
+                if (this.form_edit.email.match(reg1))
                 {
                     return this.alerts.invalid_symbols = true;
                 }
@@ -135,7 +140,7 @@
                 }
 
                 // Show alert on empty input
-                if (!this.form_edit.first_name || !this.form_edit.last_name || !this.form_edit.email || !this.form_edit.username || !this.form_edit.password || !this.form_edit.repeat_password)
+                if (!this.form_edit.password || !this.form_edit.repeat_password)
                 {
                     return this.alerts.empty_input = true;
                 }
@@ -145,7 +150,7 @@
                     return this.alerts.password_repeat = true;
 
                 // Show alert on space
-                if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.email.match(/( )/) || this.form_edit.username.match(/( )/) || this.form_edit.password.match(/( )/))
+                if (this.form_edit.password.match(/( )/))
                 {
                     return this.alerts.spaces = true;
                 }
