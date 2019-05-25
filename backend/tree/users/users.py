@@ -27,8 +27,11 @@ def get_users_page(page_number):
 
 @users.route('/me', methods=['GET'])
 def get_me():
-    if 'username' in session and session['username']:
-        return jsonify({'my_username': session['username']})
+    current_user_id = session.get('user_id')
+    if current_user_id:
+        current_user = User.from_db(int(current_user_id))
+        if current_user:
+            return jsonify({"user": current_user.get_view('personal')})
     abort(401)
 
 
