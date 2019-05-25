@@ -1,4 +1,4 @@
-import postgresql
+from .database import DataBase
 from flask import current_app, _app_ctx_stack
 
 
@@ -12,10 +12,12 @@ class Postgres(object):
         app.config.setdefault('PSQL_DATABASE_URI', None)
         app.teardown_appcontext(self.teardown)
 
-    def connect(self):
-        return postgresql.open(current_app.config['PSQL_DATABASE_URI'])
+    @staticmethod
+    def connect():
+        return DataBase(current_app.config['PSQL_DATABASE_URI'])
 
-    def teardown(self, exception):
+    @staticmethod
+    def teardown(_):
         ctx = _app_ctx_stack.top
         if hasattr(ctx, 'postgres_db'):
             ctx.postgres_db.close()
