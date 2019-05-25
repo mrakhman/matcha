@@ -44,7 +44,7 @@ new Vue({
   router: router,
   data: {
     API_URL: "http://localhost:5000",
-    Auth: Auth,
-    // auth: authData ? JSON.parse(authData) : {}
+    // Auth: Auth,
+    auth: authData ? JSON.parse(authData) : {}
   }
 }).$mount('#app');

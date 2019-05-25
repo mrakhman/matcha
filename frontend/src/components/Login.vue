@@ -58,6 +58,7 @@
                 }, {withCredentials: true})
                     .then(response => {
                         // TODO: console
+                        console.log(response);
                         // eslint-disable-next-line
                         // this.login_success = true;
 

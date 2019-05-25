@@ -41,7 +41,7 @@
             AboutMe,
             Settings
         },
-        props: ['user_id'],
+        // props: ['user_id'],
         data() {
             return {
 
