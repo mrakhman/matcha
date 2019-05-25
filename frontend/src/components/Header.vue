@@ -17,8 +17,8 @@
 
 <!--                    <b-nav-item v-if="session.user_id" to="/my_profile">My profile</b-nav-item>-->
 <!--                    What should I put inside ???????? -->
-                    <b-nav-item><router-link v-bind:to="'my_profile/' + session.user_id">My prof</router-link></b-nav-item>
-                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>
+                    <b-nav-item v-bind:to="'/my_profile'">My prof</b-nav-item>
+<!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
 
 
                     <b-nav-item href="/users">Users_list</b-nav-item>

@@ -41,10 +41,11 @@
             AboutMe,
             Settings
         },
+        props: ['user_id'],
         data() {
             return {
 
-                user_id: this.$route.params.user_id,
+                // user_id: this.$props.user_id,
                 user_details: {},
 
 

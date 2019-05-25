@@ -2,7 +2,7 @@
   <div id="app">
     <AppHeader v-bind:session="session" v-on:del_session="deleteSession"/>
 
-    <router-view></router-view><!-- Main routing enter point -->
+    <router-view :user_id="session.user_id"></router-view><!-- Main routing enter point -->
 
 <!--    <div class="main">-->
 <!--      <Register/>-->

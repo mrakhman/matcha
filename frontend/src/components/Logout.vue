@@ -20,7 +20,7 @@
                         console.log(response);
                         if (response.statusText === 'OK')
                         {
-                            Auth.logout();
+                            Auth.loggedIn = false;
                             this.$router.push('/');
                             this.$router.go(); // Need it because we stopped $emit action to App data.session
                         }

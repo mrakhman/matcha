@@ -30,6 +30,7 @@
 
 <script>
     import axios from 'axios';
+    import {Auth} from "../auth";
     export default {
         name: "Login.vue",
         data () {
@@ -59,7 +60,8 @@
                         // eslint-disable-next-line
                         // this.login_success = true;
 
-                        Auth.login();
+                        // Auth.login();
+                        Auth.loggedIn = true;
 
                         this.$router.push('/my_profile');
                         this.$router.go();  // Заглушка - reload после перехода на /my_profile, так как сложно здесь использовать $emit и передавать факт логина в App.vue

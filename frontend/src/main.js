@@ -17,8 +17,6 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-// Auth.loggedIn = false; // !!!!!!!!!!!!!
-
 // const ifAuthenticated = (to, from, next) => {
 //   if (document.cookie)
 //   {
@@ -39,16 +37,14 @@ const router = new VueRouter({
 //
 // const isAuth = this.session;
 
-// const authData = localStorage.getItem('auth');
+const authData = localStorage.getItem('auth');
 
 new Vue({
   render: h => h(App),
   router: router,
   data: {
     API_URL: "http://localhost:5000",
-    Auth: Auth
+    Auth: Auth,
+    auth: authData ? JSON.parse(authData) : {}
   }
-  // data: {
-  //   auth: authData ? JSON.parse(authData) : {}
-  // }
 }).$mount('#app');
