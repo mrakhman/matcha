@@ -97,9 +97,10 @@
         },
         created() {
             // From here
-            axios.get(this.$root.API_URL + '/users/' + this.user_id, {withCredentials: true})
-                .then(response => this.user_details = response.data)
-                .then(response => console.log(response.data))
+            // axios.get(this.$root.API_URL + '/users/' + this.user_id, {withCredentials: true})
+            axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                .then(response => this.user_details = response.data["user"])
+                .then(response => console.log(response))
                 // TODO: console
                 // eslint-disable-next-line
                 .catch(error => console.log(error));

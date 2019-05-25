@@ -25,7 +25,8 @@
                     <b-nav-item href="#" disabled>Disabled</b-nav-item>
 
 
-                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH</b-nav-item>
+<!--                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
+<!--                    <b-nav-item> AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
 
                 </b-navbar-nav>
 
@@ -58,7 +59,7 @@
         },
         data () {
             return {
-                auth: this.$root.$data.Auth
+                // auth: this.$root.$data.Auth
             }
         },
         props: {

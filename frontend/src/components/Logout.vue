@@ -8,9 +8,14 @@
 
 <script>
     import axios from 'axios';
-    import {Auth} from "../auth";
+    // import {Auth} from "../auth";
     export default {
         name: "Logout.vue",
+        data () {
+            return {
+                // auth: this.$root.$data.Auth
+            }
+        },
         methods: {
             logout() {
                 axios.post(this.$root.API_URL + '/auth/logout', {}, {withCredentials: true})
@@ -20,7 +25,8 @@
                         console.log(response);
                         if (response.statusText === 'OK')
                         {
-                            Auth.loggedIn = false;
+                            // Auth.loggedIn = false;
+                            // this.auth.loggedIn = false;
                             this.$router.push('/');
                             this.$router.go(); // Need it because we stopped $emit action to App data.session
                         }

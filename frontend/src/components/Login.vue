@@ -30,11 +30,12 @@
 
 <script>
     import axios from 'axios';
-    import {Auth} from "../auth";
+    // import {Auth} from "../auth";
     export default {
         name: "Login.vue",
         data () {
             return {
+                // auth: this.$root.$data.Auth,
                 form: {
                     username: '',
                     password: ''
@@ -61,10 +62,11 @@
                         // this.login_success = true;
 
                         // Auth.login();
-                        Auth.loggedIn = true;
+                        // Auth.loggedIn = true;
+                        // this.auth.loggedIn = true;
 
                         this.$router.push('/my_profile');
-                        this.$router.go();  // Заглушка - reload после перехода на /my_profile, так как сложно здесь использовать $emit и передавать факт логина в App.vue
+                        // this.$router.go();  // Заглушка - reload после перехода на /my_profile, так как сложно здесь использовать $emit и передавать факт логина в App.vue
 
                         // localStorage.setItem('auth', JSON.stringify(response.data.data));
                         // this.$root.auth = response.data.data /* [2:20:56] https://www.youtube.com/watch?v=L5oaI-C8Dhc&t=2494s */

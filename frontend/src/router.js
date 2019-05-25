@@ -43,9 +43,9 @@ const ifNotAuthenticated = (to, from, next) => {
 
 export default [
     { path: '/register', component: Register, beforeEnter: ifNotAuthenticated},
-    { path: '/login', component: Login, beforeEnter: ifNotAuthenticated},
-    { path: '/my_profile', component: MyProfile, beforeEnter: ifAuthenticated, props: {user_id: true}},
-    { path: '/my_profile/:user_id', component: MyProfile, beforeEnter: ifAuthenticated},
+    { path: '/login', component: Login},// beforeEnter: ifNotAuthenticated},
+    { path: '/my_profile', component: MyProfile},// beforeEnter: ifAuthenticated, props: {user_id: true}},
+    // { path: '/my_profile/:user_id', component: MyProfile, beforeEnter: ifAuthenticated},
     { path: '/forgot_password', component: ForgotPassword, beforeEnter: ifNotAuthenticated},
     { path: '/users', component: UsersList, beforeEnter: ifAuthenticated},
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},

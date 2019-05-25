@@ -36,8 +36,9 @@
                 </b-form-group>
             </b-form-group>
             <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
-                <b-form-input v-model="form.dob" type="date"></b-form-input> // Date of birth add to user json
+                <b-form-input v-model="user_details.birthday" type="date"></b-form-input> // Date of birth add to user json
                 <div class="mt-3">Age: <strong>{{ user_details.age }}</strong></div>
+                <div class="mt-3">Birthday: <strong>{{ user_details.birthday }}</strong></div>
             </b-form-group>
 
             <b-button variant="primary">Save</b-button>
