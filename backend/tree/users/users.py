@@ -1,5 +1,6 @@
 from flask import blueprints, jsonify, abort, current_app, session, request
 
+from db import db
 from models.user import User
 from utils.form_validator import check_fields
 
@@ -81,3 +82,18 @@ def create_user():
     new_user.set_password(req_data["password"])
     new_user.create()
     return jsonify({"ok": True, "user": new_user.get_view("public")})
+
+
+@users.route('/all', methods=['GET'])
+def get_all():
+    query = db.connection.prepare("SELECT * FROM users")
+    user_rows = query()
+    result = User.from_db_row(user_rows)
+    return jsonify(result)
+
+
+@users.route('/all2', methods=['GET'])
+def get_all2():
+    user_rows = User.queries.get_all()
+    result = User.from_db_row(user_rows)
+    return jsonify(result)

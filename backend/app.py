@@ -4,13 +4,12 @@ from flask import Flask, jsonify
 from flask import request
 from flask.logging import default_handler
 from flask_cors import CORS
-from flask.json import JSONEncoder
-from db import db
 from werkzeug.exceptions import HTTPException, abort
-import datetime
 
+from db import db
 from tree.auth import auth
 from tree.users import users
+from utils.json_encoder import CustomJSONEncoder
 
 APP_NAME = "matcha"
 
@@ -30,25 +29,16 @@ formatter = RequestFormatter(
 default_handler.setFormatter(formatter)
 
 
-class CustomJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime.datetime):
-            return obj.isoformat('T')
-        if isinstance(obj, datetime.date):
-            return obj.isoformat()
-        return JSONEncoder.default(self, obj)
-
-
 def app_factory(name):
     flask_app = Flask(name)
     flask_app.config.from_object('config.DevelopmentConfig')
     flask_app.json_encoder = CustomJSONEncoder
+    db.init_app(flask_app)
 
     flask_app.register_blueprint(users, url_prefix="/users")
-    flask_app.register_blueprint(auth,  url_prefix="/auth")
+    flask_app.register_blueprint(auth, url_prefix="/auth")
 
     CORS(flask_app, supports_credentials=True)
-    db.init_app(flask_app)
     return flask_app
 
 
@@ -66,7 +56,6 @@ def not_found(error):
 
 @app.route('/')
 def root_handler():
-    db.connection.execute("SELECT * FROM Users")
     return "Hello World!"
 
 

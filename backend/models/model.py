@@ -1,6 +1,22 @@
+from typing import Union, List
+
+import postgresql.types
+
+from db import db
+
+
+class Queries:
+    @staticmethod
+    def query(query: str):
+        def f(*args):
+            prepared_query = db.connection.prepare(query)
+            return prepared_query(*args)
+        return f
+
+
 class Model:
-    _fields = {}
-    _views = {}
+    _fields: dict
+    _views: dict
 
     def __init__(self):
         # Init all attributes:
@@ -36,14 +52,14 @@ class Model:
             if props['required'] and props['validator'] and not props['validator'](getattr(self, f, None)):
                 raise ValueError(f"{f}({getattr(self, f)}) did not pass validator for {self.__class__.__name__}")
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         try:
             self.check_attributes()
         except ValueError:
             return False
         return True
 
-    def get_view(self, view="public"):
+    def get_view(self, view="public") -> dict:
         dict_obj = {}
         if view not in self._views:
             return dict_obj
@@ -51,3 +67,21 @@ class Model:
         for f in self._views[view]['fields']:
             dict_obj[f] = getattr(self, f)
         return dict_obj
+
+    @classmethod
+    def from_db_row(cls, _: postgresql.types.Row):
+        return NotImplemented()
+
+    @staticmethod
+    def dict_from_row(row: postgresql.types.Row) -> dict:
+        result = {}
+        for key in row.keys():
+            result[key] = row[key]
+        return result
+
+    @classmethod
+    def from_db_row(cls, row: Union[postgresql.types.Row, List[postgresql.types.Row]]):
+        if type(row) == list:
+            return [cls.from_db_row(r) for r in row]
+        data = cls.dict_from_row(row)
+        return cls.from_dict(data)

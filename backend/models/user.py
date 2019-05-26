@@ -1,13 +1,19 @@
 import random
-
-from utils.images import get_dog_image
-from .model import Model
 from datetime import date, timedelta
 
 from werkzeug.security import generate_password_hash, \
-     check_password_hash
+    check_password_hash
 
-temp_users = {}
+from utils.images import get_dog_image
+from .model import Model, Queries
+
+temp_users = {}  # @TODO: rm
+
+
+class UserQueries(Queries):
+    def __init__(self):
+        self.get_all = self.query("SELECT * FROM users")
+        self.create = self.query("INSERT (`username`, `email`) INTO users ($1, $2)")
 
 
 class User(Model):
@@ -30,7 +36,7 @@ class User(Model):
             'type': str,
             'validator': None
         },
-        'birthday': {
+        'dob': {
             'required': False,
             'default': None,
             'type': date,
@@ -67,7 +73,7 @@ class User(Model):
             'type': str,
             'validator': None
         },
-        'pw_hash': {
+        'password': {
             'required': False,
             'default': None,
             'type': str,
@@ -81,7 +87,7 @@ class User(Model):
                 'id',
                 'first_name',
                 'last_name',
-                'birthday',
+                'dob',
                 'bio_text',
                 'gender',
                 'sex_pref',
@@ -106,22 +112,24 @@ class User(Model):
         }
     }
 
+    queries = UserQueries()
+
     @property
     def age(self):
-        if not getattr(self, 'birthday'):
+        if not getattr(self, 'dob'):
             return None
         today = date.today()
-        age = today.year - getattr(self, 'birthday').year
-        if today.month < getattr(self, 'birthday').month \
-                or (today.month == getattr(self, 'birthday').month and today.day < getattr(self, 'birthday').day):
+        age = today.year - getattr(self, 'dob').year
+        if today.month < getattr(self, 'dob').month \
+                or (today.month == getattr(self, 'dob').month and today.day < getattr(self, 'dob').day):
             age -= 1
         return age
 
     def check_password(self, password):
-        return check_password_hash(self.pw_hash, password)
+        return check_password_hash(self.password, password)
 
     def set_password(self, password):
-        self.pw_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     @classmethod
     def from_db(cls, obj_id: int):
@@ -140,7 +148,7 @@ class User(Model):
         obj.last_name = names.get_last_name()
         obj.username = obj.first_name[0] + obj.last_name
         obj.username = obj.username.lower()
-        obj.birthday = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
+        obj.dob = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
         obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
         obj.profile_image = get_dog_image()
         password = f"_{obj.id}"
@@ -149,8 +157,5 @@ class User(Model):
         return obj
 
     def create(self):
-        self.id = 1
-        while self.id in temp_users:
-            self.id += 1
-
-        temp_users[self.id] = self
+        # @TODO: Check smth?
+        self.queries.create(self.username, self.email)

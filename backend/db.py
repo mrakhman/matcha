@@ -1,3 +1,3 @@
 from flask_postgres import Postgres
 
-db = Postgres()
+db: Postgres = Postgres()
