@@ -86,7 +86,8 @@ class User(Model):
                 'gender',
                 'sex_pref',
                 'tags',
-                'profile_image'
+                'profile_image',
+                'username'
             ]
         },
         'public': {
@@ -99,7 +100,8 @@ class User(Model):
                 'gender',
                 'sex_pref',
                 'tags',
-                'profile_image'
+                'profile_image',
+                'username'
             ]
         }
     }
