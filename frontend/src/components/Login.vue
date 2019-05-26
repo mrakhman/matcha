@@ -3,9 +3,9 @@
         <h3 class="title"> Login </h3>
         <b-row><b-col xl="7">
             <b-alert v-model="input_error" variant="danger" dismissible>Empty input field</b-alert>
-            <b-alert show variant="danger">User does not exist</b-alert>
+            <b-alert v-model="bad_request" variant="danger" dismissible>User does not exist</b-alert>
             <b-alert show variant="danger">Click the link in your email before login</b-alert>
-            <b-alert show variant="danger">Wrong password or email not confirmed</b-alert>
+            <b-alert v-model="unauthorized" variant="danger" dismissible>Wrong password or email not confirmed</b-alert>
 
             <b-alert v-model="login_success" variant="success" dismissible>User logged in!</b-alert>
 
@@ -42,15 +42,31 @@
                 },
                 login_success: false,
                 input_error: false,
+                unauthorized: false,
+                bad_request: false,
 
                 errors: [] // Can be deleted
             }
         },
         methods: {
+            // setSessionData() {
+            //     axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
+            //         .then(response => {
+            //             return console.log(response);
+            //         })
+            //
+            //         // .then(response => console.log(response.data))
+            //         // TODO: console
+            //         // eslint-disable-next-line
+            //         .catch(error => console.log(error));
+            // },
+
             login() {
                 // Show alert on empty input
                 if (!this.form.username || !this.form.password)
                     return this.input_error = true;
+
+                // If no error on front - Axios requests
 
                 axios.post(this.$root.API_URL + '/auth/login', {
                     username: this.form.username,
@@ -59,6 +75,26 @@
                     .then(response => {
                         // TODO: console
                         console.log(response);
+
+                        // Nested Axios request - whoami data
+                        axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
+                            .then(response => {
+                                console.log(response);
+                                localStorage.setItem('user_id', response.data.user_id);
+                                localStorage.setItem('user', JSON.stringify(response.data.context));
+                                // this.$root.$data.user_id = response.data.user_id;
+                                // this.$root.$data.user = response.data.context;
+                                this.$router.push('/my_profile');
+                                // this.$router.go();
+                            })
+                            // TODO: console
+                            // eslint-disable-next-line
+                            .catch(error => {
+                                console.log(error);
+
+                            });
+
+
                         // eslint-disable-next-line
                         // this.login_success = true;
 
@@ -66,7 +102,7 @@
                         // Auth.loggedIn = true;
                         // this.auth.loggedIn = true;
 
-                        this.$router.push('/my_profile');
+                        // this.$router.push('/my_profile');
                         // this.$router.go();  // Заглушка - reload после перехода на /my_profile, так как сложно здесь использовать $emit и передавать факт логина в App.vue
 
                         // localStorage.setItem('auth', JSON.stringify(response.data.data));
@@ -74,10 +110,17 @@
                 })
                     .catch(error => {
                         // TODO: console
-                        // eslint-disable-next-line
+                        if (error.response.status === 401) {
+                            this.unauthorized = true;
+                        }
+                        if (error.response.status === 400) {
+                            this.bad_request = true;
+                        }
                         alert('Couldn`t login')
                 });
             },
+
+
 
         }
     }

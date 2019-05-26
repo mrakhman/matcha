@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-form inline v-on:submit.prevent="logout">
-            <b-button v-on:submit.prevent="logout" type="submit" variant="outline-primary">Logout</b-button>
+            <b-button type="submit" variant="outline-primary">Logout</b-button>
         </b-form>
     </div>
 </template>
@@ -27,7 +27,9 @@
                         {
                             // Auth.loggedIn = false;
                             // this.auth.loggedIn = false;
-                            this.$router.push('/');
+                            localStorage.removeItem('user');
+                            localStorage.removeItem('user_id');
+                            this.$router.push('/login');
                             this.$router.go(); // Need it because we stopped $emit action to App data.session
                         }
 

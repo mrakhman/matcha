@@ -26,19 +26,20 @@
 
 
 <!--                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
-<!--                    <b-nav-item> AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
+                    <b-nav-item> AUTH (now it's {{ user_id }})</b-nav-item>
 
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                    <b-button-group v-if="!session.user_id">
+                    <b-button-group v-if="!user_id">
                         <b-button to="/register" variant="outline-primary">Register</b-button>
                         <b-button to="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
-                    <b-nav-item v-if="session.user_id">Hello, {{ session.context.first_name }}!</b-nav-item>
-                    <Logout v-if="session.user_id" v-on:del_session="$emit('del_session')"/>
+                    <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>
+                    <Logout v-if="user_id"/>
+<!--                    v-on:del_session="$emit('del_session')"/>-->
 
                 </b-navbar-nav>
             </b-collapse>
@@ -50,7 +51,7 @@
 
 <script>
     import Logout from "./Logout";
-    import MyProfile from "./MyProfile";
+    // import MyProfile from "./MyProfile";
 
     export default {
         name: "Header.vue",
@@ -59,11 +60,12 @@
         },
         data () {
             return {
-                // auth: this.$root.$data.Auth
+                user: this.$root.$data.user,
+                user_id: this.$root.$data.user_id
             }
         },
         props: {
-            session: Object
+            // session: Object
         },
         // computed: {
         //     sessionUser() {

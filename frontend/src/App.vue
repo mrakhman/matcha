@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <AppHeader v-bind:session="session" v-on:del_session="deleteSession"/>
+<!--    <AppHeader v-bind:session="session" v-on:del_session="deleteSession"/>-->
+    <AppHeader/>
 
-    <router-view :user_id="session.user_id"></router-view><!-- Main routing enter point -->
+    <router-view></router-view><!-- Main routing enter point -->
 
 <!--    <div class="main">-->
 <!--      <Register/>-->
@@ -39,11 +40,10 @@ export default {
   },
     data() {
       return {
-        todos: [],
-        session: {
-          'user_id': null,
-          'context': {}
-        }
+        // session: {
+        //   'user_id': null,
+        //   'context': {}
+        // }
       }
     },
 
@@ -68,10 +68,10 @@ export default {
           // this.todos = [...this.todos, newTodo];
       },
 
-      deleteSession() {
-        this.session.user_id = null;
-        this.session.context = {}
-      }
+      // deleteSession() {
+      //   this.session.user_id = null;
+      //   this.session.context = {}
+      // }
     },
     // created() {
     //   axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
@@ -79,15 +79,15 @@ export default {
     //     .catch(err => console.log(err));
     // }
 
-      created() {
-        axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
-            .then(response => this.session = response.data)
-
-            // .then(response => console.log(response.data))
-            // TODO: console
-            // eslint-disable-next-line
-            .catch(error => console.log(error));
-      }
+      // created() {
+      //   axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
+      //       .then(response => this.session = response.data)
+      //
+      //       // .then(response => console.log(response.data))
+      //       // TODO: console
+      //       // eslint-disable-next-line
+      //       .catch(error => console.log(error));
+      // }
 }
 </script>
 

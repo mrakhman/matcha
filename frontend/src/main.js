@@ -37,14 +37,16 @@ const router = new VueRouter({
 //
 // const isAuth = this.session;
 
-const authData = localStorage.getItem('auth');
+const userId = localStorage.getItem('user_id');
+const userData = localStorage.getItem('user');
 
 new Vue({
-  render: h => h(App),
   router: router,
   data: {
-    API_URL: "http://localhost:5000",
+    user_id: userId ? userId : null,
+    user: userData ? JSON.parse(userData) : {},
+    API_URL: "http://localhost:5000"
     // Auth: Auth,
-    auth: authData ? JSON.parse(authData) : {}
-  }
+  },
+  render: h => h(App)
 }).$mount('#app');
