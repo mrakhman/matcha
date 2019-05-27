@@ -97,3 +97,10 @@ def get_all2():
     user_rows = User.queries.get_all()
     result = User.from_db_row(user_rows)
     return jsonify(result)
+
+
+@users.route('/create', methods=['GET'])
+def create_many():
+    u = User.from_db(1)
+    u.create()
+    return jsonify({"ok": True})

@@ -13,7 +13,9 @@ temp_users = {}  # @TODO: rm
 class UserQueries(Queries):
     def __init__(self):
         self.get_all = self.query("SELECT * FROM users")
-        self.create = self.query("INSERT (`username`, `email`) INTO users ($1, $2)")
+        self.create = self.query("INSERT"
+                                 "(`username`, `email`, `first_name`, `last_name`, `password`) INTO users "
+                                 "($1, $2, $3, $4, $5)")
 
 
 class User(Model):
@@ -148,6 +150,7 @@ class User(Model):
         obj.last_name = names.get_last_name()
         obj.username = obj.first_name[0] + obj.last_name
         obj.username = obj.username.lower()
+        obj.email = obj.username + '@example.com'
         obj.dob = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
         obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
         obj.profile_image = get_dog_image()
@@ -158,4 +161,4 @@ class User(Model):
 
     def create(self):
         # @TODO: Check smth?
-        self.queries.create(self.username, self.email)
+        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'fist_name'), getattr(self, 'last_name'), getattr(self, 'password'))
