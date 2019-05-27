@@ -4,44 +4,85 @@
         <pre class="mt-3 mb-0">{{ user_details }}</pre>
 
 
-        <b-container class="bv-example-row"><b-row><b-col xl="7">
-            <div id="profile_image_2">
-                <b-img class="profile_img" v-bind:src="user_details.profile_image" rounded alt="Profile picture" width="100"></b-img>
-            </div>
-            <b-form-group id="gender_2" label-cols-sm="2" label-cols-lg="2" label="Gender:" label-for="input-horizontal">
-                <b-form-select v-model="user_details.gender" :options="options.gender" size="sm" class="mt-3"></b-form-select>
-                <div class="mt-3">Selected: <strong>{{ user_details.gender }}</strong></div>
-            </b-form-group>
+        <b-container class="bv-example-row"><b-row><b-col xl="9">
 
-            <b-form-group id="sexual_pref_2" label-cols-sm="2" label-cols-lg="2" label="Sexual preferences:" label-for="input-horizontal">
-                <b-form-select v-model="user_details.sex_pref" :options="options.sex_pref" size="sm" class="mt-3"></b-form-select>
-                <div class="mt-3">Selected: <strong>{{ user_details.sex_pref }}</strong></div>
-            </b-form-group>
-            <b-form-group id="bio_2" label-cols-sm="2" label-cols-lg="2" label="Your biography:" label-for="input-horizontal">
-                <b-form-textarea
-                        id="textarea_2"
-                        v-model="user_details.bio_text"
-                        placeholder="Enter something..."
-                        rows="3"
-                        max-rows="6"
-                ></b-form-textarea>
-            </b-form-group>
-            <b-form-group id="tags_2" label-cols-sm="2" label-cols-lg="2" label="Interests:" label-for="input-horizontal">
-                <b-form-group label="What describes you?">
-                    <b-form-checkbox-group
-                            v-model="user_details.tags"
-                            :options="options.tags"
-                            name="flavour-1a"
-                    ></b-form-checkbox-group>
+
+
+                <h4>Profile main image</h4>
+                <b-row id="profile_image_2">
+                    <b-col>
+                        <b-img class="profile_img" v-bind:src="user_details.profile_image" alt="Profile picture" width="300" rounded></b-img>
+                    </b-col>
+<!--                    <b-img class="profile_img" v-if="uploaded_image" v-bind:src="uploaded_image" rounded alt="Uploaded image" width="150"></b-img>-->
+
+<!--                    <FileUpload class="m-1" v-model="avatar">-->
+                    <b-col>
+                        <FileUpload class="m-1">
+    <!--                        <div size="150px" v-if="avatar">-->
+    <!--                            <img :src="avatar.imageURL" alt="avatar">-->
+    <!--                        </div>-->
+    <!--                        <div size="150px" v-if="!avatar">-->
+    <!--                            <img :src="user_details.profile_image" alt="avatar">-->
+    <!--                        </div>-->
+                        </FileUpload>
+                    </b-col>
+                </b-row>
+
+                <br>
+
+                <h4>More photos</h4>
+                <b-row id="photos">
+                    <b-col>
+                        <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" width="300" rounded></b-img>
+                        <b-row hei></b-row>
+                        <b-row>
+                            <img v-on:click="selectPhoto(photo.link)" v-for="photo in photos" v-bind:src="photo.link" alt="image" height="80"/>
+                        </b-row>
+                    </b-col>
+                    <b-col>
+                        <FileUpload class="m-1">
+                        </FileUpload>
+                    </b-col>
+                </b-row>
+
+                <br>
+
+            <b-form v-on:submit.prevent="submitAboutMe">
+                <b-form-group id="gender_2" label-cols-sm="2" label-cols-lg="2" label="Gender:" label-for="input-horizontal">
+                    <b-form-select v-model="user_details.gender" :options="options.gender" size="sm" class="mt-3"></b-form-select>
+                    <div class="mt-3">Selected: <strong>{{ user_details.gender }}</strong></div>
                 </b-form-group>
-            </b-form-group>
-            <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
-                <b-form-input v-model="user_details.birthday" type="date"></b-form-input> // Date of birth add to user json
-                <div class="mt-3">Age: <strong>{{ user_details.age }}</strong></div>
-                <div class="mt-3">Birthday: <strong>{{ user_details.birthday }}</strong></div>
-            </b-form-group>
 
-            <b-button variant="primary">Save</b-button>
+                <b-form-group id="sexual_pref_2" label-cols-sm="2" label-cols-lg="2" label="Sexual preferences:" label-for="input-horizontal">
+                    <b-form-select v-model="user_details.sex_pref" :options="options.sex_pref" size="sm" class="mt-3"></b-form-select>
+                    <div class="mt-3">Selected: <strong>{{ user_details.sex_pref }}</strong></div>
+                </b-form-group>
+                <b-form-group id="bio_2" label-cols-sm="2" label-cols-lg="2" label="Your biography:" label-for="input-horizontal">
+                    <b-form-textarea
+                            id="textarea_2"
+                            v-model="user_details.bio_text"
+                            placeholder="Enter something..."
+                            rows="3"
+                            max-rows="6"
+                    ></b-form-textarea>
+                </b-form-group>
+                <b-form-group id="tags_2" label-cols-sm="2" label-cols-lg="2" label="Interests:" label-for="input-horizontal">
+                    <b-form-group label="What describes you?">
+                        <b-form-checkbox-group
+                                v-model="user_details.tags"
+                                :options="options.tags"
+                                name="flavour-1a"
+                        ></b-form-checkbox-group>
+                    </b-form-group>
+                </b-form-group>
+                <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
+                    <b-form-input v-model="user_details.dob" type="date"></b-form-input> // Date of birth add to user json
+                    <div class="mt-3">Age: <strong>{{ user_details.age }}</strong></div>
+                    <div class="mt-3">Birthday: <strong>{{ user_details.dob }}</strong></div>
+                </b-form-group>
+
+                <b-button type="submit" variant="primary">Save</b-button>
+            </b-form>
         </b-col></b-row></b-container>
 
 <br><hr>
@@ -91,8 +132,13 @@
 </template>
 
 <script>
+    import FileUpload from './FileUpload';
+
     export default {
         name: "AboutMe.vue",
+        components: {
+            FileUpload
+        },
         props: {
             form: Object,
             // options: Object,
@@ -100,6 +146,7 @@
         },
         data () {
             return {
+                // avatar: null,
                 options: {
                     gender: [
                         { value: 'female', text: 'Female'},
@@ -114,7 +161,23 @@
                         { text: '#eco', value: 'eco' }
                     ]
                 },
+                photos: [
+                    {link: require('../../img/qr.png')},
+                    {link: require('../../img/face.jpg')},
+                    {link: require('../../img/computer.png')},
+                    {link: require('../../img/computer.png')},
+                    {link: require('../../img/computer.png')}
+                ]
             }
+        },
+        methods: {
+            submitAboutMe() {
+
+
+            },
+            selectPhoto(source) {
+                this.$refs['big_photo'].src = source
+            },
         }
     }
 </script>
