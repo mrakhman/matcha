@@ -4,11 +4,12 @@
             <input type="file"
                    ref="file"
                    :name="uploadFieldName"
-                   @change="onFileChange($event.target.name, $event.target.files)"
+                   v-on:change="onFileChange($event.target.name, $event.target.files)"
+                   v-on:submit.prevent="savePhoto"
             >
-            <img width="150" v-if="imageURL" :src="imageURL" alt="avatar">
+            <img width="250" v-if="imageURL" :src="imageURL" alt="avatar">
             <p class="text-danger">{{ errorText }}</p>
-            <b-button variant="primary">Save</b-button>
+            <b-button type="submit" variant="primary">Save</b-button>
         </form>
 
     </div>
@@ -53,6 +54,9 @@
                         this.$emit('input', {formData, imageURL})
                     }
                 }
+            },
+            savePhoto() {
+
             }
         }
     }
