@@ -1,5 +1,7 @@
 <template>
     <div class="main">
+        show all
+        <pre class="mt-3 mb-0">{{ show_all }}</pre>
         <h3> Users List </h3>
         <b-row>
             <div v-for="user in users" :key="user.id">
@@ -51,6 +53,7 @@ export default {
 
     data() {
         return {
+            show_all: [],
             users: [],
             profile_image: require('../../img/face.jpg'),
             photos: [
@@ -69,6 +72,13 @@ export default {
     created() {
         axios.get(this.$root.API_URL + '/users/page/1')
             .then(res => this.users = res.data["users"])
+            // .then(res => console.log(res))
+            // TODO: console
+            // eslint-disable-next-line
+            .catch(err => console.log(err));
+
+        axios.get(this.$root.API_URL + '/users/all')
+            .then(res => this.show_all = res.data)
             // .then(res => console.log(res))
             // TODO: console
             // eslint-disable-next-line

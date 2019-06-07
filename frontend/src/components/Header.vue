@@ -37,6 +37,16 @@
                         <b-button to="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
+
+<!--                    https://bootstrap-vue.js.org/docs/components/dropdown-->
+<!--                    https://profile.intra.42.fr/notifications-->
+                    <div class="text-center">
+                        <b-badge variant="warning">4</b-badge>
+                        <b-dropdown size="sm" variant="warning" text="Notifs" left>
+                            <b-dropdown-item href="/my_profile">Notif 1</b-dropdown-item>
+                            <b-dropdown-item href="/my_profile">Notifs 2</b-dropdown-item>
+                        </b-dropdown>
+                    </div>
                     <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>
                     <Logout v-if="user_id"/>
 <!--                    v-on:del_session="$emit('del_session')"/>-->
@@ -51,12 +61,14 @@
 
 <script>
     import Logout from "./Logout";
+    import Notifications from "./Notifications";
     // import MyProfile from "./MyProfile";
 
     export default {
         name: "Header.vue",
         components: {
-            Logout
+            Logout,
+            Notifications
         },
         data () {
             return {

@@ -29,7 +29,11 @@
                     </b-form-group>
 
                     <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
-                        <b-form-input v-model="form_edit.username" type="text"></b-form-input>
+                        <b-form-input
+                                v-model="form_edit.username"
+                                type="text"
+                                v-bind:placeholder="user_details.username"
+                        ></b-form-input>
                         <b-form-text>This will be your displayed name</b-form-text>
                     </b-form-group>
                     <b-button type="submit" variant="primary">Save</b-button>

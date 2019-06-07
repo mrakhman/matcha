@@ -1,7 +1,7 @@
 <template>
     <div class="main">
-        <b-alert show variant="danger">User already exists</b-alert>
-        <b-alert show variant="success">User created! Check your email to activate account</b-alert>
+        <b-alert v-model="errors.user_exists" variant="danger" dismissible>User already exists</b-alert>
+        <b-alert v-model="register_success_alert" variant="success" dismissible>User created! Check your email to activate account</b-alert>
 
         <h3 class="title"> Register </h3>
         <b-container class="bv-example-row">
@@ -77,7 +77,7 @@
 
 <script>
 
-// import axios from 'axios';
+import axios from 'axios';
 
     export default {
         name: "Register.vue",
@@ -96,61 +96,109 @@
                     password_repeat: false,
                     invalid_symbols: false,
                     spaces: false,
-                    weak_password: false
+                    weak_password: false,
+                    user_exists: false
                 },
+                register_success_alert: false
                 // errors: []
 
             }
         },
         methods: {
-            // submitRegister() {
-            //     axios.post(this.$root.API_URL + '/register', {
-            //         first_name: this.form.first_name,
-            //         last_name: this.form.last_name,
-            //         email: this.form.email,
-            //         username: this.form.username,
-            //         password: this.form.password
-            //     }).then(response => {
-            //         console.log(response)
-            //     }).catch(error => {
-            //         console.log(error)
-            //     })
-            // },
-            submitRegister() {
+            validateRegister() {
+                var has_error = 0;
+                this.errors.empty_input = false;
+                this.errors.password_repeat = false;
+                this.errors.invalid_symbols = false;
+                this.errors.spaces = false;
+                this.errors.weak_password = false;
+                this.errors.user_exists = false;
+                this.register_success_alert = false;
+
                 // Show alert on empty input
                 if (!this.form.first_name || !this.form.last_name || !this.form.email || !this.form.username || !this.form.password || !this.form.repeat_password)
                 {
-                    return this.errors.empty_input = true;
+                    this.errors.empty_input = true;
+                    has_error = 1;
                 }
 
                 // Show alert if passwords don't match
                 if (this.form.password !== this.form.repeat_password)
-                    return this.errors.password_repeat = true;
+                {
+                    this.errors.password_repeat = true;
+                    has_error = 1;
+                }
 
                 // Show alert on space
                 if (this.form.first_name.match(/( )/) || this.form.last_name.match(/( )/) || this.form.email.match(/( )/) || this.form.username.match(/( )/) || this.form.password.match(/( )/))
                 {
-                    return this.errors.spaces = true;
+                    this.errors.spaces = true;
+                    has_error = 1;
                 }
 
                 // Show alert on unwanted characters
                 var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form.first_name.match(reg1) || this.form.last_name.match(reg1) || this.form.email.match(reg1) || this.form.username.match(reg1))
                 {
-                    return this.errors.invalid_symbols = true;
+                    this.errors.invalid_symbols = true;
+                    has_error = 1;
                 }
 
-        // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // // Show alert on weak password
                 // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
                 // if (!this.form.password.match(reg2))
                 // {
-                //     return this.errors.weak_password = true;
+                //     this.errors.weak_password = true;
+                //     has_error = 1;
                 // }
 
-                else
-                    alert((JSON.stringify(this.form)))
-            }
+                if (has_error === 1)
+                    return true;
+                return false;
+
+                // else
+                //     return alert((JSON.stringify(this.form)))
+            },
+
+            submitRegister() {
+                if (this.validateRegister())
+                    return false;
+
+                this.register_success_alert = false;
+
+                axios.post(this.$root.API_URL + '/users/register', {
+                    first_name: this.form.first_name,
+                    last_name: this.form.last_name,
+                    email: this.form.email,
+                    username: this.form.username,
+                    password: this.form.password
+                }, {withCredentials: true})
+                    .then(response => {
+                        if(response.status === 200)
+                        {
+                            this.register_success_alert = true;
+                            this.form.first_name = null;
+                            this.form.last_name = null;
+                            this.form.username = null;
+                            this.form.email = null;
+                            this.form.password = null;
+                            this.form.repeat_password = null;
+
+                        }
+                        // TODO: console
+                        console.log(response)
+                })
+                    .catch(error => {
+                        if (error.response.status === 409) {
+                            this.errors.user_exists = true;
+                        }
+                        // TODO: console
+                        console.log(error)
+                })
+            },
+
+
         }
     }
 
