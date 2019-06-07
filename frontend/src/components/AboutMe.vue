@@ -34,7 +34,10 @@
                 <b-row id="photos">
                     <b-col>
                         <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" width="300" rounded></b-img>
-                        <b-row hei></b-row>
+                        <b-row>
+
+                        </b-row>
+                        <b-button class="m-1" type="" variant="danger" size="sm" v-on:click="deleteImage">Delete</b-button>
                         <b-row>
                             <img v-on:click="selectPhoto(photo.link)" v-for="photo in photos" v-bind:src="photo.link" alt="image" height="80"/>
                         </b-row>
@@ -178,6 +181,13 @@
             selectPhoto(source) {
                 this.$refs['big_photo'].src = source
             },
+            deleteImage() {
+                if (confirm("Delete image?")) {
+                    this.photos[0].link = null;
+                    // TODO: Delete image from db
+                    // alert("Image will be deleted")
+                }
+            }
         }
     }
 </script>
