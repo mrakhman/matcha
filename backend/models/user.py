@@ -13,9 +13,9 @@ temp_users = {}  # @TODO: rm
 class UserQueries(Queries):
     def __init__(self):
         self.get_all = self.query("SELECT * FROM users")
-        self.create = self.query("INSERT"
-                                 "(`username`, `email`, `first_name`, `last_name`, `password`) INTO users "
-                                 "($1, $2, $3, $4, $5)")
+        self.create = self.query("INSERT INTO users(username, email, first_name, last_name, password) "
+                                 "VALUES ($1, $2, $3, $4, $5)")
+        self.get_by_username = self.query("SELECT * FROM users WHERE username = $1")
 
 
 class User(Model):
@@ -33,6 +33,12 @@ class User(Model):
             'validator': None
         },
         'username': {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        'email': {
             'required': True,
             'default': None,
             'type': str,
@@ -89,6 +95,7 @@ class User(Model):
                 'id',
                 'first_name',
                 'last_name',
+                'email',
                 'dob',
                 'bio_text',
                 'gender',
@@ -161,4 +168,12 @@ class User(Model):
 
     def create(self):
         # @TODO: Check smth?
-        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'fist_name'), getattr(self, 'last_name'), getattr(self, 'password'))
+        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'), getattr(self, 'last_name'), getattr(self, 'password'))
+
+    def get_by_username(self):
+        # @TODO: check if empty
+        self.queries.get_by_username(getattr(self, 'username'))
+
+    # def check_pw(self, username, password):
+    #     current_user = self.get_by_username()
+    # ???????????????????????????????????????????????????????????

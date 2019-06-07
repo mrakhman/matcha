@@ -1,6 +1,7 @@
-from flask import blueprints, jsonify, session, request, abort
+from flask import blueprints, jsonify, session, request, abort, current_app
 
 from models.user import User
+from utils.form_validator import check_fields
 
 auth = blueprints.Blueprint("auth", __name__)
 
@@ -20,6 +21,38 @@ def pseudo_login():
         session['user_id'] = current_user.id
         return jsonify({'status': 'ok'})
     abort(401)
+
+# @auth.route('/login_masha', methods=['POST'])
+# def login_masha():
+#     req_data = request.get_json()
+#     form_values = {
+#         "username": {
+#             'required': True,
+#             'default': None,
+#             'type': str,
+#             'validator': None
+#         },
+#         "password": {
+#             'required': True,
+#             'default': None,
+#             'type': str,
+#             'validator': None
+#         }
+#     }
+#     current_app.logger.info(f"Here we are, the request is: {req_data}")
+#     check_fields(req_data, form_values)
+#     current_user = User.from_dict(req_data)
+#     # current_user.get_by_username(req_data["username"])
+#     current_user.check_pw(req_data["username"], req_data["password"])
+#
+#
+#     username = request.json.get('username')
+#     password = request.json.get('password')
+#     if not (username and password):
+#         abort(400)
+#     #
+#     # if (get_by_username()):
+    # ???????????????????????????????????????????????????????????
 
 
 @auth.route('/logout', methods=['POST', 'GET'])
