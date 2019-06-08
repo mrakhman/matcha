@@ -77,12 +77,12 @@
                         console.log(response);
 
                         // Nested Axios request - whoami data
-                        axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
+                        axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
                             .then(response => {
                                 // TODO: console
                                 console.log(response);
-                                localStorage.setItem('user_id', response.data.user_id);
-                                localStorage.setItem('user', JSON.stringify(response.data.context));
+                                localStorage.setItem('user_id', response.data.user.id);
+                                localStorage.setItem('user', JSON.stringify(response.data.user));
                                 // this.$root.$data.user_id = response.data.user_id;
                                 // this.$root.$data.user = response.data.context;
                                 this.$router.push('/my_profile');

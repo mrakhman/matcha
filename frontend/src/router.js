@@ -44,6 +44,7 @@ export default [
     { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
     { path: '/', component: Home},
     { path: '/home', component: Home},
+    { path: '/notifications', component: Home},
     // { path: '/my_profile/settings', component: Settings},
     // { path: '/my_profile/about_me', component: AboutMe},
     // { path: '/header', component: Header}

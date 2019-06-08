@@ -183,7 +183,7 @@
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    this.photos[0].link = null;
+                    // this.photos.splice(0, 1);
                     // TODO: Delete image from db
                     // alert("Image will be deleted")
                 }
