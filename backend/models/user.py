@@ -15,7 +15,7 @@ class UserQueries(Queries):
         self.get_all = self.query("SELECT * FROM users")
         self.create = self.query("INSERT INTO users(username, email, first_name, last_name, password) "
                                  "VALUES ($1, $2, $3, $4, $5)")
-        self.get_by_username = self.query("SELECT * FROM users WHERE username = $1")
+        self.get_by_username = self.query("SELECT * FROM users WHERE username = $1", one=True)
 
 
 class User(Model):
@@ -166,14 +166,13 @@ class User(Model):
         temp_users[obj_id] = obj
         return obj
 
+    @classmethod
+    def get_by_username(cls, username: str):
+        my_usr = cls.queries.get_by_username(username)
+
+        obj = cls.from_db_row(my_usr)
+        return obj
+
     def create(self):
         # @TODO: Check smth?
         self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'), getattr(self, 'last_name'), getattr(self, 'password'))
-
-    def get_by_username(self):
-        # @TODO: check if empty
-        self.queries.get_by_username(getattr(self, 'username'))
-
-    # def check_pw(self, username, password):
-    #     current_user = self.get_by_username()
-    # ???????????????????????????????????????????????????????????

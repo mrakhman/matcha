@@ -7,9 +7,11 @@ from db import db
 
 class Queries:
     @staticmethod
-    def query(query: str):
+    def query(query: str, one: bool = False):
         def f(*args):
             prepared_query = db.connection.prepare(query)
+            if one:
+                return prepared_query.first(*args)
             return prepared_query(*args)
         return f
 
@@ -67,10 +69,6 @@ class Model:
         for f in self._views[view]['fields']:
             dict_obj[f] = getattr(self, f)
         return dict_obj
-
-    @classmethod
-    def from_db_row(cls, _: postgresql.types.Row):
-        return NotImplemented()
 
     @staticmethod
     def dict_from_row(row: postgresql.types.Row) -> dict:
