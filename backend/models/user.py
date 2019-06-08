@@ -1,5 +1,6 @@
 import random
 from datetime import date, timedelta
+from typing import Optional
 
 from werkzeug.security import generate_password_hash, \
     check_password_hash
@@ -14,12 +15,19 @@ class UserQueries(Queries):
     def __init__(self):
         self.get_all = self.query("SELECT * FROM users")
         self.create = self.query("INSERT INTO users(username, email, first_name, last_name, password) "
-                                 "VALUES ($1, $2, $3, $4, $5)")
-        self.get_by_username = self.query("SELECT * FROM users WHERE username = $1", one=True)
+                                 "VALUES ($1, $2, $3, $4, $5) RETURNING id")
+        # self.get_by_username = self.query("SELECT * FROM users WHERE username = $1", one=True)
+        self.get_by_unique_field = lambda column: self.query(f"SELECT * FROM users WHERE {column} = $1", one=True)
 
 
 class User(Model):
     _fields = {
+        'id': {
+            'required': False,
+            'default': None,
+            'type': int,
+            'validator': None
+        },
         'first_name': {
             'required': True,
             'default': None,
@@ -142,7 +150,7 @@ class User(Model):
 
     @classmethod
     def from_db(cls, obj_id: int):
-        # TODO
+        # TODO: remove nahui
         import names
         if obj_id > 1000:
             return None
@@ -167,11 +175,24 @@ class User(Model):
         return obj
 
     @classmethod
-    def get_by_username(cls, username: str):
-        my_usr = cls.queries.get_by_username(username)
-
-        obj = cls.from_db_row(my_usr)
+    def _get_by_unique_field(cls, column: str, value) -> Optional['User']:
+        result = cls.queries.get_by_unique_field(column)(value)
+        if not result:
+            return None
+        obj = cls.from_db_row(result)
         return obj
+
+    @classmethod
+    def get_by_username(cls, username: str):
+        return cls._get_by_unique_field('username', username)
+
+    @classmethod
+    def get_by_email(cls, email: str):
+        return cls._get_by_unique_field('email', email)
+
+    @classmethod
+    def get_by_id(cls, user_id: int):
+        return cls._get_by_unique_field('id', user_id)
 
     def create(self):
         # @TODO: Check smth?
