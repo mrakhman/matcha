@@ -104,6 +104,9 @@
                 // TODO: console
                 // eslint-disable-next-line
                 .catch(error => console.log(error));
+        },
+        methods: {
+
         }
 
     }

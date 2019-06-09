@@ -64,12 +64,12 @@
                     </b-form-group>
 
                     <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
-                        <b-form-input required v-model="form_edit.password" type="password" disabled></b-form-input>
+                        <b-form-input required v-model="form_edit.password" type="password" v-bind:disabled="form_edit.old_password.length > 0 ? false : true"></b-form-input>
                         <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
                     </b-form-group>
 
                     <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
-                        <b-form-input required v-model="form_edit.repeat_password" type="password" disabled></b-form-input>
+                        <b-form-input required v-model="form_edit.repeat_password" type="password" v-bind:disabled="form_edit.old_password.length > 0 ? false : true"></b-form-input>
                         <b-form-text>Repeat your new password</b-form-text>
                     </b-form-group>
                     <b-button type="submit" variant="primary">Save</b-button>
@@ -159,6 +159,8 @@
                     return this.alerts.spaces = true;
                 }
 
+
+
                 // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // // Show alert on weak password
                 // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
@@ -169,7 +171,8 @@
 
                 else
                     alert((JSON.stringify(this.form)))
-            }
+            },
+
         }
     }
 </script>
