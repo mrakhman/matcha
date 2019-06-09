@@ -99,7 +99,11 @@
             // From here
             // axios.get(this.$root.API_URL + '/users/' + this.user_id, {withCredentials: true})
             axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
-                .then(response => this.user_details = response.data["user"])
+                .then(response => {
+                    this.user_details = response.data["user"];
+                    this.user_details.dob = this.user_details.dob.substring(0, 10)
+                    return response
+                })
                 .then(response => console.log(response))
                 // TODO: console
                 // eslint-disable-next-line
