@@ -16,12 +16,8 @@ class UserQueries(Queries):
         self.get_all = self.query("SELECT * FROM users")
         self.create = self.query("INSERT INTO users (username, email, first_name, last_name, password) "
                                  "VALUES ($1, $2, $3, $4, $5) RETURNING id")
-        # self.get_by_username = self.query("SELECT * FROM users WHERE username = $1", one=True)
-        self.get_by_unique_field = lambda column: self.query(f"SELECT * FROM users WHERE {column} = $1", one=True)
-        # self.add_personal_details = self.query("INSERT INTO users (gender, sex_pref, bio_text, profile_image, dob) "
-        #                          "VALUES ($1, $2, $3, $4, $5) WHERE id = $6")
-
-        self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2", one=True)
+        self.get_by_unique_field = lambda field: self.query(f"SELECT * FROM users WHERE {field} = $1", one=True)
+        self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2")
 
 
 class User(Model):
@@ -133,6 +129,8 @@ class User(Model):
         }
     }
 
+    _update_watch_fields = ('gender', 'sex_pref', 'dob')
+
     queries = UserQueries()
 
     @property
@@ -152,31 +150,31 @@ class User(Model):
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
-    @classmethod
-    def from_db(cls, obj_id: int):
-        # TODO: remove nahui
-        import names
-        if obj_id > 1000:
-            return None
-
-        if obj_id in temp_users:
-            return temp_users[obj_id]
-
-        obj = cls()
-        obj.id = obj_id
-        obj.gender = random.choice(['female', 'male'])
-        obj.first_name = names.get_first_name(obj.gender)
-        obj.last_name = names.get_last_name()
-        obj.username = obj.first_name[0] + obj.last_name
-        obj.username = obj.username.lower()
-        obj.email = obj.username + '@example.com'
-        obj.dob = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
-        obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
-        obj.profile_image = get_dog_image()
-        password = f"_{obj.id}"
-        obj.set_password(password)
-        temp_users[obj_id] = obj
-        return obj
+    # @classmethod
+    # def from_db(cls, obj_id: int):
+    #     # TODO: remove nahui
+    #     import names
+    #     if obj_id > 1000:
+    #         return None
+    #
+    #     if obj_id in temp_users:
+    #         return temp_users[obj_id]
+    #
+    #     obj = cls()
+    #     obj.id = obj_id
+    #     obj.gender = random.choice(['female', 'male'])
+    #     obj.first_name = names.get_first_name(obj.gender)
+    #     obj.last_name = names.get_last_name()
+    #     obj.username = obj.first_name[0] + obj.last_name
+    #     obj.username = obj.username.lower()
+    #     obj.email = obj.username + '@example.com'
+    #     obj.dob = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
+    #     obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
+    #     obj.profile_image = get_dog_image()
+    #     password = f"_{obj.id}"
+    #     obj.set_password(password)
+    #     temp_users[obj_id] = obj
+    #     return obj
 
     @classmethod
     def _get_by_unique_field(cls, column: str, value) -> Optional['User']:
@@ -202,15 +200,7 @@ class User(Model):
         # @TODO: Check smth?
         self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
                             getattr(self, 'last_name'), getattr(self, 'password'))
+        # @TODO: get id from request, set it to the model attribute
 
-    def add_personal_details(self):
-        # @TODO: Check smth?
-        self.queries.add_personal_details(getattr(self, 'gender'), getattr(self, 'sex_pref'),
-                                          getattr(self, 'bio_text'), getattr(self, 'profile_image'),
-                                          getattr(self, 'dob'), getattr(self, 'id'))
-        #getattr(self, 'photos'), getattr(self, 'tags'),
-
-    def update_field(self, field, value):
-        self.queries.update_field(field, value, self.id)
-
-
+    def _update_field(self, field, value):
+        self.queries.update_field(field)(value, self.id)

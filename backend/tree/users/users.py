@@ -1,3 +1,6 @@
+import datetime
+import http
+
 from flask import blueprints, jsonify, abort, current_app, session, request
 
 from models.user import User
@@ -21,8 +24,9 @@ def get_users_page(page_number):
     if page_number < 0:
         page_number = 0
 
-    users = [User.get_by_id(i).get_view("public") for i in range(1 + 10 * page_number, 11 + 10 * page_number)]
-    return jsonify({"users": users})
+    # users = [User.get_by_id(i).get_view("public") for i in range(1 + 10 * page_number, 11 + 10 * page_number)]
+    # return jsonify({"users": users})
+    return get_all()
 
 
 @users.route('/me', methods=['GET'])
@@ -85,10 +89,10 @@ def create_user():
 
 
 @users.route('/all', methods=['GET'])
-def get_all2():
+def get_all():
     user_rows = User.queries.get_all()
     result = User.from_db_row(user_rows)
-    return jsonify(result)
+    return jsonify(users=result)
 
 
 @users.route('/create', methods=['GET'])
@@ -147,16 +151,21 @@ def add_personal_details():
     }
     current_app.logger.info(f"Here we are, the request is: {req_data}")
     check_fields(req_data, form_values)
-    current_user = User.get_by_username(session['user_id'])
+    current_user = User.get_by_id(session['user_id'])
 
     if current_user:
-        for field, val in req_data.items():
-            User.update_field(field, val)
+        # if getattr(current_user, 'gender') != req_data['gender']:
+        #     current_user.update_field('gender', req_data['gender'])
+        current_user.gender = req_data['gender']
+        current_user.sex_pref = req_data['sex_pref']
+        try:
+            dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
+        except ValueError:
+            abort(http.HTTPStatus.BAD_REQUEST)
+
+        current_user.dob = dob
+        current_user.update()
 
         return jsonify({"ok": True})
 
-
-    # new_user = User.from_dict(req_data)
-    # new_user.set_password(req_data["password"])
-    # new_user.create()
-    # return jsonify({"ok": True, "user": new_user.get_view("public")})
+    return jsonify({"ok": False})  # @TODO: think about error handling

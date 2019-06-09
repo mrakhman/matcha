@@ -19,19 +19,34 @@ class Queries:
 class Model:
     _fields: dict
     _views: dict
+    _update_watch_fields: tuple
 
     def __init__(self):
+        self._updated_fields = []
+        # self.id = None
         # Init all attributes:
         for f, props in self._fields.items():
-            setattr(self, f, props['default'])
-
-        self.id = None
+            object.__setattr__(self, f, props['default'])
 
     def create(self):
         raise NotImplemented()
 
-    def update(self):
+    def _update_field(self, field, value):
         raise NotImplemented()
+
+    def update(self):
+        # check all the fields that are updated, put to db
+        for field in self._updated_fields:
+            if field in self._update_watch_fields:
+                self._update_field(field, getattr(self, field))
+        self._updated_fields = []
+
+    def __setattr__(self, key, value):
+        if key[0] != '_' \
+                and key in self._update_watch_fields \
+                and getattr(self, key, None) != value:
+            self._updated_fields.append(key)
+        object.__setattr__(self, key, value)
 
     @classmethod
     def from_dict(cls, d):
