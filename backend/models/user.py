@@ -14,10 +14,14 @@ temp_users = {}  # @TODO: rm
 class UserQueries(Queries):
     def __init__(self):
         self.get_all = self.query("SELECT * FROM users")
-        self.create = self.query("INSERT INTO users(username, email, first_name, last_name, password) "
+        self.create = self.query("INSERT INTO users (username, email, first_name, last_name, password) "
                                  "VALUES ($1, $2, $3, $4, $5) RETURNING id")
         # self.get_by_username = self.query("SELECT * FROM users WHERE username = $1", one=True)
         self.get_by_unique_field = lambda column: self.query(f"SELECT * FROM users WHERE {column} = $1", one=True)
+        # self.add_personal_details = self.query("INSERT INTO users (gender, sex_pref, bio_text, profile_image, dob) "
+        #                          "VALUES ($1, $2, $3, $4, $5) WHERE id = $6")
+
+        self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2", one=True)
 
 
 class User(Model):
@@ -196,4 +200,17 @@ class User(Model):
 
     def create(self):
         # @TODO: Check smth?
-        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'), getattr(self, 'last_name'), getattr(self, 'password'))
+        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
+                            getattr(self, 'last_name'), getattr(self, 'password'))
+
+    def add_personal_details(self):
+        # @TODO: Check smth?
+        self.queries.add_personal_details(getattr(self, 'gender'), getattr(self, 'sex_pref'),
+                                          getattr(self, 'bio_text'), getattr(self, 'profile_image'),
+                                          getattr(self, 'dob'), getattr(self, 'id'))
+        #getattr(self, 'photos'), getattr(self, 'tags'),
+
+    def update_field(self, field, value):
+        self.queries.update_field(field, value, self.id)
+
+

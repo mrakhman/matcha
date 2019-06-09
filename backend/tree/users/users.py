@@ -96,3 +96,67 @@ def create_many():
     u = User.from_db(1)
     u.create()
     return jsonify({"ok": True})
+
+
+@users.route('/edit_profile', methods=['POST'])
+def add_personal_details():
+    req_data = request.get_json()
+    form_values = {
+        "gender": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "sex_pref": {
+            'required': False,
+            'default': 'bi',
+            'type': str,
+            'validator': None
+        },
+        "bio_text": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "profile_image": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "photos": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "tags": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "dob": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_username(session['user_id'])
+
+    if current_user:
+        for field, val in req_data.items():
+            User.update_field(field, val)
+
+        return jsonify({"ok": True})
+
+
+    # new_user = User.from_dict(req_data)
+    # new_user.set_password(req_data["password"])
+    # new_user.create()
+    # return jsonify({"ok": True, "user": new_user.get_view("public")})
