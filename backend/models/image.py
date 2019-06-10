@@ -1,4 +1,12 @@
-from .model import Model
+from .model import Model, Queries
+
+
+class ImageQueries(Queries):
+    def __init__(self):
+        self.update_profile_image = self.query("INSERT INTO users (profile_image) VALUES ($1)")
+        self.update_user_images = self.query("INSERT INTO images (image_src) VALUES ($1)")
+        self.get_profile_image = self.query("SELECT profile_image FROM users WHERE id = $1", one=True)
+        self.get_user_images = self.query("SELECT * FROM images WHERE user_id = $1")
 
 
 class Images(Model):
@@ -41,3 +49,6 @@ class Images(Model):
             ]
         }
     }
+
+    def get_profile_image(self, user_id):
+        self.queries.get_profile_image(user_id)

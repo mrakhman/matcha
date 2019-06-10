@@ -130,7 +130,7 @@ def add_personal_details():
             'type': str,
             'validator': None
         },
-        "photos": {
+        "images": {
             'required': False,
             'default': None,
             'type': str,
@@ -206,6 +206,8 @@ def edit_names():
         if getattr(current_user, 'last_name') != req_data['last_name']:
             current_user.last_name = req_data['last_name']
         if getattr(current_user, 'username') != req_data['username']:
+            if User.get_by_username(req_data['username']):
+                abort(http.HTTPStatus.CONFLICT)  # If another user has this username
             current_user.username = req_data['username']
         current_user.update()
 
@@ -236,6 +238,8 @@ def edit_email():
 
     if current_user and current_user.check_password(req_data["password"]):
         if getattr(current_user, 'email') != req_data['email']:
+            if User.get_by_email(req_data['email']):
+                abort(http.HTTPStatus.CONFLICT)  # If another user has this email
             current_user.email = req_data['email']
         current_user.update()
 
