@@ -9,9 +9,21 @@ class ImageQueries(Queries):
         self.get_user_images = self.query("SELECT * FROM images WHERE user_id = $1")
 
 
-class Images(Model):
+class Image(Model):
     _fields = {
-        'first_name': {
+        'id': {
+            'required': False,
+            'default': None,
+            'type': int,
+            'validator': None
+        },
+        'user_id': {
+            'required': True,
+            'default': None,
+            'type': int,
+            'validator': None
+        },
+        'image_src': {
             'required': True,
             'default': None,
             'type': str,
@@ -20,35 +32,21 @@ class Images(Model):
     }
 
     _views = {
-        'personal': {
-            'fields': [
-                'id',
-                'first_name',
-                'last_name',
-                'dob',
-                'bio_text',
-                'gender',
-                'sex_pref',
-                'tags',
-                'profile_image',
-                'username'
-            ]
-        },
         'public': {
             'fields': [
                 'id',
-                'first_name',
-                'last_name',
-                'age',
-                'bio_text',
-                'gender',
-                'sex_pref',
-                'tags',
-                'profile_image',
-                'username'
+                'user_id',
+                'image_src'
             ]
         }
     }
 
-    def get_profile_image(self, user_id):
-        self.queries.get_profile_image(user_id)
+    queries = ImageQueries()
+
+    @classmethod
+    def get_profile_image(cls, user_id):
+        result = cls.queries.get_profile_image(user_id)
+        if not result:
+            return None
+        obj = cls.from_db_row(result)
+        return obj
