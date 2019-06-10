@@ -143,8 +143,12 @@
                         console.log(response)
                     })
                     .catch(error => {
+                        if (error.response.status === 409) {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this username', duration: -1});
+                        }
                         // TODO: console
-                        console.log(error)
+                        if (error.response.status !== 401 && error.response.status !== 409)
+                            console.log(error)
                     })
             },
 
@@ -186,11 +190,15 @@
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401!', text: 'Unauthorized - wrong password', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong password', duration: -1});
                             this.alerts.unauthorized = true;
                         }
+                        if (error.response.status === 409) {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this email', duration: -1});
+                        }
                         // TODO: console
-                        // console.log(error)
+                        if (error.response.status !== 401 && error.response.status !== 409)
+                            console.log(error)
                     })
             },
 
@@ -246,10 +254,11 @@
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401!', text: 'Unauthorized - wrong old password', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: -1});
                         }
                         // TODO: console
-                        // console.log(error)
+                        if (error.response.status !== 401 && error.response.status !== 409)
+                            console.log(error)
                     })
             },
 

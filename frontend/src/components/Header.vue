@@ -1,7 +1,7 @@
 <template>
     <div id="header">
         <b-navbar toggleable="lg" variant="light">
-            <a href="/"><img alt="Time Club logo" src="../assets/timeclub-logo_orange.png" width="40"></a>
+            <a href="/"><img alt="Matcha logo" src="../../img/heart_red.png" width="30"></a>
             <h1 class="header_text"> <a href="/"> Matcha </a></h1>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>

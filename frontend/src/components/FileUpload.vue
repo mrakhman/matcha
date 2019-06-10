@@ -50,8 +50,9 @@
                         let imageURL = URL.createObjectURL(imageFile);
                         this.imageURL = imageURL;
                         formData.append(fieldName, imageFile);
+                        console.log(file);
                         // Emit the FormData and image URL to the parent component
-                        this.$emit('input', {formData, imageURL})
+                        this.$emit('input_upload', {formData, imageURL}) // or delete $emit and make axios request from here????
                     }
                 }
             },

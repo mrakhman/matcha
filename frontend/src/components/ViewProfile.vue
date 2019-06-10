@@ -21,7 +21,7 @@
             <div class="details"> <b> Name: </b> {{user.first_name}} {{user.last_name}}</div>
             <div class="details"> <b> Gender: </b> {{user.gender}}</div>
             <div class="details"> <b> Age: </b> {{user.age}}</div>
-            <div class="details" v-if="sexualPref(user.sexual_pref, user.gender)"> <b> I date: </b> {{i_date}} </div>
+            <div class="details" v-if="sexualPref(user.sex_pref, user.gender)"> <b> I date: </b> {{i_date}} </div>
             <div class="details"><b-col><b-row>
                 <b> About me: </b><b-col cols="11">{{user.bio_text}}</b-col>
             </b-row></b-col></div>
@@ -34,17 +34,10 @@
         </b-col></b-row>
         <b-row>
             <b-col><div class="details">
-                <p class="one_line">Did you like my profile?</p>
+                <p class="one_line">Do you like me?</p>
                 <div v-on:click="has_like = !has_like">
                     <img v-if="has_like" src="../../img/heart_red.png" width="40">
                     <img v-else src="../../img/heart_white.png" width="40">
-                </div>
-            </div></b-col>
-            <b-col><div class="details">
-                <p class="one_line">Do you want a match?</p>
-                <div v-on:click="has_match = !has_match">
-                    <img v-if="has_match" src="../../img/please_yes.png" width="40">
-                    <img v-else src="../../img/please_no.png" width="40">
                 </div>
             </div></b-col>
         </b-row>
@@ -62,7 +55,6 @@
                 big_photo: '',
                 i_date: '',
                 has_like: true,
-                has_match: false,
                 // user: {
                 //     id: null,
                 //     first_name: 'Masha',

@@ -1,9 +1,6 @@
 <template>
 <div class="main">
     <h3 class="title"> My profile </h3>
-    <b-alert show variant="danger" dismissible>Username already exists</b-alert>
-    <b-alert show variant="danger" dismissible>Another user has this email</b-alert>
-    <b-alert show variant="danger" dismissible>Old and new emails are the same</b-alert>
 
     <b-tabs content-class="mt-3">
         <b-tab title="About me" active>
@@ -21,7 +18,7 @@
                     v-bind:user_details="user_details"
             />
         </b-tab>
-        <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+<!--        <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>-->
     </b-tabs>
 </div>
 </template>
@@ -53,14 +50,14 @@
                     dob: ''
                 },
 
-                form_edit: {
-                    // first_name: '',
-                    // last_name: '',
-                    // username: '',
-                    email: '',
-                    email_password: '',
-                    old_password: '',
-                    new_password: '',
+                    form_edit: {
+                        // first_name: '',
+                        // last_name: '',
+                        // username: '',
+                        email: '',
+                        email_password: '',
+                        old_password: '',
+                        new_password: '',
                     repeat_password: '',
                 },
 

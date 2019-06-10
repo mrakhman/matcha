@@ -17,7 +17,7 @@
 
 <!--                    <FileUpload class="m-1" v-model="avatar">-->
                     <b-col>
-                        <FileUpload class="m-1">
+                        <FileUpload class="m-1" v-on:input_upload="onClickChild">
     <!--                        <div size="150px" v-if="avatar">-->
     <!--                            <img :src="avatar.imageURL" alt="avatar">-->
     <!--                        </div>-->
@@ -30,16 +30,16 @@
 
                 <br>
 
-                <h4>More photos</h4>
+                <h4>More images</h4>
                 <b-row id="photos">
                     <b-col>
-                        <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" width="300" rounded></b-img>
+                        <b-img ref="big_photo" id="big_photo" v-bind:src="images[0].link" fluid alt="First image" width="300" rounded></b-img>
                         <b-row>
 
                         </b-row>
                         <b-button class="m-1" type="" variant="danger" size="sm" v-on:click="deleteImage">Delete</b-button>
                         <b-row>
-                            <img v-on:click="selectPhoto(photo.link)" v-for="photo in photos" v-bind:src="photo.link" alt="image" height="80"/>
+                            <img v-on:click="selectPhoto(image.link)" v-for="image in images" v-bind:src="image.link" alt="image" height="80"/>
                         </b-row>
                     </b-col>
                     <b-col>
@@ -126,7 +126,7 @@
                         { text: '#eco', value: 'eco' }
                     ]
                 },
-                photos: [
+                images: [
                     {link: require('../../img/qr.png')},
                     {link: require('../../img/face.jpg')},
                     {link: require('../../img/computer.png')},
@@ -143,7 +143,7 @@
                     bio_text: this.user_details.bio_text,
                     profile_image: this.user_details.profile_image,
                     dob: this.user_details.dob,
-                    // photos:
+                    // images:
                     // tags:
                 }, {withCredentials: true})
                     .then(response => {
@@ -166,10 +166,13 @@
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    // this.photos.splice(0, 1);
+                    // this.images.splice(0, 1);
                     // TODO: Delete image from db
                     // alert("Image will be deleted")
                 }
+            },
+            onClickChild (value) {
+                console.log(value) // someValue
             }
         }
     }
