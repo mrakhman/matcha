@@ -85,7 +85,7 @@
                 </b-form-group>
 
                 <b-button type="submit" variant="primary">Save</b-button>
-                <p v-if="edit_success_alert">saved!</p>
+                <p class="text-success" v-if="edit_success_alert">saved!</p>
             </b-form>
         </b-col></b-row></b-container>
 
@@ -140,14 +140,17 @@
                 axios.post(this.$root.API_URL + '/users/edit_profile', {
                     gender: this.user_details.gender,
                     sex_pref: this.user_details.sex_pref,
-                    email: this.user_details.bio_text,
+                    bio_text: this.user_details.bio_text,
                     profile_image: this.user_details.profile_image,
-                    dob: this.user_details.dob
+                    dob: this.user_details.dob,
+                    // photos:
+                    // tags:
                 }, {withCredentials: true})
                     .then(response => {
                         if(response.status === 200)
                         {
                             this.edit_success_alert = true;
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: -1})
                         }
                         // TODO: console
                         console.log(response)

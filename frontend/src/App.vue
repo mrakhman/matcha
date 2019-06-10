@@ -4,6 +4,7 @@
     <AppHeader/>
 
     <router-view></router-view><!-- Main routing enter point -->
+      <notifications group="foo"/>
 
 <!--    <div class="main">-->
 <!--      <Register/>-->

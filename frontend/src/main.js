@@ -3,7 +3,8 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './router'
-import {Auth} from './auth'
+import Notifications from 'vue-notification'
+// import {Auth} from './auth'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -11,6 +12,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
+Vue.use(Notifications);
 
 const router = new VueRouter({
   routes: Routes,

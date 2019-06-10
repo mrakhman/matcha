@@ -4,10 +4,6 @@
     <b-alert show variant="danger" dismissible>Username already exists</b-alert>
     <b-alert show variant="danger" dismissible>Another user has this email</b-alert>
     <b-alert show variant="danger" dismissible>Old and new emails are the same</b-alert>
-    <b-alert show variant="danger" dismissible>Wrong old password</b-alert>
-    <b-alert show variant="success" dismissible>Saved!</b-alert>
-    <b-alert show variant="success" dismissible>Email will be changed after you confirm it, check your email!</b-alert>
-    <b-alert show variant="success" dismissible>Password changed!</b-alert>
 
     <b-tabs content-class="mt-3">
         <b-tab title="About me" active>
@@ -58,12 +54,13 @@
                 },
 
                 form_edit: {
-                    first_name: '',
-                    last_name: '',
-                    username: '',
+                    // first_name: '',
+                    // last_name: '',
+                    // username: '',
                     email: '',
+                    email_password: '',
                     old_password: '',
-                    password: '',
+                    new_password: '',
                     repeat_password: '',
                 },
 
@@ -82,6 +79,7 @@
                 //     ]
                 // },
                 alerts: {
+                    unauthorized: false,
                     empty_input: false,
                     password_repeat: false,
                     invalid_symbols: false,
@@ -91,7 +89,10 @@
                     empty_old_password: false,
                     old_new_email_same: false,
                     username_exists: false,
-                    email_exists: false
+                    email_exists: false,
+                    names_saved: false,
+                    email_saved: false,
+                    password_saved: false,
                 },
             }
         },
@@ -101,7 +102,7 @@
             axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
                 .then(response => {
                     this.user_details = response.data["user"];
-                    this.user_details.dob = this.user_details.dob.substring(0, 10)
+                    this.user_details.dob = this.user_details.dob.substring(0, 10);
                     return response
                 })
                 .then(response => console.log(response))
