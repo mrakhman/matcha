@@ -154,18 +154,124 @@ def add_personal_details():
     current_user = User.get_by_id(session['user_id'])
 
     if current_user:
-        # if getattr(current_user, 'gender') != req_data['gender']:
         #     current_user.update_field('gender', req_data['gender'])
-        current_user.gender = req_data['gender']
-        current_user.sex_pref = req_data['sex_pref']
+        if getattr(current_user, 'gender') != req_data['gender']:
+            current_user.gender = req_data['gender']
+        if getattr(current_user, 'sex_pref') != req_data['sex_pref']:
+            current_user.sex_pref = req_data['sex_pref']
         try:
             dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
         except ValueError:
             abort(http.HTTPStatus.BAD_REQUEST)
 
         current_user.dob = dob
+        if getattr(current_user, 'bio_text') != req_data['bio_text']:
+            current_user.bio_text = req_data['bio_text']
         current_user.update()
 
         return jsonify({"ok": True})
-
     return jsonify({"ok": False})  # @TODO: think about error handling
+
+
+@users.route('/edit_names', methods=['POST'])
+def edit_names():
+    req_data = request.get_json()
+    form_values = {
+        "first_name": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "last_name": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "username": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_id(session['user_id'])
+
+    if current_user:
+        if getattr(current_user, 'first_name') != req_data['first_name']:
+            current_user.first_name = req_data['first_name']
+        if getattr(current_user, 'last_name') != req_data['last_name']:
+            current_user.last_name = req_data['last_name']
+        if getattr(current_user, 'username') != req_data['username']:
+            current_user.username = req_data['username']
+        current_user.update()
+
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})  # @TODO: think about error handling
+
+
+@users.route('/edit_email', methods=['POST'])
+def edit_email():
+    req_data = request.get_json()
+    form_values = {
+        "email": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "password": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_id(session['user_id'])
+
+    if current_user and current_user.check_password(req_data["password"]):
+        if getattr(current_user, 'email') != req_data['email']:
+            current_user.email = req_data['email']
+        current_user.update()
+
+        return jsonify({"ok": True})
+    abort(http.HTTPStatus.UNAUTHORIZED)
+    # return jsonify({"ok": False})  # @TODO: think about error handling
+
+
+@users.route('/edit_password', methods=['POST'])
+def edit_password():
+    req_data = request.get_json()
+    form_values = {
+        "old_password": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "new_password": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_id(session['user_id'])
+
+    if current_user and current_user.check_password(req_data["old_password"]):
+        # @TODO: old and new passwords are the same - do we make it an error?
+        if getattr(current_user, 'password'):  # != hash_from_this ->req_data['new_password']:
+            current_user.set_password(req_data["new_password"])
+        current_user.update()
+
+        return jsonify({"ok": True})
+    abort(http.HTTPStatus.UNAUTHORIZED)
+    # return jsonify({"ok": False})  # @TODO: think about error handling
+
