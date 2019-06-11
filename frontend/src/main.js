@@ -4,6 +4,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './router'
 import Notifications from 'vue-notification'
+import VueChatScroll from 'vue-chat-scroll'
 // import {Auth} from './auth'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -13,6 +14,7 @@ Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(Notifications);
+Vue.use(VueChatScroll);
 
 const router = new VueRouter({
   routes: Routes,
@@ -47,7 +49,7 @@ new Vue({
   data: {
     user_id: userId ? userId : null,
     user: userData ? JSON.parse(userData) : {},
-    API_URL: "http://localhost:5000"
+    API_URL: "http://ivart:5000" // "http://localhost:5000"
     // Auth: Auth,
   },
   render: h => h(App)

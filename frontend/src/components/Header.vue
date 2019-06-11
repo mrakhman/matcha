@@ -1,8 +1,8 @@
 <template>
     <div id="header">
         <b-navbar toggleable="lg" variant="light">
-            <a href="/"><img alt="Matcha logo" src="../../img/heart_red.png" width="30"></a>
-            <h1 class="header_text"> <a href="/"> Matcha </a></h1>
+            <router-link v-bind:to="'/'"><img alt="Matcha logo" src="../../img/heart_red.png" width="30"></router-link>
+            <router-link v-bind:to="'/'"><h1 class="header_text"><a>Matcha</a></h1></router-link>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -17,16 +17,18 @@
 
 <!--                    <b-nav-item v-if="session.user_id" to="/my_profile">My profile</b-nav-item>-->
 <!--                    What should I put inside ???????? -->
-                    <b-nav-item v-bind:to="'/my_profile'">My prof</b-nav-item>
+                    <b-nav-item v-bind:to="'/my_profile'">My profile</b-nav-item>
 <!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
 
 
-                    <b-nav-item href="/users">Users_list</b-nav-item>
-                    <b-nav-item href="#" disabled>Disabled</b-nav-item>
+                    <b-nav-item v-bind:to="'/users'">Users</b-nav-item>
+                    <b-nav-item v-bind:to="'/notifications'">Notifs</b-nav-item>
+                    <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
+<!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
 
 
 <!--                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
-                    <b-nav-item> AUTH (now it's {{ user_id }})</b-nav-item>
+<!--                    <b-nav-item> AUTH (now it's {{ user_id }})</b-nav-item>-->
 
                 </b-navbar-nav>
 
@@ -107,6 +109,7 @@
         font-size: 24px;
         margin: 5px;
         font-weight: lighter;
+        text-decoration: none;
     }
 
     .header_text a {
