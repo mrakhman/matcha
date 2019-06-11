@@ -9,8 +9,8 @@
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
 <!--                    <b-nav-item-dropdown text="My profile" left>-->
-<!--                        <b-dropdown-item href="/my_profile">About me</b-dropdown-item>-->
-<!--                        <b-dropdown-item href="/my_profile">Settings</b-dropdown-item>-->
+<!--                        <b-dropdown-item v-bind:to="'/my_profile/about_me'">About me</b-dropdown-item>-->
+<!--                        <b-dropdown-item v-bind:to="'/my_profile/settings'">Settings</b-dropdown-item>-->
 <!--                    </b-nav-item-dropdown>-->
 <!--                    <b-nav-item href="#">My user</b-nav-item>-->
 

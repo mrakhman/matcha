@@ -7,7 +7,9 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from db import db
-from tree import auth, images, users
+from tree.auth import auth
+from tree.images import images
+from tree.users import users
 from utils.json_encoder import CustomJSONEncoder
 
 APP_NAME = "matcha"
