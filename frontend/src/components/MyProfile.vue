@@ -51,9 +51,9 @@
                 },
 
                     form_edit: {
-                        // first_name: '',
-                        // last_name: '',
-                        // username: '',
+                        first_name: '',
+                        last_name: '',
+                        username: '',
                         email: '',
                         email_password: '',
                         old_password: '',

@@ -11,33 +11,31 @@
             <b-alert v-model="alerts.names_saved" variant="success" dismissible>Name settings are saved!</b-alert>
 
 
+            <b-form-input type="text" v-bind:placeholder="user_details.first_name"></b-form-input>
             <b-form v-on:submit.prevent="submitChangeNames">
                 <b-card class="card_section" bg-variant="light">
                     <h4 align="center">Name</h4>
-                    <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal" required>
+                    <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal">
                         <b-form-input
-                                v-model="user_details.first_name"
+                                v-model="form_edit.first_name"
                                 type="text"
                                 v-bind:placeholder="user_details.first_name"
-                                required
                         ></b-form-input>
                     </b-form-group>
 
-                    <b-form-group id="2" label-cols-sm="2" label-cols-lg="2" label="Last name" label-for="input-horizontal" required>
+                    <b-form-group id="2" label-cols-sm="2" label-cols-lg="2" label="Last name" label-for="input-horizontal">
                         <b-form-input
-                                v-model="user_details.last_name"
+                                v-model="form_edit.last_name"
                                 type="text"
                                 v-bind:placeholder="user_details.last_name"
-                                required
                         ></b-form-input>
                     </b-form-group>
 
-                    <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
+                    <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal">
                         <b-form-input
-                                v-model="user_details.username"
+                                v-model="form_edit.username"
                                 type="text"
                                 v-bind:placeholder="user_details.username"
-                                required
                         ></b-form-input>
                         <b-form-text>This will be your displayed name</b-form-text>
                     </b-form-group>
@@ -106,7 +104,7 @@
             submitChangeNames() {
                 // Show alert on empty input
                 // I let 2 out of 3 be empty cause I might want to change just one. On backend: if field is empty - keep old value
-                if (!this.user_details.first_name && !this.user_details.last_name && !this.user_details.username)
+                if (!this.form_edit.first_name && !this.form_edit.last_name && !this.form_edit.username)
                 {
                     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: -1});
                     return this.alerts.empty_input = true;
@@ -114,7 +112,7 @@
                 }
 
                 // Show alert on space
-                if (this.user_details.first_name.match(/( )/) || this.user_details.last_name.match(/( )/) || this.user_details.username.match(/( )/))
+                if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.username.match(/( )/))
                 {
                     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: -1});
                     return this.alerts.spaces = true;
@@ -122,16 +120,16 @@
 
                 // Show alert on unwanted characters
                 var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
-                if (this.user_details.first_name.match(reg1) || this.user_details.last_name.match(reg1) || this.user_details.username.match(reg1))
+                if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.username.match(reg1))
                 {
                     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Names must only include [a-z + A-Z] [0-9] and @', duration: -1});
                     return this.alerts.invalid_symbols = true;
                 }
 
                 axios.post(this.$root.API_URL + '/users/edit_names', {
-                    first_name: this.user_details.first_name,
-                    last_name: this.user_details.last_name,
-                    username: this.user_details.username,
+                    first_name: this.form_edit.first_name,
+                    last_name: this.form_edit.last_name,
+                    username: this.form_edit.username,
                 }, {withCredentials: true})
                     .then(response => {
                         if(response.status === 200)
