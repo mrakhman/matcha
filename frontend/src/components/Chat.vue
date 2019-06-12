@@ -10,31 +10,32 @@
             </div>
         </div>
         <div class="card-action">
-            <CreateMessage v-bind:username="username"/>
+<!--            <CreateMessage v-bind:username="username"/>-->
         </div>
         <b-container fluid>
             <b-row><b-col xl="5">
-                <b-form-textarea
-                        id="textarea"
-                        v-model="new_message.text"
-                        placeholder="Enter message..."
-                        rows="2"
-                        max-rows="6"
-                        v-on:submit.prevent=""
-                ></b-form-textarea>
-                <b-button type="submit" variant="outline-primary">Send</b-button>
+                <form v-on:submit.prevent="createMessage">
+                    <b-form-textarea
+                            id="textarea"
+                            v-model="new_message.text"
+                            placeholder="Enter message..."
+                            rows="2"
+                            max-rows="6"
+                    ></b-form-textarea>
+                    <p class="text-danger" v-if="error_text">{{ error_text }}</p>
+                    <b-button type="submit" variant="outline-primary">Send</b-button>
+                </form>
             </b-col></b-row>
         </b-container>
     </div>
 </template>
 
 <script>
-    import CreateMessage from './CreateMessage';
+    // import CreateMessage from './CreateMessage';
     import axios from 'axios';
     export default {
         name: "Chat.vue",
         components: {
-            CreateMessage
         },
         props: ['username'],
         data () {
@@ -44,13 +45,14 @@
                     {user_id: 2, username: 'Masha', profile_image: require('../../img/face.jpg')},
                     {user_id: 3, username: 'Artemka', profile_image: require('../../img/computer.png')},
                 ],
-                new_message: {sender_id: null, chat_id: null, text: ''},
                 messages: [
                     {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
                     {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
                     {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
                 ],
-                mess: []
+                new_message: {sender_id: null, chat_id: null, text: null},
+                error_text: null,
+                // mess: [],
             }
         },
         created() {
@@ -65,7 +67,32 @@
                 })
         },
         methods: {
-
+            createMessage() {
+                if(this.new_message.text) {
+                    axios.post(this.$root.API_URL + '/chat/send_msg', {
+                        text: this.new_message.text,
+                        username: this.username,
+                        time: Date.now()
+                    }, {withCredentials: true})
+                        .then(response => {
+                            // if(response.status === 200)
+                            // {
+                            //
+                            // }
+                            // TODO: console
+                            console.log(response)
+                        })
+                        .catch(error => {
+                            // TODO: console
+                            console.log(error)
+                        });
+                    this.new_message.text = null;
+                    this.error_text = null;
+                }
+                else {
+                    this.error_text = "A message must be entered first";
+                }
+            }
         }
     }
 </script>

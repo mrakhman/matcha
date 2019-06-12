@@ -16,7 +16,7 @@
         </div>
         <div class="table">
             <b-row><b-col xl="9">
-                <b-table striped bordered :items="items"></b-table>
+                <b-table striped bordered v-bind:items="items"></b-table>
             </b-col></b-row>
         </div>
     </div>
@@ -28,10 +28,10 @@
         data() {
             return {
                 items: [
-                    { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-                    { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-                    { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-                    { age: 38, first_name: 'Jami', last_name: 'Carney' }
+                    { id: 4, type: 'message', text: 'you received a new message' },
+                    { id: 3, type: 'like', text: 'XX liked you' },
+                    { id: 2, type: 'view', text: 'ZZ checked your profile' },
+                    { id: 1, type: 'message', text: 'Carney replied' }
                 ]
             }
         }
