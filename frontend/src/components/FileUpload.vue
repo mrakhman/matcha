@@ -1,6 +1,6 @@
 <template>
     <div>
-        <pre class="mt-3 mb-0">{{ selected_file }}</pre>
+        <p class="text-success">{{ successText }}</p>
         <form v-on:submit.prevent="savePhoto">
             <input type="file"
                    ref="file"
@@ -23,6 +23,7 @@
             return {
                 selected_file: null,
                 errorText: null,
+                successText: null,
                 uploadFieldName: 'image',
                 maxSize: 2048,
                 imageURL: null
@@ -33,20 +34,16 @@
         },
         methods: {
             onFileChange(file) {
-                console.log(file);
-                console.log(file[0]);
-                console.log(file[0].name);
                 this.errorText = null;
+                this.successText = null;
                 const {maxSize} = this;
                 let imageFile = file[0];
                 if (file.length > 0) {
                     let size = imageFile.size / maxSize / maxSize;
                     if (!imageFile.type.match('image.*')) {
-                        // check whether the upload is an image
                         return (this.errorText = 'Please choose an image file')
                     }
                     if (size > 1) {
-                        // check whether the size is greater than the size limit
                         return (this.errorText = 'Your file is too big! Please select an image under 1MB')
                     }
                     this.selected_file = imageFile;
@@ -61,21 +58,23 @@
                     return(this.errorText = "Can't save file, choose another");
 
                 if (this.errorText === null) {
-                    // Append file into FormData and turn file into image URL
                     const data = new FormData();
                     data.append(this.uploadFieldName, this.selected_file, this.selected_file.name);
-                    console.log(data);
 
-                    axios.post(this.$root.API_URL + '/images/upload', {
-                        data
-                    })
+                    axios.post(this.$root.API_URL + '/images/upload',
+                        data,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        }
+                    )
                         .then(response => {
-                            // if(response.status === 200)
-                            // {
-                            //
-                            // }
-                            // TODO: console
-                            console.log(response)
+                            if(response.status === 200)
+                            {
+                                this.successText =  "Image uploaded!";
+                                this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: -1});
+                            }
                         })
                         .catch(error => {
                             // if (error.response.status === 409) {
