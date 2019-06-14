@@ -17,7 +17,7 @@
 
 <!--                    <FileUpload class="m-1" v-model="avatar">-->
                     <b-col>
-                        <FileUpload class="m-1" v-on:input_upload="onClickChild">
+                        <FileUpload class="m-1" v-bind:uploadFieldName="upload_1">
     <!--                        <div size="150px" v-if="avatar">-->
     <!--                            <img :src="avatar.imageURL" alt="avatar">-->
     <!--                        </div>-->
@@ -43,8 +43,8 @@
                         </b-row>
                     </b-col>
                     <b-col>
-<!--                        <FileUpload class="m-1">-->
-<!--                        </FileUpload>-->
+                        <FileUpload class="m-1" v-bind:uploadFieldName="upload_2">
+                        </FileUpload>
                     </b-col>
                 </b-row>
 
@@ -111,6 +111,8 @@
         data () {
             return {
                 // avatar: null,
+                upload_1: 'profile_image',
+                upload_2: 'user_images',
                 edit_success_alert: false,
                 options: {
                     gender: [
@@ -171,9 +173,6 @@
                     // alert("Image will be deleted")
                 }
             },
-            onClickChild (value) {
-                console.log(value) // someValue
-            }
         }
     }
 </script>

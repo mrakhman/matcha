@@ -24,14 +24,12 @@
                 selected_file: null,
                 errorText: null,
                 successText: null,
-                uploadFieldName: 'image',
+                // uploadFieldName: 'image',
                 maxSize: 2048,
                 imageURL: null
             }
         },
-        props: {
-            value: Object
-        },
+        props: ['uploadFieldName'],
         methods: {
             onFileChange(file) {
                 this.errorText = null;
