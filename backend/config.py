@@ -19,6 +19,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SECRET_KEY = "HelloWorld!"
     PSQL_DATABASE_URI = os.getenv('DB_URI')
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 
 
 class TestingConfig(Config):

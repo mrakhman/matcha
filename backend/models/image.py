@@ -1,7 +1,5 @@
 from .model import Model, Queries
 
-UPLOAD_FOLDER = 'img'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 class ImageQueries(Queries):
     def __init__(self):
@@ -69,16 +67,6 @@ class Image(Model):
 
     queries = ImageQueries()
 
-    
-
-    # @classmethod
-    # def get_profile_image(cls, user_id):
-    #     result = cls.queries.get_profile_image(user_id)
-    #     if not result:
-    #         return None
-    #     obj = cls.from_db_row(result)
-    #     return obj
-
     @classmethod
     def get_user_images(cls, user_id):
         result = cls.queries.get_user_images(user_id)
@@ -89,4 +77,3 @@ class Image(Model):
 
     def add_user_image(self, user_id, image_src):
         self.queries.update_user_images(user_id, image_src)
-

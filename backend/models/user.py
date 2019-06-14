@@ -129,7 +129,11 @@ class User(Model):
         }
     }
 
-    _update_watch_fields = ('gender', 'sex_pref', 'dob', 'bio_text', 'first_name', 'last_name', 'username', 'email', 'profile_image')
+    _update_watch_fields = (
+        'gender', 'sex_pref', 'dob', 'bio_text',
+        'first_name', 'last_name', 'username',
+        'email', 'profile_image'
+    )
 
     queries = UserQueries()
 
