@@ -21,17 +21,46 @@ def allowed_file(filename):
 @images.route('/upload', methods=['POST'])
 def upload_image():
 	# file = (request.form, request.files)
-	current_app.logger.debug(f"Req_data is {request.files}")
-	print(request.files['image'])
-	file = request.files.get('image')
+	# current_app.logger.debug(f"Req_data is {request.files}")
+	# print(request.files['image'])	
+	
+	# file = request.files.get('profile_image')
+
+	source = ''
+
+	file = request.files.get('profile_image')
+	source = 'profile_image'
 	if not file:
-		abort(http.HTTPStatus.BAD_REQUEST)
-	# current_app.logger.debug(f"Type of file is {type(file)}")
+		file = request.files.get('user_images')
+		source = 'user_images'
+		if not file:
+			abort(http.HTTPStatus.BAD_REQUEST)
+	
+	print('Hey, source is: ', source)
+
 	if allowed_file(file.filename):
+		# TODO: generate uuid filename
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(UPLOAD_FOLDER, filename))
-	 	# TODO: save to database
-		return jsonify({"ok": True})
+
+
+		current_user_id = session.get('user_id')
+
+		if source == 'profile_image':
+		# TODO: update profile image
+			current_user = User.get_by_id(current_user_id)
+			if current_user:
+				if getattr(current_user, 'profile_image'):
+					current_user.profile_image = filename
+				current_user.update() # Здесь нихерашки не вставляется в дб
+				return jsonify({"ok": True})
+
+		if source == 'user_images':
+			pass
+			# new_image = Image.from_hui()
+			# add_user_image # Твой ООП меня добьет!
+			# TODO: update user images list
+		# return jsonify({"ok": True})
 	return jsonify({"ok": False})
 
 
