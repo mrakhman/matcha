@@ -43,8 +43,8 @@
                         </b-row>
                     </b-col>
                     <b-col>
-                        <FileUpload class="m-1">
-                        </FileUpload>
+<!--                        <FileUpload class="m-1">-->
+<!--                        </FileUpload>-->
                     </b-col>
                 </b-row>
 
