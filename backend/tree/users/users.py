@@ -165,8 +165,14 @@ def add_personal_details():
             abort(http.HTTPStatus.BAD_REQUEST)
 
         current_user.dob = dob
+
         if getattr(current_user, 'bio_text') != req_data['bio_text']:
             current_user.bio_text = req_data['bio_text']
+
+        if getattr(current_user, 'profile_image') != req_data['profile_image']:
+            
+            current_user.profile_image = req_data['profile_image']
+
         current_user.update()
 
         return jsonify({"ok": True})
@@ -201,11 +207,11 @@ def edit_names():
     current_user = User.get_by_id(session['user_id'])
 
     if current_user:
-        if getattr(current_user, 'first_name') != req_data['first_name']:
+        if getattr(current_user, 'first_name') != req_data['first_name'] and len(req_data['first_name']) > 0:
             current_user.first_name = req_data['first_name']
-        if getattr(current_user, 'last_name') != req_data['last_name']:
+        if getattr(current_user, 'last_name') != req_data['last_name'] and len(req_data['last_name']) > 0:
             current_user.last_name = req_data['last_name']
-        if getattr(current_user, 'username') != req_data['username']:
+        if getattr(current_user, 'username') != req_data['username'] and len(req_data['username']) > 0:
             if User.get_by_username(req_data['username']):
                 abort(http.HTTPStatus.CONFLICT)  # If another user has this username
             current_user.username = req_data['username']
@@ -279,3 +285,26 @@ def edit_password():
     abort(http.HTTPStatus.UNAUTHORIZED)
     # return jsonify({"ok": False})  # @TODO: think about error handling
 
+
+@users.route('/edit_profile_image', methods=['POST'])
+def edit_profile_image():
+    req_data = request.get_json()
+    form_values = {
+        "profile_image": {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_id(session['user_id'])
+
+    if current_user:
+        if getattr(current_user, 'profile_image') != req_data['profile_image'] and len(req_data['profile_image']) > 0:
+            current_user.profile_image = req_data['profile_image']
+        current_user.update()
+
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})  # @TODO: think about error handling

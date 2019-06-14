@@ -1,5 +1,7 @@
 from .model import Model, Queries
 
+UPLOAD_FOLDER = 'img'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 class ImageQueries(Queries):
     def __init__(self):
@@ -18,13 +20,31 @@ class Image(Model):
             'validator': None
         },
         'user_id': {
-            'required': True,
+            'required': False,
             'default': None,
             'type': int,
             'validator': None
         },
         'image_src': {
-            'required': True,
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        'profile_image': {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        'form_data': {
+            'required': False,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        'filename': {
+            'required': False,
             'default': None,
             'type': str,
             'validator': None
@@ -32,20 +52,38 @@ class Image(Model):
     }
 
     _views = {
-        'public': {
+        'user_images': {
             'fields': [
                 'id',
                 'user_id',
                 'image_src'
+            ]
+        },
+        'profile_image': {
+            'fields': [
+                'id',
+                'profile_image'
             ]
         }
     }
 
     queries = ImageQueries()
 
+    # @classmethod
+    # def allowed_file(cls, filename):
+    #     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     @classmethod
     def get_profile_image(cls, user_id):
         result = cls.queries.get_profile_image(user_id)
+        if not result:
+            return None
+        obj = cls.from_db_row(result)
+        return obj
+
+    @classmethod
+    def get_user_images(cls, user_id):
+        result = cls.queries.get_user_images(user_id)
         if not result:
             return None
         obj = cls.from_db_row(result)
