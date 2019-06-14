@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        show all
+        <Search/>
         <pre class="mt-3 mb-0">{{ show_all }}</pre>
         <h3> Users List </h3>
         <b-row>
@@ -47,10 +47,13 @@
 
 <script>
 import axios from 'axios';
+import Search from "./Search";
 
 export default {
     name: "UsersList.vue",
-
+    components: {
+        Search
+    },
     data() {
         return {
             show_all: [],
