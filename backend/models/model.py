@@ -21,6 +21,8 @@ class Model:
     _views: dict
     _update_watch_fields: tuple
 
+    queries: Queries
+
     def __init__(self):
         self._updated_fields = []
         # self.id = None

@@ -284,27 +284,3 @@ def edit_password():
         return jsonify({"ok": True})
     abort(http.HTTPStatus.UNAUTHORIZED)
     # return jsonify({"ok": False})  # @TODO: think about error handling
-
-
-@users.route('/edit_profile_image', methods=['POST'])
-def edit_profile_image():
-    req_data = request.get_json()
-    form_values = {
-        "profile_image": {
-            'required': False,
-            'default': None,
-            'type': str,
-            'validator': None
-        }
-    }
-    current_app.logger.info(f"Here we are, the request is: {req_data}")
-    check_fields(req_data, form_values)
-    current_user = User.get_by_id(session['user_id'])
-
-    if current_user:
-        if getattr(current_user, 'profile_image') != req_data['profile_image'] and len(req_data['profile_image']) > 0:
-            current_user.profile_image = req_data['profile_image']
-        current_user.update()
-
-        return jsonify({"ok": True})
-    return jsonify({"ok": False})  # @TODO: think about error handling

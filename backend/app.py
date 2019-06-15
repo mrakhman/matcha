@@ -7,9 +7,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from db import db
-from tree.auth import auth
-from tree.images import images
-from tree.users import users
+from tree import auth, images, notifications, users
 from utils.json_encoder import CustomJSONEncoder
 
 APP_NAME = "matcha"
@@ -36,9 +34,10 @@ def app_factory(name):
     flask_app.json_encoder = CustomJSONEncoder
     db.init_app(flask_app)
 
-    flask_app.register_blueprint(users, url_prefix="/users")
     flask_app.register_blueprint(auth, url_prefix="/auth")
     flask_app.register_blueprint(images, url_prefix="/images")
+    flask_app.register_blueprint(notifications, url_prefix="/notifications")
+    flask_app.register_blueprint(users, url_prefix="/users")
 
     CORS(flask_app, supports_credentials=True)
     return flask_app
