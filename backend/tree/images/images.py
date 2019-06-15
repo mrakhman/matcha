@@ -32,7 +32,7 @@ def upload_image():
         if not file:
             abort(http.HTTPStatus.BAD_REQUEST)
 
-    print('Hey, source is: ', source)
+    # print('Hey, source is: ', source)
 
     if allowed_file(file.filename):
         filename = f"{uuid.uuid4()}.{file.filename.rsplit('.', 1)[1].lower()}"
@@ -53,3 +53,11 @@ def upload_image():
             return jsonify(ok=True)
 
     return jsonify({"ok": False})
+
+
+@images.route('/my', methods=['GET'])
+@authorised_only
+def get_user_images():
+    current_user = g.current_user
+    user_images = Image.get_user_images(current_user.id)
+    return jsonify(user_images=user_images)

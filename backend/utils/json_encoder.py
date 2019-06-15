@@ -1,6 +1,8 @@
-from flask.json import JSONEncoder
 import datetime
-from models.user import User
+
+from flask.json import JSONEncoder
+
+from models.model import Model
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -9,6 +11,6 @@ class CustomJSONEncoder(JSONEncoder):
             return obj.isoformat('T')
         if isinstance(obj, datetime.date):
             return obj.isoformat()
-        if isinstance(obj, User):
+        if isinstance(obj, Model):
             return obj.get_view()
         return JSONEncoder.default(self, obj)

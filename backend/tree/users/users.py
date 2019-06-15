@@ -4,6 +4,7 @@ import http
 from flask import blueprints, jsonify, abort, current_app, session, request
 
 from models.user import User
+from models.image import Image
 from utils.form_validator import check_fields
 
 users = blueprints.Blueprint("users", __name__)
@@ -14,8 +15,13 @@ def get_user_by_id(user_id):
     current_app.logger.info(f"Getting user #{user_id}")
     user = User.get_by_id(user_id)
     if user:
-        return jsonify(user.get_view("public"))
-
+        payload = user.get_view("public")
+        if request.args.get('with_images'):
+            user_images = Image.get_user_images(user.id)
+            payload['images'] = []
+            if user_images:
+                payload['images'] = [i.image_src for i in user_images]
+        return jsonify(user=payload)
     abort(404)
 
 

@@ -1,4 +1,5 @@
 import http
+from functools import wraps
 
 from flask import session, g, abort
 
@@ -6,6 +7,7 @@ from models.user import User
 
 
 def authorised_only(f):
+    @wraps(f)
     def internal(*args, **kwargs):
         current_user_id = session.get('user_id')
         if current_user_id and type(current_user_id) == int:
