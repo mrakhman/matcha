@@ -4,7 +4,7 @@ from .model import Model, Queries
 class ImageQueries(Queries):
     def __init__(self):
         self.update_profile_image = self.query("INSERT INTO users (profile_image) VALUES ($1)")
-        self.update_user_images = self.query("INSERT INTO images (image_src) VALUES ($1, $2)")
+        self.create = self.query("INSERT INTO images (user_id, image_src) VALUES ($1, $2)")
         self.get_profile_image = self.query("SELECT profile_image FROM users WHERE id = $1", one=True)
         self.get_user_images = self.query("SELECT * FROM images WHERE user_id = $1")
 
@@ -18,31 +18,13 @@ class Image(Model):
             'validator': None
         },
         'user_id': {
-            'required': False,
+            'required': True,
             'default': None,
             'type': int,
             'validator': None
         },
         'image_src': {
-            'required': False,
-            'default': None,
-            'type': str,
-            'validator': None
-        },
-        'profile_image': {
-            'required': False,
-            'default': None,
-            'type': str,
-            'validator': None
-        },
-        'form_data': {
-            'required': False,
-            'default': None,
-            'type': str,
-            'validator': None
-        },
-        'filename': {
-            'required': False,
+            'required': True,
             'default': None,
             'type': str,
             'validator': None
@@ -50,20 +32,16 @@ class Image(Model):
     }
 
     _views = {
-        'user_images': {
+        'public': {
             'fields': [
                 'id',
                 'user_id',
                 'image_src'
             ]
-        },
-        'profile_image': {
-            'fields': [
-                'id',
-                'profile_image'
-            ]
         }
     }
+
+    _update_watch_fields = ()
 
     queries = ImageQueries()
 
@@ -75,5 +53,6 @@ class Image(Model):
         obj = cls.from_db_row(result)
         return obj
 
-    def add_user_image(self, user_id, image_src):
-        self.queries.update_user_images(user_id, image_src)
+    def create(self):
+        self.queries.create(self.user_id, self.image_src)
+

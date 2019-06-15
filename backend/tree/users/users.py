@@ -85,7 +85,7 @@ def create_user():
     new_user.set_password(req_data["password"])
     # new_user.set_password('test')  # @TODO: rm
     new_user.create()
-    return jsonify({"ok": True, "user": new_user.get_view("public")})
+    return jsonify({"ok": True, "user": new_user.get_view("personal")})
 
 
 @users.route('/all', methods=['GET'])
