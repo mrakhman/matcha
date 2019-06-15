@@ -7,10 +7,10 @@
                 <b-img v-bind:src="user.profile_image" fluid alt="Profile image" width="450"></b-img>
             </b-col>
             <b-col>
-                <b-img ref="big_photo" id="big_photo" v-bind:src="photos[0].link" fluid alt="First image" ></b-img>
+                <b-img ref="big_photo" id="big_photo" v-if="user.images && user.images[0]" v-bind:src="user.images[0]" fluid alt="First image" ></b-img>
                 <b-row hei></b-row>
                 <b-row>
-                    <img v-on:click="selectPhoto(photo.link)" v-for="photo in photos" v-bind:src="photo.link" alt="image" height="100"/>
+                    <img v-on:click="selectPhoto(image)" v-for="image in user.images" v-bind:src="image" alt="image" height="100"/>
                 </b-row>
             </b-col>
         </b-row>
@@ -75,7 +75,7 @@
 
                 id: this.$route.params.id,
                 user: {
-
+                    images: []
                     // first_name: '',
                     // last_name: '',
                     // username: '',
@@ -122,12 +122,18 @@
             }
         },
         created() {
-            axios.get(this.$root.API_URL + '/users/' + this.id, {withCredentials: true})
-                .then(response => this.user = response.data)
+            axios.get(this.$root.API_URL + '/users/' + this.id, {
+                params: {with_images: true},
+                withCredentials: true
+            })
+                .then(response => this.user = response.data.user)
                 // .then(response => console.log(response.data))
                 // TODO: console
                 // eslint-disable-next-line
                 .catch(error => console.log(error));
+
+
+
         }
     }
 </script>

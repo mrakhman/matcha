@@ -112,7 +112,7 @@
             return {
                 // avatar: null,
                 upload_1: 'profile_image',
-                upload_2: 'user_images',
+                upload_2: 'user_image',
                 edit_success_alert: false,
                 options: {
                     gender: [
@@ -173,6 +173,15 @@
                     // alert("Image will be deleted")
                 }
             },
+        },
+        created() {
+            axios.get(this.$root.API_URL + '/users/' + this.id, {withCredentials: true})
+                .then(response => this.user = response.data)
+                // .then(response => console.log(response.data))
+                // TODO: console
+                // eslint-disable-next-line
+                .catch(error => console.log(error));
+
         }
     }
 </script>
