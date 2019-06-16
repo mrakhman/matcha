@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <Search/>
-        <pre class="mt-3 mb-0">{{ show_all }}</pre>
+<!--        <pre class="mt-3 mb-0">{{ show_all }}</pre>-->
         <h3> Users List </h3>
         <b-row>
             <div v-for="user in users" :key="user.id">
@@ -18,7 +18,7 @@
                         {{user.sex_pref}}
                     </b-card-text>
 
-                    <router-link v-bind:to="'users/' + user.id"><b-button variant="primary">Open</b-button></router-link>
+                    <router-link v-bind:to="'users/' + user.id"><b-button variant="outline-primary">Open</b-button></router-link>
 
                 </b-card>
             </div>
