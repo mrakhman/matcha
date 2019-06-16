@@ -55,27 +55,9 @@
                 big_photo: '',
                 i_date: '',
                 has_like: true,
-                // user: {
-                //     id: null,
-                //     first_name: 'Masha',
-                //     last_name: 'Rakhmasha',
-                //     username: 'pupok',
-                //     gender: 'female',
-                //     age: '23',
-                //     sexual_pref: 'hetero',
-                //     bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
-                //     tags: ['hoho', 'haha', 'hihi'],
-                //     profile_image: require('../../img/face.jpg'),
-                //     photos: [
-                //         {link: require('../../img/face.jpg')},
-                //         {link: require('../../img/qr.png')},
-                //         {link: require('../../img/computer.png')}
-                //     ]
-                // }
-
                 id: this.$route.params.id,
                 user: {
-                    images: []
+                    images: [],
                     // first_name: '',
                     // last_name: '',
                     // username: '',
@@ -85,17 +67,7 @@
                     // bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
                     // tags: ['hoho', 'haha', 'hihi'],
                     // profile_image: '',
-                    // photos: [
-                    //     {link: require('../../img/face.jpg')},
-                    //     {link: require('../../img/qr.png')},
-                    //     {link: require('../../img/computer.png')}
-                    // ]
                 },
-                photos: [
-                    {link: require('../../img/face.jpg')},
-                    {link: require('../../img/qr.png')},
-                    {link: require('../../img/computer.png')}
-                ]
             }
         },
         methods: {

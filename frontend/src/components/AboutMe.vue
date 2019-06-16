@@ -33,13 +33,13 @@
                 <h4>More images</h4>
                 <b-row id="photos">
                     <b-col>
-                        <b-img ref="big_photo" id="big_photo" v-bind:src="images[0].link" fluid alt="First image" width="300" rounded></b-img>
+                        <b-img ref="big_photo" id="big_photo" v-bind:src="images[0]" fluid alt="First image" width="300" rounded></b-img>
                         <b-row>
 
                         </b-row>
                         <b-button class="m-1" type="" variant="danger" size="sm" v-on:click="deleteImage">Delete</b-button>
                         <b-row>
-                            <img v-on:click="selectPhoto(image.link)" v-for="image in images" v-bind:src="image.link" alt="image" height="80"/>
+                            <img v-on:click="selectPhoto(image)" v-for="image in images" v-bind:src="image" alt="image" height="80"/>
                         </b-row>
                     </b-col>
                     <b-col>
@@ -105,12 +105,10 @@
         },
         props: {
             form: Object,
-            // options: Object,
             user_details: Object
         },
         data () {
             return {
-                // avatar: null,
                 upload_1: 'profile_image',
                 upload_2: 'user_image',
                 edit_success_alert: false,
@@ -122,19 +120,13 @@
                     ],
                     sex_pref: ['hetero', 'homo', 'bi'],
                     tags: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
-                    // tags: [
-                    //     { text: '#vegan', value: 'vegan' },
-                    //     { text: '#geek', value: 'geek' },
-                    //     { text: '#tattoos', value: 'tattoos' },
-                    //     { text: '#eco', value: 'eco' }
-                    // ]
                 },
                 images: [
-                    {link: require('../../img/qr.png')},
-                    {link: require('../../img/face.jpg')},
-                    {link: require('../../img/computer.png')},
-                    {link: require('../../img/computer.png')},
-                    {link: require('../../img/computer.png')}
+                    // {link: require('../../img/qr.png')},
+                    // {link: require('../../img/face.jpg')},
+                    // {link: require('../../img/computer.png')},
+                    // {link: require('../../img/computer.png')},
+                    // {link: require('../../img/computer.png')}
                 ]
             }
         },
@@ -176,9 +168,14 @@
             },
         },
         created() {
-            axios.get(this.$root.API_URL + '/users/' + this.id, {withCredentials: true})
-                .then(response => this.user = response.data)
-                // .then(response => console.log(response.data))
+            axios.get(this.$root.API_URL + '/users/' + this.$root.$data.user_id, {
+                params: {with_images: true},
+                withCredentials: true
+            })
+                .then(response => {
+                    this.images = response.data.user.images;
+                    console.log(response.data.user);
+                })
                 // TODO: console
                 // eslint-disable-next-line
                 .catch(error => console.log(error));
