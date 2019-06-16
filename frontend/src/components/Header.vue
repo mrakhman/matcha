@@ -21,7 +21,7 @@
 <!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
 
 
-                    <b-nav-item v-bind:to="'/users'">Users</b-nav-item>
+                    <b-nav-item v-bind:to="'/users'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifs</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
 <!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
@@ -45,8 +45,8 @@
                     <div class="text-center">
                         <b-badge variant="warning">4</b-badge>
                         <b-dropdown size="sm" variant="warning" text="Notifs" left>
-                            <b-dropdown-item href="/my_profile">Notif 1</b-dropdown-item>
-                            <b-dropdown-item href="/my_profile">Notifs 2</b-dropdown-item>
+                            <b-dropdown-item>Notif 1</b-dropdown-item>
+                            <b-dropdown-item>Notifs 2</b-dropdown-item>
                         </b-dropdown>
                     </div>
                     <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>

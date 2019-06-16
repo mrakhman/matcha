@@ -118,15 +118,16 @@
                     gender: [
                         { value: 'female', text: 'Female'},
                         { value: 'male', text: 'Male'},
-                        { value: 'not mention', text: 'Not mentioned'}
+                        // { value: 'not mention', text: 'Not mentioned'}
                     ],
                     sex_pref: ['hetero', 'homo', 'bi'],
-                    tags: [
-                        { text: '#vegan', value: 'vegan' },
-                        { text: '#geek', value: 'geek' },
-                        { text: '#tattoos', value: 'tattoos' },
-                        { text: '#eco', value: 'eco' }
-                    ]
+                    tags: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
+                    // tags: [
+                    //     { text: '#vegan', value: 'vegan' },
+                    //     { text: '#geek', value: 'geek' },
+                    //     { text: '#tattoos', value: 'tattoos' },
+                    //     { text: '#eco', value: 'eco' }
+                    // ]
                 },
                 images: [
                     {link: require('../../img/qr.png')},

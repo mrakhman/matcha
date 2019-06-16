@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <b-form v-on:submit.prevent="submitFilter">
+        <b-form v-on:submit.prevent="submitSortFilter">
     <!-- AGE container -->
             <b-container id="age" class="bv-example-row" fluid>
                 <b-row class="mb-3">
@@ -91,7 +91,7 @@
 
     <!-- DISTANCE container -->
             <b-container id="distance" class="bv-example-row" fluid>
-                <b-row class="mb-3">
+                <b-row>
                     <b-col xl="6">
                         <b-row>
                             <h4><b>Distance</b></h4>
@@ -129,12 +129,34 @@
                     </b-col>
                 </b-row>
             </b-container>
+
+            <br>
+
+            <!-- TAGS container -->
+            <b-container id="tags" class="bv-example-row" fluid>
+                <b-row>
+                    <b-col xl="6">
+                        <b-row>
+                            <h4><b>Tags</b></h4>
+                        </b-row>
+                        <b-row>
+                            <b-form-checkbox-group
+                                    v-model="filter.tags"
+                                    :options="tags_options"
+                                    name="flavour-1a"
+                            ></b-form-checkbox-group>
+                        </b-row>
+                    </b-col>
+                </b-row>
+            </b-container>
+            <br>
+
             <b-button type="submit" variant="primary">Apply filters</b-button>
         </b-form>
 <!-- END -->
         <hr>
 
-        <b-form v-on:submit.prevent="submitSort">
+        <b-form v-on:submit.prevent="submitSortFilter">
 <!--            <b-container>-->
                 <h4><b>Sort by</b></h4>
                 <b-row>
@@ -169,47 +191,50 @@
                         { value: 'rating', text: 'Fame rating', min: 0, max: 10},
                         { value: 'distance', text: 'Distance', min: 0, max: 100}
                     ],
+                tags_options: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
                 sort_form: {
                     order_by: 'asc',
-                    sort_by: null
+                    sort_by: 'id'
                 },
                 filter: {
                     age: { min: 0, max: 99},
                     rating: { min: 0, max: 10},
-                    distance: { min: 0, max: 100}
+                    distance: { min: 0, max: 100},
+                    tags: []
                 }
             }
         },
         methods: {
-            submitFilter() {
-                // if (this.sort_form.sort_by === null) {
-                //     return(this.$notify({group: 'foo', type: 'error', title: 'Empty sort', text: 'Select field to sort by', duration: -1}))
-                // }
-                axios.post(this.$root.API_URL + '/users/masha', {
-                    filter: this.filter
-                }, {withCredentials: true})
-                    .then(response => {
-                        if(response.status === 200)
-                        {
-                            this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000})
-                            // response.data ...
-                        }
-                        // TODO: console
-                        console.log(response)
-                    })
-                    .catch(error => {
+            // submitFilter() {
+            //     // if (this.sort_form.sort_by === null) {
+            //     //     return(this.$notify({group: 'foo', type: 'error', title: 'Empty sort', text: 'Select field to sort by', duration: -1}))
+            //     // }
+            //     axios.post(this.$root.API_URL + '/users/masha', {
+            //         filter: this.filter
+            //     }, {withCredentials: true})
+            //         .then(response => {
+            //             if(response.status === 200)
+            //             {
+            //                 this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000})
+            //                 // response.data ...
+            //             }
+            //             // TODO: console
+            //             console.log(response)
+            //         })
+            //         .catch(error => {
+            //
+            //             // TODO: console
+            //             console.log(error)
+            //         })
+            // },
 
-                        // TODO: console
-                        console.log(error)
-                    })
-            },
-
-            submitSort() {
+            submitSortFilter() {
                 if (this.sort_form.sort_by === null) {
                     return(this.$notify({group: 'foo', type: 'error', title: 'Empty sort', text: 'Select field to sort by', duration: -1}))
                 }
                 axios.post(this.$root.API_URL + '/users/masha', {
-                    sort_form: this.sort_form
+                    sort_form: this.sort_form,
+                    filter: this.filter
                 }, {withCredentials: true})
                     .then(response => {
                         if(response.status === 200)
