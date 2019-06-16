@@ -43,10 +43,14 @@
 <!--                    https://bootstrap-vue.js.org/docs/components/dropdown-->
 <!--                    https://profile.intra.42.fr/notifications-->
                     <div class="text-center">
-                        <b-badge variant="warning">4</b-badge>
-                        <b-dropdown size="sm" variant="warning" text="Notifs" left>
-                            <b-dropdown-item>Notif 1</b-dropdown-item>
-                            <b-dropdown-item>Notifs 2</b-dropdown-item>
+                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
+                            <template slot="button-content">
+                                <b-badge variant="warning">4</b-badge>
+                                <img alt="Notifications" src="../../img/bell.png" width="30">
+                            </template>
+                            <b-dropdown-item href="/notifications">All Notifications</b-dropdown-item>
+                            <b-dropdown-item>Another action</b-dropdown-item>
+                            <b-dropdown-item>Something else here...</b-dropdown-item>
                         </b-dropdown>
                     </div>
                     <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>
