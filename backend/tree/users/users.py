@@ -1,11 +1,12 @@
 import datetime
 import http
 
-from flask import blueprints, jsonify, abort, current_app, session, request
+from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
 
 from models.user import User
 from models.image import Image
 from utils.form_validator import check_fields
+from utils.security import authorised_only
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -23,6 +24,118 @@ def get_user_by_id(user_id):
                 payload['images'] = [i.image_src for i in user_images]
         return jsonify(user=payload)
     abort(404)
+
+
+@users.route('/filter', methods=['POST'])
+@users.route('/filter/page', methods=['POST'])
+def user_filter_default():
+    return redirect(url_for('users.users_filter', page_number=0, _method='POST'))
+
+
+@users.route('/filter/page/<int:page_number>', methods=['POST'])
+@authorised_only
+def users_filter(page_number):
+    """
+    :param page_number: page number
+    :request -> {
+        "filter": {
+            "age": {"min": 0, "max": 99},
+            "rating": {"min": 0, "max": 10},
+            "distance": {"min": 0, "max": 100}
+        },
+        "sort": {
+            "order_by": "asc" (def) | "desc",
+            "sort_by": "id" (def) | "age", "rating", "distance"
+        }
+    }
+    :return:
+    """
+    PER_PAGE = 20
+    if page_number < 0:
+        page_number = 0
+    req_data: dict = request.get_json()
+    if not req_data:
+        abort(http.HTTPStatus.BAD_REQUEST)
+    # Filter
+    filter_validation = {
+        "min": {
+            'required': False,
+            'default': 0,
+            'type': int,
+            'validator': None
+        },
+        "max": {
+            'required': False,
+            'default': 0,
+            'type': int,
+            'validator': None
+        },
+    }
+    req_data.setdefault("filter", {})
+    req_data["filter"].setdefault("age", {})
+    req_data["filter"].setdefault("rating", {})
+    req_data["filter"].setdefault("distance", {})
+    # Age
+    filter_validation["max"]["default"] = 99
+    check_fields(req_data["filter"]["age"], filter_validation)
+    # Rating
+    filter_validation["max"]["default"] = 10
+    check_fields(req_data["filter"]["rating"], filter_validation)
+    # Distance
+    filter_validation["max"]["default"] = 100
+    check_fields(req_data["filter"]["distance"], filter_validation)
+
+    # Sort
+    req_data.setdefault("sort", {})
+    req_data["sort"].setdefault("order_by", "asc")
+    req_data["sort"].setdefault("sort_by", "id")
+    if req_data["sort"]["order_by"] not in ("asc", "desc"):
+        abort(http.HTTPStatus.BAD_REQUEST)
+    if req_data["sort"]["sort_by"] not in ("id", "age", "distance", "rating"):
+        abort(http.HTTPStatus.BAD_REQUEST)
+    # Here we are with all data valid
+
+    search_users = []
+    payload = {
+        'age_min': req_data['filter']['age']['min'],
+        'age_max': req_data['filter']['age']['max'],
+        'rating_min': req_data['filter']['rating']['min'],
+        'rating_max': req_data['filter']['rating']['max'],
+        'order_by_field': req_data['sort']['sort_by'].upper(),
+        'order_by': req_data['sort']['order_by'].upper(),
+        'limit': PER_PAGE,
+        'offset': PER_PAGE * page_number
+    }
+    if g.current_user.sex_pref == 'bi':
+        payload['gender'] = (g.current_user.gender,)
+        payload['sex_pref'] = ('homo', 'bi')
+
+        result = User.get_filtered(**payload)
+        if result:
+            search_users = result
+        payload['gender'] = (g.current_user.opposite_gender,)
+        payload['sex_pref'] = ('hetero', 'bi')
+        result = User.get_filtered(**payload)
+        if result:
+            search_users += result
+        search_users.sort(
+            key=lambda u: getattr(u, req_data["sort"]["sort_by"]),
+            reverse=req_data["sort"]["order_by"] == 'desc'
+        )
+
+    elif g.current_user.sex_pref == 'homo':
+        payload['gender'] = (g.current_user.gender,)
+        payload['sex_pref'] = ('homo', 'bi')
+        result = User.get_filtered(**payload)
+        if result:
+            search_users = result
+    else:
+        payload['gender'] = (g.current_user.opposite_gender,)
+        payload['sex_pref'] = ('hetero', 'bi')
+        result = User.get_filtered(**payload)
+        if result:
+            search_users = result
+    return jsonify(users=search_users)
 
 
 @users.route('/page/<int:page_number>', methods=['GET'])

@@ -19,6 +19,16 @@ class UserQueries(Queries):
         self.get_by_unique_field = lambda field: self.query(f"SELECT * FROM users WHERE {field} = $1", one=True)
         self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2")
 
+        self.filter = lambda order_by, order_by_field: self.query(f"""
+            SELECT * FROM users 
+            WHERE date_part('year', age(dob)) BETWEEN $1 AND $2 
+            AND rating BETWEEN $3 AND $4
+            AND gender = ANY($5)
+            AND sex_pref = ANY($6)
+            ORDER BY {order_by_field} {order_by}
+            LIMIT $7 OFFSET $8
+            """)
+
 
 class User(Model):
     _fields = {
@@ -67,9 +77,9 @@ class User(Model):
         },
         'gender': {
             'required': False,
-            'default': 'not mention',
+            'default': None,
             'type': str,
-            'validator': lambda _: _ in ['female', 'male', 'not mention']
+            'validator': lambda _: _ in ['female', 'male']
         },
         'sex_pref': {
             'required': False,
@@ -142,11 +152,17 @@ class User(Model):
         if not getattr(self, 'dob'):
             return None
         today = date.today()
-        age = today.year - getattr(self, 'dob').year
-        if today.month < getattr(self, 'dob').month \
-                or (today.month == getattr(self, 'dob').month and today.day < getattr(self, 'dob').day):
+        age = today.year - self.dob.year
+        if today.month < self.dob.month \
+                or (today.month == self.dob.month and today.day < self.dob.day):
             age -= 1
         return age
+
+    @property
+    def opposite_gender(self):
+        if not getattr(self, 'gender'):
+            return None
+        return {'male': 'female', 'female': 'male'}[self.gender]
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -199,6 +215,20 @@ class User(Model):
     @classmethod
     def get_by_id(cls, user_id: int):
         return cls._get_by_unique_field('id', user_id)
+
+    @classmethod
+    def get_filtered(
+            cls, *,
+            age_min, age_max, rating_min, rating_max,
+            gender, sex_pref, order_by_field, order_by,
+            limit, offset):
+        result = cls.queries.filter(order_by, order_by_field)(
+            age_min, age_max, rating_min, rating_max, gender, sex_pref, limit, offset
+        )
+        if not result:
+            return None
+        obj = cls.from_db_row(result)
+        return obj
 
     def create(self):
         # @TODO: Check smth?
