@@ -4,7 +4,7 @@
 <!--        <pre class="mt-3 mb-0">{{ show_all }}</pre>-->
         <h3> Users List </h3>
         <b-row>
-            <div v-for="user in users" :key="user.id">
+            <div id="users_list" v-for="user in users" :key="user.id">
                 <b-card v-bind:title="user.first_name + ' ' + user.last_name"
                         v-bind:img-src="user.profile_image"
                         img-alt="profile picture"
@@ -22,25 +22,15 @@
 
                 </b-card>
             </div>
-
-<!--            <b-card v-bind:title="user.first_name + ' ' + user.last_name"-->
-<!--                    v-bind:img-src="photos[1].link"-->
-<!--                    img-alt="user picture"-->
-<!--                    style="max-width: 15rem;"-->
-<!--                    class="mb-2 add_space"-->
-<!--            >-->
-<!--                <b-card-text>-->
-<!--                    {{user.age}} <br>-->
-<!--                    {{user.gender}} <br>-->
-<!--                    {{user.tags}} <br>-->
-<!--                    {{user.sex_pref}}-->
-<!--                </b-card-text>-->
-
-<!--                <b-button href="#" variant="primary">Open</b-button>-->
-<!--            </b-card>-->
         </b-row>
         <div>
-
+<!--            a lot of work here!! -->
+            <b-pagination
+                    v-model="page.current_page"
+                    :total-rows="page.total_users"
+                    :per-page="page.per_page"
+                    aria-controls="users_list"
+            ></b-pagination>
         </div>
     </div>
 </template>
@@ -56,6 +46,12 @@ export default {
     },
     data() {
         return {
+            page: {
+                current_page: 1,
+                per_page: 4,
+                total_users: 15,
+
+            },
             show_all: [],
             users: [],
             profile_image: require('../../img/face.jpg'),
