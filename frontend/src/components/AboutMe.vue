@@ -1,33 +1,23 @@
 <template>
     <div>
-<!--        <pre class="mt-3 mb-0">{{ form }}</pre>-->
         <pre class="mt-3 mb-0">{{ user_details }}</pre>
 
-
         <b-container class="bv-example-row"><b-row><b-col xl="9">
-
-
 
                 <h4>Profile main image</h4>
                 <b-row id="profile_image_2">
                     <b-col>
                         <b-img class="profile_img" v-if="user_details.profile_image" v-bind:src="user_details.profile_image" alt="Profile picture" width="300" rounded></b-img>
                     </b-col>
-<!--                    <b-img class="profile_img" v-if="uploaded_image" v-bind:src="uploaded_image" rounded alt="Uploaded image" width="150"></b-img>-->
-
-<!--                    <FileUpload class="m-1" v-model="avatar">-->
                     <b-col>
-                        <FileUpload class="m-1"
-                                    v-bind:uploadFieldName="upload_1"
-                                    v-bind:images="images"
-                        >
-    <!--                        <div size="150px" v-if="avatar">-->
-    <!--                            <img :src="avatar.imageURL" alt="avatar">-->
-    <!--                        </div>-->
-    <!--                        <div size="150px" v-if="!avatar">-->
-    <!--                            <img :src="user_details.profile_image" alt="avatar">-->
-    <!--                        </div>-->
-                        </FileUpload>
+                        <FileUpload
+                                class="m-1"
+                                uploadFieldName="profile_image"
+                                :max="1"
+                                :many="false"
+                                v-bind:images="user_details.profile_image"
+                                v-on:ImageUploadSuccess="() => {this.$emit('ProfileImageUpdated')}"
+                        ></FileUpload>
                     </b-col>
                 </b-row>
 
@@ -52,9 +42,11 @@
                     </b-col>
                     <b-col>
                         <FileUpload class="m-1"
-                                    v-bind:uploadFieldName="upload_2"
+                                    uploadFieldName="user_image"
+                                    :max="5"
+                                    :many="true"
                                     v-bind:images="images"
-                                    v-on:updateImageList="updateImageList"
+                                    v-on:ImageUploadSuccess="updateImageList"
                         ></FileUpload>
                     </b-col>
                 </b-row>
@@ -120,8 +112,6 @@
         },
         data () {
             return {
-                upload_1: 'profile_image',
-                upload_2: 'user_image',
                 edit_success_alert: false,
                 options: {
                     gender: [
@@ -134,11 +124,6 @@
                 },
                 images: [
                     {id: null, src: null}
-                    // {link: require('../../img/qr.png')},
-                    // {link: require('../../img/face.jpg')},
-                    // {link: require('../../img/computer.png')},
-                    // {link: require('../../img/computer.png')},
-                    // {link: require('../../img/computer.png')}
                 ]
             }
         },
@@ -174,13 +159,9 @@
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    var del_img = {
-                        "id": this.$refs['big_photo'].id
-                        // "image_src": this.$refs['big_photo'].src
-                    };
+                    var del_img_id = this.$refs['big_photo'].id;
 
-                    axios.post(this.$root.API_URL + '/images/delete',
-                        del_img,
+                    axios.delete(this.$root.API_URL + '/images/' + del_img_id,
                         {
                             withCredentials: true
                         })

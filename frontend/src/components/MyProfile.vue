@@ -7,6 +7,7 @@
             <AboutMe
                     v-bind:form="form"
                     v-bind:user_details="user_details"
+                    v-on:ProfileImageUpdated="getMe"
             />
         </b-tab>
 
@@ -94,21 +95,21 @@
             }
         },
         created() {
-            // From here
-            // axios.get(this.$root.API_URL + '/users/' + this.user_id, {withCredentials: true})
-            axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
-                .then(response => {
-                    this.user_details = response.data["user"];
-                    this.user_details.dob = this.user_details.dob.substring(0, 10);
-                    return response
-                })
-                .then(response => console.log(response))
-                // TODO: console
-                // eslint-disable-next-line
-                .catch(error => console.log(error));
+            this.getMe();
         },
         methods: {
-
+            getMe() {
+                axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                    .then(response => {
+                        this.user_details = response.data["user"];
+                        this.user_details.dob = this.user_details.dob.substring(0, 10);
+                        return response
+                    })
+                    .then(response => console.log(response))
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
+            }
         }
 
     }

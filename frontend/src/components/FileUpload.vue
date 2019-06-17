@@ -1,7 +1,7 @@
 <template>
     <div>
         <p class="text-success">{{ successText }}</p>
-        <form v-on:submit.prevent="savePhoto">
+        <form v-on:submit.prevent="savePhoto" v-if="!many || images.length < max">
             <input type="file"
                    ref="file"
                    v-bind:name="uploadFieldName"
@@ -9,14 +9,18 @@
             >
             <img width="250" v-if="imageURL" :src="imageURL" alt="avatar">
             <p class="text-danger">{{ errorText }}</p>
-            <b-button type="submit" variant="primary">Save</b-button>
+            <b-button type="submit" variant="primary" :disabled="saveButtonDisabled()">Save</b-button>
         </form>
+        <div v-else>
+            <p>You can upload only {{max}} photos</p>
+        </div>
 
     </div>
 </template>
 
 <script>
-    import  axios from 'axios';
+    import axios from 'axios';
+
     export default {
         name: "FileUpload.vue",
         data () {
@@ -28,7 +32,12 @@
                 imageURL: null
             }
         },
-        props: ['uploadFieldName', 'images'],
+        props: [
+            'uploadFieldName',
+            'images',
+            'max',
+            'many'
+        ],
         methods: {
             onFileChange(file) {
                 this.errorText = null;
@@ -37,9 +46,6 @@
                 let imageFile = file[0];
                 if (file.length > 0) {
                     let size = imageFile.size / maxSize / maxSize;
-                    if (this.images.length >= 5) {
-                        return (this.errorText = 'You can upload 5 images maximum. Delete image before upload')
-                    }
                     if (!imageFile.type.match('image.*')) {
                         return (this.errorText = 'Please choose an image file')
                     }
@@ -47,13 +53,17 @@
                         return (this.errorText = 'Your file is too big! Please select an image under 2MB')
                     }
                     this.selected_file = imageFile;
-                    let imageURL = URL.createObjectURL(imageFile);
-                    this.imageURL = imageURL;
+                    this.imageURL = URL.createObjectURL(imageFile);
                 }
             },
-            savePhoto() {
+            saveButtonDisabled() {
                 if (this.selected_file === null)
-                    return(this.errorText = "Choose file");
+                    return true;
+                if (this.many && this.images.length > this.max)
+                    return true;
+                return false;
+            },
+            savePhoto() {
                 if (this.errorText != null)
                     return(this.errorText = "Can't save file, choose another");
 
@@ -73,7 +83,7 @@
                         .then(response => {
                             if(response.status === 200)
                             {
-                                this.$emit('updateImageList');
+                                this.$emit('ImageUploadSuccess');
                                 this.successText =  "Image uploaded!";
                                 this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: -1});
                             }
@@ -85,8 +95,13 @@
                             //     this.errors.user_exists = true;
                             // }
                             // TODO: console
+                            // eslint-disable-next-line no-console
                             console.log(error)
-                        })
+                        }).finally(() => {
+                            this.selected_file = null;
+                            this.imageURL = null;
+
+                    })
                 }
             }
         }
