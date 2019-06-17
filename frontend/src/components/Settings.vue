@@ -11,7 +11,6 @@
             <b-alert v-model="alerts.names_saved" variant="success" dismissible>Name settings are saved!</b-alert>
 
 
-            <b-form-input type="text" v-bind:placeholder="user_details.first_name"></b-form-input>
             <b-form v-on:submit.prevent="submitChangeNames">
                 <b-card class="card_section" bg-variant="light">
                     <h4 align="center">Name</h4>
@@ -82,6 +81,7 @@
                 </b-card>
             </b-form>
 
+            <!-- TODO: rm -->
             <pre class="mt-3 mb-0">{{ form_edit }}</pre>
 
 

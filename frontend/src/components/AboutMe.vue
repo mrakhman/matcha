@@ -11,13 +11,16 @@
                 <h4>Profile main image</h4>
                 <b-row id="profile_image_2">
                     <b-col>
-                        <b-img class="profile_img" v-bind:src="user_details.profile_image" alt="Profile picture" width="300" rounded></b-img>
+                        <b-img class="profile_img" v-if="user_details.profile_image" v-bind:src="user_details.profile_image" alt="Profile picture" width="300" rounded></b-img>
                     </b-col>
 <!--                    <b-img class="profile_img" v-if="uploaded_image" v-bind:src="uploaded_image" rounded alt="Uploaded image" width="150"></b-img>-->
 
 <!--                    <FileUpload class="m-1" v-model="avatar">-->
                     <b-col>
-                        <FileUpload class="m-1" v-bind:uploadFieldName="upload_1">
+                        <FileUpload class="m-1"
+                                    v-bind:uploadFieldName="upload_1"
+                                    v-bind:images="images"
+                        >
     <!--                        <div size="150px" v-if="avatar">-->
     <!--                            <img :src="avatar.imageURL" alt="avatar">-->
     <!--                        </div>-->
@@ -33,18 +36,26 @@
                 <h4>More images</h4>
                 <b-row id="photos">
                     <b-col>
-                        <b-img ref="big_photo" id="big_photo" v-bind:src="images[0]" fluid alt="First image" width="300" rounded></b-img>
+                        <b-img v-if="images.length > 0" ref="big_photo" v-bind:id="images[0].id" v-bind:src="images[0].src" fluid alt="First image" width="300" rounded></b-img>
                         <b-row>
 
                         </b-row>
-                        <b-button class="m-1" type="" variant="danger" size="sm" v-on:click="deleteImage">Delete</b-button>
-                        <b-row>
-                            <img v-on:click="selectPhoto(image)" v-for="image in images" v-bind:src="image" alt="image" height="80"/>
+                        <b-button class="mt-1 mb-3" type="" variant="danger" size="sm" v-if="images.length > 0" v-on:click="deleteImage">Delete</b-button>
+                        <b-row v-if="images.length > 0">
+                            <img alt="image" height="80"
+                                    v-on:click="selectPhoto(image.src, image.id)"
+                                    v-for="image in images"
+                                    v-bind:src="image.src"
+                                    v-bind:key="image.id"
+                            />
                         </b-row>
                     </b-col>
                     <b-col>
-                        <FileUpload class="m-1" v-bind:uploadFieldName="upload_2">
-                        </FileUpload>
+                        <FileUpload class="m-1"
+                                    v-bind:uploadFieldName="upload_2"
+                                    v-bind:images="images"
+                                    v-on:updateImageList="updateImageList"
+                        ></FileUpload>
                     </b-col>
                 </b-row>
 
@@ -122,6 +133,7 @@
                     tags: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
                 },
                 images: [
+                    {id: null, src: null}
                     // {link: require('../../img/qr.png')},
                     // {link: require('../../img/face.jpg')},
                     // {link: require('../../img/computer.png')},
@@ -156,29 +168,53 @@
                     })
 
             },
-            selectPhoto(source) {
-                this.$refs['big_photo'].src = source
+            selectPhoto(src, id) {
+                this.$refs['big_photo'].src = src;
+                this.$refs['big_photo'].id = id;
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    // this.images.splice(0, 1);
-                    // TODO: Delete image from db
-                    // alert("Image will be deleted")
+                    var del_img = {
+                        "id": this.$refs['big_photo'].id
+                        // "image_src": this.$refs['big_photo'].src
+                    };
+
+                    axios.post(this.$root.API_URL + '/images/delete',
+                        del_img,
+                        {
+                            withCredentials: true
+                        })
+                        .then(response => {
+                            if(response.status === 200)
+                            {
+                                this.$notify({group: 'foo', type: 'success', title: 'Deleted', text: 'Image deleted', duration: -1});
+                                this.updateImageList();
+                                console.log(response)
+                            }
+                        })
+                        // TODO: console
+                        // eslint-disable-next-line
+                        .catch(error => {
+                            console.log(error)
+                        })
                 }
             },
+            updateImageList() {
+                axios.get(this.$root.API_URL + '/users/' + this.$root.$data.user_id, {
+                    params: {with_images: true},
+                    withCredentials: true
+                })
+                    .then(response => {
+                        this.images = response.data.user.images;
+                        // console.log(response.data.user);
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
+            }
         },
         created() {
-            axios.get(this.$root.API_URL + '/users/' + this.$root.$data.user_id, {
-                params: {with_images: true},
-                withCredentials: true
-            })
-                .then(response => {
-                    this.images = response.data.user.images;
-                    console.log(response.data.user);
-                })
-                // TODO: console
-                // eslint-disable-next-line
-                .catch(error => console.log(error));
+            this.updateImageList();
 
         }
     }

@@ -24,12 +24,11 @@
                 selected_file: null,
                 errorText: null,
                 successText: null,
-                // uploadFieldName: 'image',
                 maxSize: 2048,
                 imageURL: null
             }
         },
-        props: ['uploadFieldName'],
+        props: ['uploadFieldName', 'images'],
         methods: {
             onFileChange(file) {
                 this.errorText = null;
@@ -38,11 +37,14 @@
                 let imageFile = file[0];
                 if (file.length > 0) {
                     let size = imageFile.size / maxSize / maxSize;
+                    if (this.images.length >= 5) {
+                        return (this.errorText = 'You can upload 5 images maximum. Delete image before upload')
+                    }
                     if (!imageFile.type.match('image.*')) {
                         return (this.errorText = 'Please choose an image file')
                     }
                     if (size > 1) {
-                        return (this.errorText = 'Your file is too big! Please select an image under 1MB')
+                        return (this.errorText = 'Your file is too big! Please select an image under 2MB')
                     }
                     this.selected_file = imageFile;
                     let imageURL = URL.createObjectURL(imageFile);
@@ -64,17 +66,21 @@
                         {
                             headers: {
                                 'Content-Type': 'multipart/form-data'
-                            }
+                            },
+                            withCredentials: true
                         }
                     )
                         .then(response => {
                             if(response.status === 200)
                             {
+                                this.$emit('updateImageList');
                                 this.successText =  "Image uploaded!";
                                 this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: -1});
                             }
                         })
                         .catch(error => {
+                            this.$notify({group: 'foo', type: 'error', title: 'Fail', text: 'There is an error', duration: -1});
+
                             // if (error.response.status === 409) {
                             //     this.errors.user_exists = true;
                             // }
