@@ -7,7 +7,8 @@ class ImageQueries(Queries):
         self.create = self.query("INSERT INTO images (user_id, image_src) VALUES ($1, $2)")
         self.get_profile_image = self.query("SELECT profile_image FROM users WHERE id = $1", one=True)
         self.get_user_images = self.query("SELECT * FROM images WHERE user_id = $1")
-        self.delete = self.query("DELETE FROM images WHERE user_id = $1 AND id = $2")
+        self.delete = self.query("DELETE FROM images WHERE id = $1")
+        self.get_by_id = self.query("SELECT * FROM images WHERE id = $1", one=True)
 
 
 class Image(Model):
@@ -57,9 +58,5 @@ class Image(Model):
     def create(self):
         self.queries.create(self.user_id, self.image_src)
 
-    @classmethod
-    def delete(cls, user_id, del_img_id):
-        cls.queries.delete(user_id, del_img_id)
-
-    # def delete(self):
-    #     self.queries.delete(self.user_id, getattr(self, 'image_src'))
+    def delete(self):
+        self.queries.delete(self.id)

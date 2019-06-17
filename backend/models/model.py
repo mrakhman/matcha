@@ -15,6 +15,8 @@ class Queries:
             return prepared_query(*args)
         return f
 
+    get_by_id: function
+
 
 class Model:
     _fields: dict
@@ -61,7 +63,7 @@ class Model:
 
     @classmethod
     def from_db(cls, obj_id):
-        raise NotImplemented()
+        raise NotImplemented
 
     def check_attributes(self):
         for f, props in self._fields.items():
@@ -100,3 +102,11 @@ class Model:
             return [cls.from_db_row(r) for r in row]
         data = cls.dict_from_row(row)
         return cls.from_dict(data)
+
+    @classmethod
+    def get_by_id(cls, notification_id):
+        result = cls.queries.get_by_id(notification_id)
+        if not result:
+            return None
+        obj = cls.from_db_row(result)
+        return obj

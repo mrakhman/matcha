@@ -62,14 +62,6 @@ class Notification(Model):
     queries = NotificationQueries()
 
     @classmethod
-    def get_by_id(cls, notification_id):
-        result = cls.queries.get_by_id(notification_id)
-        if not result:
-            return None
-        obj = cls.from_db_row(result)
-        return obj
-
-    @classmethod
     def get_user_notifications(cls, user_id):
         result = cls.queries.get_user_notifications(user_id)
         if not result:

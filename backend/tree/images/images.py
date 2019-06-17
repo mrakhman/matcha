@@ -64,20 +64,11 @@ def get_user_images():
     # return jsonify({"images": user_images.get_view('public')})
 
 
-@images.route('/delete', methods=['POST'])
+@images.route('/<int:image_id>', methods=['DELETE'])
 @authorised_only
-def delete_image():
-    req_data = request.get_json()
-    current_app.logger.info(f"Here we are, the request is: {req_data}")
-    print(req_data)
-    del_img = req_data['id']
-    current_user = g.current_user
-
-    if del_img and current_user:
-        Image.delete(current_user.id, del_img)
+def delete_image(image_id):
+    img = Image.get_by_id(image_id)
+    if img and img.user_id == g.current_user.id:
+        img.delete()
         return jsonify(ok=True)
-    abort(http.HTTPStatus.BAD_REQUEST)
-    # If image id doesn't exist in db - no response is returned - same success ok=True
-
-
-
+    abort(http.HTTPStatus.NOT_FOUND)
