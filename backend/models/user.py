@@ -66,8 +66,8 @@ class User(Model):
             'required': False,
             'default': None,
             'type': date,
-            'validator': lambda _: _ and date.today() - timedelta(365 * 120) < _ < date.today()
-            # Age between ~ 120y and 0
+            'validator': lambda _: _ and date.today() - timedelta(365 * 99) < _ < date.today()
+            # Age between ~ 99y and 0
         },
         'bio_text': {
             'required': False,

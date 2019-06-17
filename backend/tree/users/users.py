@@ -21,7 +21,7 @@ def get_user_by_id(user_id):
             user_images = Image.get_user_images(user.id)
             payload['images'] = []
             if user_images:
-                payload['images'] = [i.image_src for i in user_images]
+                payload['images'] = [{"src": i.image_src, "id": i.id} for i in user_images]
         return jsonify(user=payload)
     abort(404)
 
