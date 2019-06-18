@@ -1,19 +1,17 @@
 <template>
     <div class="main">
-        <b-alert v-model="errors.user_exists" variant="danger" dismissible>User already exists</b-alert>
-        <b-alert v-model="register_success_alert" variant="success" dismissible>User created! Check your email to activate account</b-alert>
 
         <h3 class="title"> Register </h3>
         <b-container class="bv-example-row">
             <b-row><b-col xl="9">
                 <b-form v-on:submit.prevent="submitRegister">
 
-<!--                <ul v-if="errors.length">-->
-<!--                    <li v-for="error in errors">{{ error }}</li>-->
-<!--                </ul>-->
+                    <!--                <ul v-if="errors.length">-->
+                    <!--                    <li v-for="error in errors">{{ error }}</li>-->
+                    <!--                </ul>-->
 
-<!--                    <b-alert show v-if="errors.empty_input" variant="danger" dismissible>Empty input</b-alert>-->
-<!--                    <b-alert show v-if="errors.password_repeat" variant="danger" dismissible>2 passwords</b-alert>-->
+                    <!--                    <b-alert show v-if="errors.empty_input" variant="danger" dismissible>Empty input</b-alert>-->
+                    <!--                    <b-alert show v-if="errors.password_repeat" variant="danger" dismissible>2 passwords</b-alert>-->
 
 
                     <b-alert v-model="errors.empty_input" variant="danger" dismissible>Empty input field</b-alert>
@@ -21,6 +19,8 @@
                     <b-alert v-model="errors.spaces" variant="danger" dismissible>Don't use spaces</b-alert>
                     <b-alert v-model="errors.invalid_symbols" variant="danger" dismissible>Names and email must only include [a-z + A-Z] [0-9] and @</b-alert>
                     <b-alert v-model="errors.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
+                    <b-alert v-model="errors.user_exists" variant="danger" dismissible>User already exists, email and username must be unique</b-alert>
+                    <b-alert v-model="register_success_alert" variant="success" dismissible>User created! Check your email to activate account</b-alert>
 
 
 
@@ -177,6 +177,7 @@ import axios from 'axios';
                     .then(response => {
                         if(response.status === 200)
                         {
+                            this.$notify({group: 'foo', type: 'success', title: 'User created', text: 'Check your email to activate account', duration: -1});
                             this.register_success_alert = true;
                             this.form.first_name = null;
                             this.form.last_name = null;
@@ -192,6 +193,7 @@ import axios from 'axios';
                     .catch(error => {
                         if (error.response.status === 409) {
                             this.errors.user_exists = true;
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'User already exists, email and username must be unique', duration: -1});
                         }
                         // TODO: console
                         console.log(error)
