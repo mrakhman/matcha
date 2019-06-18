@@ -7,7 +7,7 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
-                <b-navbar-nav>
+                <b-navbar-nav v-if="user_id">
 <!--                    <b-nav-item-dropdown text="My profile" left>-->
 <!--                        <b-dropdown-item v-bind:to="'/my_profile/about_me'">About me</b-dropdown-item>-->
 <!--                        <b-dropdown-item v-bind:to="'/my_profile/settings'">Settings</b-dropdown-item>-->
@@ -43,7 +43,7 @@
 <!--                    https://bootstrap-vue.js.org/docs/components/dropdown-->
 <!--                    https://profile.intra.42.fr/notifications-->
                     <div class="text-center">
-                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
+                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret v-if="user_id">
                             <template slot="button-content">
                                 <b-badge variant="warning">4</b-badge>
                                 <img alt="Notifications" src="../../img/bell.png" width="30">
