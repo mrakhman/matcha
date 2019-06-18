@@ -86,7 +86,7 @@
                                 // this.$root.$data.user_id = response.data.user_id;
                                 // this.$root.$data.user = response.data.context;
                                 this.$router.push('/my_profile');
-                                // this.$router.go();
+                                this.$router.go();
                             })
                             // TODO: console
                             // eslint-disable-next-line
