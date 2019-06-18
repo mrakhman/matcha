@@ -4,6 +4,8 @@ import postgresql.types
 
 from db import db
 
+from typing import Callable, Any
+
 
 class Queries:
     @staticmethod
@@ -15,7 +17,8 @@ class Queries:
             return prepared_query(*args)
         return f
 
-    get_by_id: function
+    # get_by_id: function
+    get_by_id: Callable[[int], Any]
 
 
 class Model:

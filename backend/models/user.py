@@ -28,6 +28,7 @@ class UserQueries(Queries):
             ORDER BY {order_by_field} {order_by}
             LIMIT $7 OFFSET $8
             """)
+        # self.count = self.query("SELECT COUNT(*) FROM posts WHERE user_id = :user_id")
 
 
 class User(Model):
@@ -238,3 +239,5 @@ class User(Model):
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
+
+    # def count(self):
