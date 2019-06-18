@@ -200,9 +200,14 @@ def create_user():
     }
     current_app.logger.info(f"Here we are, the request is: {req_data}")
     check_fields(req_data, form_values)
+
+    if User.get_by_email(req_data['email']):
+        abort(http.HTTPStatus.CONFLICT)  # If another user has this email
+    if User.get_by_username(req_data['username']):
+        abort(http.HTTPStatus.CONFLICT)  # If another user has this username
+
     new_user = User.from_dict(req_data)
     new_user.set_password(req_data["password"])
-    # new_user.set_password('test')  # @TODO: rm
     new_user.create()
     return jsonify({"ok": True, "user": new_user.get_view("personal")})
 
