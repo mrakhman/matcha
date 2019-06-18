@@ -41,15 +41,17 @@ export default [
     { path: '/my_profile', component: MyProfile, beforeEnter: ifAuthenticated},
     // { path: '/my_profile/:user_id', component: MyProfile, beforeEnter: ifAuthenticated},
     { path: '/forgot_password', component: ForgotPassword, beforeEnter: ifNotAuthenticated},
-    { path: '/users', component: UsersList, beforeEnter: ifAuthenticated},
+    { path: '/search/', component: UsersList, beforeEnter: ifAuthenticated}, // kuku
+    { path: '/search/:page_n', component: UsersList, beforeEnter: ifAuthenticated}, // kuku
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},
-    { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
     { path: '/', component: Home},
     { path: '/home', component: Home},
-    { path: '/notifications', component: Notifications},//, beforeEnter: ifNotAuthenticated},
     { path: '/chat', component: Chat},//, beforeEnter: ifNotAuthenticated},
-    // { path: '/my_profile/settings', component: Settings},
-    // { path: '/my_profile/about_me', component: AboutMe},
-    // { path: '/header', component: Header}
-    { path: '*', component: NotFound}
+    { path: '/notifications', component: Notifications},//, beforeEnter: ifNotAuthenticated},
+    { path: '*', component: NotFound},
+
+// { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
+// { path: '/my_profile/settings', component: Settings},
+// { path: '/my_profile/about_me', component: AboutMe},
+// { path: '/header', component: Header}
 ]

@@ -200,7 +200,7 @@
                     age: { min: 0, max: 99},
                     rating: { min: 0, max: 10},
                     distance: { min: 0, max: 100},
-                    tags: []
+                    // tags: []
                 }
             }
         },
@@ -229,18 +229,16 @@
             // },
 
             submitSortFilter() {
-                if (this.sort_form.sort_by === null) {
-                    return(this.$notify({group: 'foo', type: 'error', title: 'Empty sort', text: 'Select field to sort by', duration: -1}))
-                }
-                axios.post(this.$root.API_URL + '/users/masha', {
-                    sort_form: this.sort_form,
+                axios.post(this.$root.API_URL + '/users/filter/page/0', {
+                    sort: this.sort_form,
                     filter: this.filter
                 }, {withCredentials: true})
                     .then(response => {
                         if(response.status === 200)
                         {
-                            this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000})
-                            // response.data ...
+                            this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000});
+                            var response_data = response.data;
+                            this.$emit('updateUserList', response_data);
                         }
                         // TODO: console
                         console.log(response)

@@ -1,10 +1,18 @@
 <template>
     <div class="main">
-        <Search/>
-<!--        <pre class="mt-3 mb-0">{{ show_all }}</pre>-->
+        <Search v-on:updateUserList="updateUserList"/>
+        <pre class="mt-3 mb-0">{{ users.length }}</pre>
+        <pre class="mt-3 mb-0">{{ total_users }}</pre>
+        <pre class="mt-3 mb-0">{{ per_page }}</pre>
         <h3> Users List </h3>
         <b-row>
-            <div id="users_list" v-for="user in users" :key="user.id">
+            <div id="users_list"
+                 v-for="user in users"
+                 :key="user.id"
+                 :current-page="current_page"
+                 :per-page="per_page"
+                 :items="users"
+            >
                 <b-card v-bind:title="user.first_name + ' ' + user.last_name"
                         v-bind:img-src="user.profile_image"
                         img-alt="profile picture"
@@ -22,16 +30,17 @@
 
                 </b-card>
             </div>
+            <div>
+                <b-pagination
+                        v-model="current_page"
+                        :total-rows="total_users"
+                        :items="users"
+                        :per-page="per_page"
+                        aria-controls="users_list"
+                ></b-pagination>
+            </div>
         </b-row>
-        <div>
-<!--            a lot of work here!! -->
-            <b-pagination
-                    v-model="page.current_page"
-                    :total-rows="page.total_users"
-                    :per-page="page.per_page"
-                    aria-controls="users_list"
-            ></b-pagination>
-        </div>
+
     </div>
 </template>
 
@@ -46,42 +55,53 @@ export default {
     },
     data() {
         return {
-            page: {
-                current_page: 1,
-                per_page: 4,
-                total_users: 15,
-
-            },
-            show_all: [],
+            current_page: 1,
+            per_page: 4,
+            total_users: 6,
             users: [],
-            profile_image: require('../../img/face.jpg'),
-            photos: [
-                {link: require('../../img/face.jpg')},
-                {link: require('../../img/qr.png')},
-                {link: require('../../img/computer.png')}
-            ]
+            // profile_image: require('../../img/face.jpg'),
+            // photos: [
+            //     {link: require('../../img/face.jpg')},
+            //     {link: require('../../img/qr.png')},
+            //     {link: require('../../img/computer.png')}
+            // ]
 
         }
     },
 
     methods: {
-
+        getUsers() {
+            axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
+                "filter": {
+                    "age": { "min": 0, "max": 99},
+                    "rating": { "min": 0, "max": 10},
+                    "distance": { "min": 0, "max": 100},
+                    "tags": []
+                },
+                "sort": {
+                    "order_by": "asc",
+                    "sort_by": "id"
+                }
+            }, {withCredentials: true})
+                .then(response => {
+                    this.users = response.data["users"];
+                    this.total_users = response.data["total_users"];
+                    this.per_page = response.data["per_page"];
+                    console.log(response);
+                })
+                // TODO: console
+                // eslint-disable-next-line
+                .catch(error => console.log(error));
+        },
+        updateUserList(response_data) {
+            this.users = response_data["users"];
+            this.total_users = response_data["total_users"];
+            this.per_page = response_data["per_page"];
+        }
     },
 
     created() {
-        axios.get(this.$root.API_URL + '/users/page/1')
-            .then(res => this.users = res.data["users"])
-            // .then(res => console.log(res))
-            // TODO: console
-            // eslint-disable-next-line
-            .catch(err => console.log(err));
-
-        axios.get(this.$root.API_URL + '/users/all')
-            .then(res => this.show_all = res.data)
-            // .then(res => console.log(res))
-            // TODO: console
-            // eslint-disable-next-line
-            .catch(err => console.log(err));
+        this.getUsers();
     }
 }
 </script>
