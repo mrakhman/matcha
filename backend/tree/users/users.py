@@ -106,18 +106,24 @@ def users_filter(page_number):
         'limit': PER_PAGE,
         'offset': PER_PAGE * page_number
     }
+
     if g.current_user.sex_pref == 'bi':
         payload['gender'] = (g.current_user.gender,)
         payload['sex_pref'] = ('homo', 'bi')
 
         result = User.get_filtered(**payload)
+        result2 = User.count(**payload)
         if result:
             search_users = result
+            count_users = result2
         payload['gender'] = (g.current_user.opposite_gender,)
         payload['sex_pref'] = ('hetero', 'bi')
+        
         result = User.get_filtered(**payload)
+        result2 = User.count(**payload)
         if result:
             search_users += result
+            count_users += result2
         search_users.sort(
             key=lambda u: getattr(u, req_data["sort"]["sort_by"]),
             reverse=req_data["sort"]["order_by"] == 'desc'
@@ -126,16 +132,22 @@ def users_filter(page_number):
     elif g.current_user.sex_pref == 'homo':
         payload['gender'] = (g.current_user.gender,)
         payload['sex_pref'] = ('homo', 'bi')
+
         result = User.get_filtered(**payload)
+        result2 = User.count(**payload)
         if result:
             search_users = result
+            count_users = result2
     else:
         payload['gender'] = (g.current_user.opposite_gender,)
         payload['sex_pref'] = ('hetero', 'bi')
+
         result = User.get_filtered(**payload)
+        result2 = User.count(**payload)
         if result:
             search_users = result
-    return jsonify(users=search_users, total_users=len(search_users), per_page=PER_PAGE)  # WRONG total_users
+            count_users = result2
+    return jsonify(users=search_users, total_users=count_users, per_page=PER_PAGE)  # WRONG total_users
 
 
 @users.route('/page/<int:page_number>', methods=['GET'])
