@@ -30,16 +30,16 @@
 
                 </b-card>
             </div>
-            <div>
-                <b-pagination
-                        v-model="current_page"
-                        :total-rows="total_users"
-                        :items="users"
-                        :per-page="per_page"
-                        aria-controls="users_list"
-                ></b-pagination>
-            </div>
         </b-row>
+        <div>
+            <b-pagination
+                    v-model="current_page"
+                    :total-rows="total_users"
+                    :items="users"
+                    :per-page="per_page"
+                    aria-controls="users_list"
+            ></b-pagination>
+        </div>
 
     </div>
 </template>

@@ -142,7 +142,7 @@
                         <b-row>
                             <b-form-checkbox-group
                                     v-model="filter.tags"
-                                    :options="tags_options"
+                                    :options="tag_options"
                                     name="flavour-1a"
                             ></b-form-checkbox-group>
                         </b-row>
@@ -187,11 +187,19 @@
         data() {
             return {
                 sort_options: [
-                        { value: 'age', text: 'Age', min: 0, max: 99},
-                        { value: 'rating', text: 'Fame rating', min: 0, max: 10},
-                        { value: 'distance', text: 'Distance', min: 0, max: 100}
-                    ],
-                tags_options: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
+                    { value: 'age', text: 'Age', min: 0, max: 99},
+                    { value: 'rating', text: 'Fame rating', min: 0, max: 10},
+                    { value: 'distance', text: 'Distance', min: 0, max: 100}
+                ],
+                tag_options: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
+                // tags: [
+                //     {tag_id: 1, tag: '42'},
+                //     {tag_id: 2, tag: 'eco'},
+                //     {tag_id: 3, tag: 'geek'},
+                //     {tag_id: 4, tag: 'veggie'},
+                //     {tag_id: 5, tag: 'music'},
+                //     {tag_id: 6, tag: 'travel'}
+                // ],
                 sort_form: {
                     order_by: 'asc',
                     sort_by: 'id'

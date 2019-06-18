@@ -127,11 +127,20 @@
                         // { value: 'not mention', text: 'Not mentioned'}
                     ],
                     sex_pref: ['hetero', 'homo', 'bi'],
-                    tags: ['eco', 'geek', 'veggie', 'travel', '42', 'music'],
+                    tags: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
                 },
                 images: [
                     {id: null, src: null}
-                ]
+                ],
+
+                // tags: [
+                //     {tag_id: 1, tag: '42'},
+                //     {tag_id: 2, tag: 'eco'},
+                //     {tag_id: 3, tag: 'geek'},
+                //     {tag_id: 4, tag: 'veggie'},
+                //     {tag_id: 5, tag: 'music'},
+                //     {tag_id: 6, tag: 'travel'}
+                // ],
             }
         },
         methods: {
