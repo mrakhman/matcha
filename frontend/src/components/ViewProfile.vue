@@ -4,13 +4,24 @@
 <!--        <b-img src="'../../img/' + {{user.profile_image}}" fluid alt="Profile image"></b-img>-->
         <b-row id="photos">
             <b-col>
-                <b-img v-bind:src="user.profile_image" fluid alt="Profile image" width="450"></b-img>
+                <b-img v-bind:src="user.profile_image" fluid alt="Profile image" width="300"></b-img>
             </b-col>
             <b-col>
-                <b-img ref="big_photo" id="big_photo" v-if="user.images && user.images[0]" v-bind:src="user.images[0]" fluid alt="First image" ></b-img>
-                <b-row hei></b-row>
+                <b-img ref="big_photo" fluid alt="First image" width="200" rounded
+                       v-if="user.images.length > 0"
+                       v-bind:id="user.images[0].id"
+                       v-bind:src="user.images[0].src"
+                ></b-img>
                 <b-row>
-                    <img v-on:click="selectPhoto(image)" v-for="image in user.images" v-bind:src="image" alt="image" height="100"/>
+
+                </b-row>
+                <b-row v-if="user.images.length > 0">
+                    <img alt="image" height="80"
+                         v-on:click="selectPhoto(image.src, image.id)"
+                         v-for="image in user.images"
+                         v-bind:src="image.src"
+                         v-bind:key="image.id"
+                    />
                 </b-row>
             </b-col>
         </b-row>
@@ -57,7 +68,7 @@
                 has_like: true,
                 id: this.$route.params.id,
                 user: {
-                    images: [],
+                    images: [{id: null, src: null}],
                     // first_name: '',
                     // last_name: '',
                     // username: '',
@@ -71,8 +82,9 @@
             }
         },
         methods: {
-            selectPhoto(source) {
-                this.$refs['big_photo'].src = source
+            selectPhoto(src, id) {
+                this.$refs['big_photo'].src = src;
+                this.$refs['big_photo'].id = id;
             },
 
             sexualPref(my_pref, gender) {

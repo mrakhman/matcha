@@ -21,7 +21,7 @@
 <!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
 
 
-                    <b-nav-item v-bind:to="'/users'">Search</b-nav-item>
+                    <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifs</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
 <!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->

@@ -7,7 +7,10 @@
                 <h4>Profile main image</h4>
                 <b-row id="profile_image_2">
                     <b-col>
-                        <b-img class="profile_img" v-if="user_details.profile_image" v-bind:src="user_details.profile_image" alt="Profile picture" width="300" rounded></b-img>
+                        <b-img class="profile_img" alt="Profile picture" width="300" rounded
+                               v-if="user_details.profile_image"
+                               v-bind:src="user_details.profile_image"
+                        ></b-img>
                     </b-col>
                     <b-col>
                         <FileUpload
@@ -26,7 +29,11 @@
                 <h4>More images</h4>
                 <b-row id="photos">
                     <b-col>
-                        <b-img v-if="images.length > 0" ref="big_photo" v-bind:id="images[0].id" v-bind:src="images[0].src" fluid alt="First image" width="300" rounded></b-img>
+                        <b-img ref="big_photo" fluid alt="First image" width="300" rounded
+                                v-if="images.length > 0"
+                               v-bind:id="images[0].id"
+                               v-bind:src="images[0].src"
+                        ></b-img>
                         <b-row>
 
                         </b-row>
@@ -170,7 +177,8 @@
                             {
                                 this.$notify({group: 'foo', type: 'success', title: 'Deleted', text: 'Image deleted', duration: -1});
                                 this.updateImageList();
-                                console.log(response)
+                                this.$refs['big_photo'].id = this.images[0].id;
+                                this.$refs['big_photo'].src = this.images[0].src;
                             }
                         })
                         // TODO: console
