@@ -223,6 +223,12 @@ class User(Model):
             age_min, age_max, rating_min, rating_max,
             gender, sex_pref, order_by_field, order_by,
             limit, offset):
+        if order_by_field == 'age':
+            order_by_field = 'dob'
+            if order_by == 'ASC':
+                order_by = 'DESC'
+            elif order_by == 'DESC':
+                order_by = 'ASC'
         result = cls.queries.filter(order_by, order_by_field)(
             age_min, age_max, rating_min, rating_max, gender, sex_pref, limit, offset
         )

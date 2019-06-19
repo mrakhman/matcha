@@ -50,7 +50,8 @@ def users_filter(page_number):
     }
     :return:
     """
-    PER_PAGE = 3
+    PER_PAGE = 2
+    count_users = 0
     if page_number < 0:
         page_number = 0
     req_data: dict = request.get_json()
@@ -101,7 +102,7 @@ def users_filter(page_number):
         'age_max': int(req_data['filter']['age']['max']),
         'rating_min': int(req_data['filter']['rating']['min']),
         'rating_max': int(req_data['filter']['rating']['max']),
-        'order_by_field': req_data['sort']['sort_by'].upper(),
+        'order_by_field': req_data['sort']['sort_by'],
         'order_by': req_data['sort']['order_by'].upper(),
         'limit': PER_PAGE,
         'offset': PER_PAGE * page_number
@@ -147,7 +148,7 @@ def users_filter(page_number):
         if result:
             search_users = result
             count_users = result2
-    return jsonify(users=search_users, total_users=count_users, per_page=PER_PAGE)  # WRONG total_users
+    return jsonify(users=search_users, total_users=count_users, per_page=PER_PAGE)
 
 
 @users.route('/page/<int:page_number>', methods=['GET'])
