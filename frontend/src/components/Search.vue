@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <b-form v-on:submit.prevent="submitSortFilter">
+        <b-form v-on:submit.prevent="sendSortFilter">
     <!-- AGE container -->
             <b-container id="age" class="bv-example-row" fluid>
                 <b-row class="mb-3">
@@ -156,7 +156,7 @@
 <!-- END -->
         <hr>
 
-        <b-form v-on:submit.prevent="submitSortFilter">
+        <b-form v-on:submit.prevent="sendSortFilter">
 <!--            <b-container>-->
                 <h4><b>Sort by</b></h4>
                 <b-row>
@@ -180,10 +180,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
+    // import axios from 'axios';
 
     export default {
         name: "Search.vue",
+        props: ['sort_form','filter'],
         data() {
             return {
                 sort_options: [
@@ -200,62 +201,24 @@
                 //     {tag_id: 5, tag: 'music'},
                 //     {tag_id: 6, tag: 'travel'}
                 // ],
-                sort_form: {
-                    order_by: 'asc',
-                    sort_by: 'id'
-                },
-                filter: {
-                    age: { min: 0, max: 99},
-                    rating: { min: 0, max: 10},
-                    distance: { min: 0, max: 100},
-                    // tags: []
-                }
+                // sort_form: {
+                //     order_by: 'asc',
+                //     sort_by: 'id'
+                // },
+                // filter: {
+                //     age: { min: 0, max: 99},
+                //     rating: { min: 0, max: 10},
+                //     distance: { min: 0, max: 100},
+                //     // tags: []
+                // }
             }
         },
         methods: {
-            // submitFilter() {
-            //     // if (this.sort_form.sort_by === null) {
-            //     //     return(this.$notify({group: 'foo', type: 'error', title: 'Empty sort', text: 'Select field to sort by', duration: -1}))
-            //     // }
-            //     axios.post(this.$root.API_URL + '/users/masha', {
-            //         filter: this.filter
-            //     }, {withCredentials: true})
-            //         .then(response => {
-            //             if(response.status === 200)
-            //             {
-            //                 this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000})
-            //                 // response.data ...
-            //             }
-            //             // TODO: console
-            //             console.log(response)
-            //         })
-            //         .catch(error => {
-            //
-            //             // TODO: console
-            //             console.log(error)
-            //         })
-            // },
-
-            submitSortFilter() {
-                axios.post(this.$root.API_URL + '/users/filter/page/0', {
-                    sort: this.sort_form,
-                    filter: this.filter
-                }, {withCredentials: true})
-                    .then(response => {
-                        if(response.status === 200)
-                        {
-                            this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Users are sorted', duration: 2000});
-                            var response_data = response.data;
-                            this.$emit('updateUserList', response_data);
-                        }
-                        // TODO: console
-                        console.log(response)
-                    })
-                    .catch(error => {
-
-                        // TODO: console
-                        console.log(error)
-                    })
+            sendSortFilter() {
+                var sort = this.sort_form;
+                var filter = this.filter;
+                // console.log(sort, filter);
+                this.$emit('sendSortFilter', sort, filter)
             }
         }
     }

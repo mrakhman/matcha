@@ -1,6 +1,10 @@
 <template>
     <div class="main">
-        <Search v-on:updateUserList="updateUserList"/>
+        <Search
+                v-on:sendSortFilter="updateFilters"
+                :filter="filter"
+                :sort_form="sort_form"
+        />
         <pre class="mt-3 mb-0">{{ users.length }}</pre>
         <pre class="mt-3 mb-0">{{ total_users }}</pre>
         <pre class="mt-3 mb-0">{{ per_page }}</pre>
@@ -25,9 +29,7 @@
                         {{user.tags}} <br>
                         {{user.sex_pref}}
                     </b-card-text>
-
                     <router-link v-bind:to="'users/' + user.id"><b-button variant="outline-primary">Open</b-button></router-link>
-
                 </b-card>
             </div>
         </b-row>
@@ -37,6 +39,7 @@
                     :total-rows="total_users"
                     :items="users"
                     :per-page="per_page"
+                    v-on:input="getUsers"
                     aria-controls="users_list"
             ></b-pagination>
         </div>
@@ -56,32 +59,34 @@ export default {
     data() {
         return {
             current_page: 1,
-            per_page: 4,
-            total_users: 6,
+            per_page: 0,
+            total_users: 0,
             users: [],
-            // profile_image: require('../../img/face.jpg'),
-            // photos: [
-            //     {link: require('../../img/face.jpg')},
-            //     {link: require('../../img/qr.png')},
-            //     {link: require('../../img/computer.png')}
-            // ]
 
+            filter: {
+                age: { min: 0, max: 99},
+                rating: { min: 0, max: 10},
+                distance: { min: 0, max: 100},
+                // tags: []
+            },
+            sort_form: {
+            order_by: 'asc',
+                sort_by: 'id'
+            },
         }
     },
 
     methods: {
+        updateFilters(sort, filter) {
+            this.sort_form = sort;
+            this.filter = filter;
+            this.current_page = 1;
+            this.getUsers();
+        },
         getUsers() {
             axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
-                "filter": {
-                    "age": { "min": 0, "max": 99},
-                    "rating": { "min": 0, "max": 10},
-                    "distance": { "min": 0, "max": 100},
-                    "tags": []
-                },
-                "sort": {
-                    "order_by": "asc",
-                    "sort_by": "id"
-                }
+                filter: this.filter,
+                sort: this.sort_form
             }, {withCredentials: true})
                 .then(response => {
                     this.users = response.data["users"];
@@ -93,11 +98,11 @@ export default {
                 // eslint-disable-next-line
                 .catch(error => console.log(error));
         },
-        updateUserList(response_data) {
-            this.users = response_data["users"];
-            this.total_users = response_data["total_users"];
-            this.per_page = response_data["per_page"];
-        }
+        // updateUserList(response_data) {
+        //     this.users = response_data["users"];
+        //     this.total_users = response_data["total_users"];
+        //     this.per_page = response_data["per_page"];
+        // }
     },
 
     created() {
