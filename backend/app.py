@@ -39,6 +39,7 @@ def app_factory(name):
     flask_app.register_blueprint(notifications, url_prefix="/notifications")
     flask_app.register_blueprint(users, url_prefix="/users")
     flask_app.register_blueprint(tags, url_prefix="/tags")
+    flask_app.register_blueprint(likes, url_prefix="/likes")
 
     CORS(flask_app, supports_credentials=True)
     return flask_app
