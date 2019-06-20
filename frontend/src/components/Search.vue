@@ -184,7 +184,7 @@
 
     export default {
         name: "Search.vue",
-        props: ['sort_form','filter'],
+        props: ['sort_form','filter', 'tags'],
         data() {
             return {
                 sort_options: [

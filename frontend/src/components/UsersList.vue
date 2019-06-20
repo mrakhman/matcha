@@ -67,7 +67,7 @@ export default {
                 age: { min: 0, max: 99},
                 rating: { min: 0, max: 10},
                 distance: { min: 0, max: 100},
-                // tags: []
+                tags: []
             },
             sort_form: {
             order_by: 'asc',
