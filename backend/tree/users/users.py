@@ -276,7 +276,7 @@ def add_personal_details():
         "tags": {
             'required': False,
             'default': None,
-            'type': str,
+            'type': [],
             'validator': None
         },
         "dob": {
@@ -307,8 +307,10 @@ def add_personal_details():
             current_user.bio_text = req_data['bio_text']
 
         if getattr(current_user, 'profile_image') != req_data['profile_image']:
-            
             current_user.profile_image = req_data['profile_image']
+
+        # TODO: Add tag validation
+        current_user.tags = req_data['tags']
 
         current_user.update()
 

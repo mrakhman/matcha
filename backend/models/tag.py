@@ -4,10 +4,10 @@ from .model import Model, Queries
 
 class TagQueries(Queries):
     def __init__(self):
+        self.get_user_tags = self.query("SELECT * FROM tags_array WHERE user_id = $1")
         self.create = self.query("INSERT INTO tags_array (user_id, tags) VALUES ($1, $2)")
-        self.get_user_tags = self.query("SELECT * FROM user_tags WHERE user_id = $1")
-        # self.get_by_id = self.query("SELECT * FROM notifications WHERE id = $1", one=True)
-        self.delete = self.query("DELETE FROM user_tags WHERE user_id = $1 AND $tag_id = $2")
+        self.update = self.query("UPDATE tags_array SET tags = $2 WHERE user_id = $1")
+        # self.delete = self.query("DELETE FROM tags_array WHERE user_id = $1")
 
 
 class Tag(Model):
@@ -18,10 +18,10 @@ class Tag(Model):
             'type': int,
             'validator': None
         },
-        'tag_id': {
-            'required': True,
+        'tags': {
+            'required': False,
             'default': None,
-            'type': int,
+            'type': [],
             'validator': None
         }
     }
@@ -30,7 +30,7 @@ class Tag(Model):
         'public': {
             'fields': [
                 'user_id',
-                'tag_id',
+                'tags'
             ]
         }
     }
@@ -47,8 +47,11 @@ class Tag(Model):
         obj = cls.from_db_row(result)
         return obj
 
-    def create(self):
-        self.queries.create(self.user_id, self.tags)
+    def create(self, user_id):
+        self.queries.create(user_id, getattr(self, 'tags'))
 
-    def delete(self):
-        self.queries.delete(self.id)
+    def update(self, user_id):
+        self.queries.update(user_id, getattr(self, 'tags'))
+
+    # def delete(self, user_id):
+    #     self.queries.delete(user_id)

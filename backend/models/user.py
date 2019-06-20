@@ -90,8 +90,8 @@ class User(Model):
         },
         'tags': {
             'required': False,
-            'default': [],
-            'type': dict,
+            'default': None,
+            'type': [],
             'validator': None
         },
         'profile_image': {
@@ -143,7 +143,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image'
+        'email', 'profile_image', 'tags'
     )
 
     queries = UserQueries()
