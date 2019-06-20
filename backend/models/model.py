@@ -60,6 +60,8 @@ class Model:
         obj = cls()
         for f, props in obj._fields.items():
             if f in d:
+                if type(d[f]) == postgresql.types.Array:
+                    d[f] = tuple(d[f])
                 setattr(obj, f, d[f])
         obj.check_attributes()
         return obj
