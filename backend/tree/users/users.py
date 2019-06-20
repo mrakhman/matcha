@@ -50,7 +50,7 @@ def users_filter(page_number):
     }
     :return:
     """
-    PER_PAGE = 2
+    PER_PAGE = 10
     count_users = 0
     if page_number < 0:
         page_number = 0
@@ -415,9 +415,8 @@ def edit_password():
     current_user = User.get_by_id(session['user_id'])
 
     if current_user and current_user.check_password(req_data["old_password"]):
-        # @TODO: old and new passwords are the same - do we make it an error?
-        if getattr(current_user, 'password'):  # != hash_from_this ->req_data['new_password']:
-            current_user.set_password(req_data["new_password"])
+        # if getattr(current_user, 'password'):  # != hash_from_this ->req_data['new_password']:
+        current_user.set_password(req_data["new_password"])
         current_user.update()
 
         return jsonify({"ok": True})
