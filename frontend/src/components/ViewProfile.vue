@@ -65,7 +65,7 @@
             return {
                 big_photo: '',
                 i_date: '',
-                has_like: true,
+                has_like: false,
                 id: this.$route.params.id,
                 user: {
                     images: [{id: null, src: null}],
