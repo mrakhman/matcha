@@ -14,7 +14,8 @@ create table users
 	bio_text text,
 	profile_image varchar(128),
 	last_connection timestamp,
-	rating integer default 0 not null
+	rating integer default 0 not null,
+	tags character varying[]
 );
 
 alter table users owner to matcha;

@@ -1,14 +1,9 @@
-import random
 from datetime import date, timedelta
 from typing import Optional
 
-from werkzeug.security import generate_password_hash, \
-    check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from utils.images import get_dog_image
 from .model import Model, Queries
-
-temp_users = {}  # @TODO: rm
 
 
 class UserQueries(Queries):
@@ -28,7 +23,13 @@ class UserQueries(Queries):
             ORDER BY {order_by_field} {order_by}
             LIMIT $7 OFFSET $8
             """)
-        self.count = self.query("SELECT COUNT(*) FROM users WHERE date_part('year', age(dob)) BETWEEN $1 AND $2 AND rating BETWEEN $3 AND $4 AND gender = ANY($5) AND sex_pref = ANY($6)")
+        self.count = self.query("""
+            SELECT COUNT(*) FROM users 
+            WHERE date_part('year', age(dob)) BETWEEN $1 AND $2
+            AND rating BETWEEN $3 AND $4
+            AND gender = ANY($5)
+            AND sex_pref = ANY($6)
+            """)
 
 
 class User(Model):
@@ -143,7 +144,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image', 'tags'
+        'email', 'profile_image', 'tags', 'password'
     )
 
     queries = UserQueries()
@@ -170,32 +171,6 @@ class User(Model):
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
-
-    # @classmethod
-    # def from_db(cls, obj_id: int):
-    #     # TODO: remove nahui
-    #     import names
-    #     if obj_id > 1000:
-    #         return None
-    #
-    #     if obj_id in temp_users:
-    #         return temp_users[obj_id]
-    #
-    #     obj = cls()
-    #     obj.id = obj_id
-    #     obj.gender = random.choice(['female', 'male'])
-    #     obj.first_name = names.get_first_name(obj.gender)
-    #     obj.last_name = names.get_last_name()
-    #     obj.username = obj.first_name[0] + obj.last_name
-    #     obj.username = obj.username.lower()
-    #     obj.email = obj.username + '@example.com'
-    #     obj.dob = date.today() - timedelta(random.randint(365 * 20, 365 * 30))
-    #     obj.sex_pref = random.choice(['homo', 'hetero', 'bi'])
-    #     obj.profile_image = get_dog_image()
-    #     password = f"_{obj.id}"
-    #     obj.set_password(password)
-    #     temp_users[obj_id] = obj
-    #     return obj
 
     @classmethod
     def _get_by_unique_field(cls, column: str, value) -> Optional['User']:
@@ -237,6 +212,13 @@ class User(Model):
         obj = cls.from_db_row(result)
         return obj
 
+    @classmethod
+    def count_filtered(cls, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, **kwargs):
+        result = cls.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref)
+        if not result:
+            return 0
+        return result[0][0]
+
     def create(self):
         # @TODO: Check smth?
         self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
@@ -245,11 +227,3 @@ class User(Model):
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
-
-    @classmethod
-    def count(cls, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, **kwargs):
-        result = cls.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref)
-        if not result:
-            return 0
-        return result[0][0]
-

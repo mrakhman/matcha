@@ -1,10 +1,8 @@
-from typing import Union, List
+from typing import Callable, Any, Union, List
 
 import postgresql.types
 
 from db import db
-
-from typing import Callable, Any
 
 
 class Queries:
@@ -17,7 +15,6 @@ class Queries:
             return prepared_query(*args)
         return f
 
-    # get_by_id: function
     get_by_id: Callable[[int], Any]
 
 
@@ -30,7 +27,6 @@ class Model:
 
     def __init__(self):
         self._updated_fields = []
-        # self.id = None
         # Init all attributes:
         for f, props in self._fields.items():
             object.__setattr__(self, f, props['default'])
@@ -65,10 +61,6 @@ class Model:
                 setattr(obj, f, d[f])
         obj.check_attributes()
         return obj
-
-    @classmethod
-    def from_db(cls, obj_id):
-        raise NotImplemented
 
     def check_attributes(self):
         for f, props in self._fields.items():

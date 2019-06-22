@@ -113,7 +113,7 @@ def users_filter(page_number):
         payload['sex_pref'] = ('homo', 'bi')
 
         result = User.get_filtered(**payload)
-        result2 = User.count(**payload)
+        result2 = User.count_filtered(**payload)
         if result:
             search_users = result
             count_users = result2
@@ -121,7 +121,7 @@ def users_filter(page_number):
         payload['sex_pref'] = ('hetero', 'bi')
         
         result = User.get_filtered(**payload)
-        result2 = User.count(**payload)
+        result2 = User.count_filtered(**payload)
         if result:
             search_users += result
             count_users += result2
@@ -135,7 +135,7 @@ def users_filter(page_number):
         payload['sex_pref'] = ('homo', 'bi')
 
         result = User.get_filtered(**payload)
-        result2 = User.count(**payload)
+        result2 = User.count_filtered(**payload)
         if result:
             search_users = result
             count_users = result2
@@ -144,7 +144,7 @@ def users_filter(page_number):
         payload['sex_pref'] = ('hetero', 'bi')
 
         result = User.get_filtered(**payload)
-        result2 = User.count(**payload)
+        result2 = User.count_filtered(**payload)
         if result:
             search_users = result
             count_users = result2
