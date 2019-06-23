@@ -5,6 +5,7 @@ from flask import blueprints, jsonify, abort, current_app, session, request, g, 
 
 from models.user import User
 from models.image import Image
+from models.like import Like
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
@@ -12,6 +13,7 @@ users = blueprints.Blueprint("users", __name__)
 
 
 @users.route('/<int:user_id>', methods=['GET'])
+@authorised_only
 def get_user_by_id(user_id):
     current_app.logger.info(f"Getting user #{user_id}")
     user = User.get_by_id(user_id)
@@ -22,6 +24,9 @@ def get_user_by_id(user_id):
             payload['images'] = []
             if user_images:
                 payload['images'] = [{"src": i.image_src, "id": i.id} for i in user_images]
+        if request.args.get('with_like'):
+            has_like = Like.is_liked(g.current_user.id, user_id)
+            payload['has_like'] = has_like
         return jsonify(user=payload)
     abort(404)
 
@@ -76,6 +81,7 @@ def users_filter(page_number):
     req_data["filter"].setdefault("age", {})
     req_data["filter"].setdefault("rating", {})
     req_data["filter"].setdefault("distance", {})
+    req_data["filter"].setdefault("tags", [])
     # Age
     filter_validation["max"]["default"] = 99
     check_fields(req_data["filter"]["age"], filter_validation)
@@ -88,11 +94,12 @@ def users_filter(page_number):
 
     # Sort
     req_data.setdefault("sort", {})
-    req_data["sort"].setdefault("order_by", "asc")
-    req_data["sort"].setdefault("sort_by", "id")
-    if req_data["sort"]["order_by"] not in ("asc", "desc"):
+    req_data["sort"].setdefault("order_by", "desc")
+    req_data["sort"].setdefault("sort_by", "my_tags")
+    req_data["sort"]["order_by"] = req_data["sort"]["order_by"].upper()
+    if req_data["sort"]["order_by"] not in ("ASC", "DESC"):
         abort(http.HTTPStatus.BAD_REQUEST)
-    if req_data["sort"]["sort_by"] not in ("id", "age", "distance", "rating"):
+    if req_data["sort"]["sort_by"] not in ("id", "age", "distance", "rating", "tags", "my_tags"):
         abort(http.HTTPStatus.BAD_REQUEST)
     # Here we are with all data valid
 
@@ -102,8 +109,10 @@ def users_filter(page_number):
         'age_max': int(req_data['filter']['age']['max']),
         'rating_min': int(req_data['filter']['rating']['min']),
         'rating_max': int(req_data['filter']['rating']['max']),
+        'selected_tags': req_data['filter']['tags'],
+        'my_tags': g.current_user.tags,
         'order_by_field': req_data['sort']['sort_by'],
-        'order_by': req_data['sort']['order_by'].upper(),
+        'order_by': req_data['sort']['order_by'],
         'limit': PER_PAGE,
         'offset': PER_PAGE * page_number
     }

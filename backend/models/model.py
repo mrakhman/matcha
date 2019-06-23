@@ -64,7 +64,7 @@ class Model:
 
     def check_attributes(self):
         for f, props in self._fields.items():
-            if props['required'] and not getattr(self, f, None):
+            if props['required'] and getattr(self, f, None) is None:
                 raise ValueError(f"{f} is required for {self.__class__.__name__}")
 
             if props['required'] and props['validator'] and not props['validator'](getattr(self, f, None)):

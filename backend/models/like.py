@@ -4,24 +4,38 @@ from .model import Model, Queries
 
 class LikeQueries(Queries):
     def __init__(self):
-        self.get_user_tags = self.query("SELECT * FROM tags_array WHERE user_id = $1")
-        self.create = self.query("INSERT INTO tags_array (user_id, tags) VALUES ($1, $2)")
-        self.update = self.query("UPDATE tags_array SET tags = $2 WHERE user_id = $1")
+        self.create = self.query("INSERT INTO likes (f_party, s_party, f2s, s2f) VALUES ($1, $2, $3, $4)")
+        self.update = lambda field: \
+            self.query(f"UPDATE likes SET {field} = $3 WHERE f_party = $1 AND s_party = $2") if field in ('f2s', 's2f') else None
+        self.get = self.query("SELECT * FROM likes WHERE f_party = $1 AND s_party = $2", one=True)
+        # self.get_user_likes = self.query("SELECT * FROM likes WHERE user_id = $1")
         # self.delete = self.query("DELETE FROM tags_array WHERE user_id = $1")
 
 
 class Like(Model):
     _fields = {
-        'user_id': {
-            'required': False,
+        'f_party': {
+            'required': True,
             'default': None,
             'type': int,
             'validator': None
         },
-        'tags': {
-            'required': False,
+        's_party': {
+            'required': True,
             'default': None,
-            'type': [],
+            'type': int,
+            'validator': None
+        },
+        'f2s': {
+            'required': True,
+            'default': False,
+            'type': bool,
+            'validator': None
+        },
+        's2f': {
+            'required': True,
+            'default': False,
+            'type': bool,
             'validator': None
         }
     }
@@ -29,8 +43,10 @@ class Like(Model):
     _views = {
         'public': {
             'fields': [
-                'user_id',
-                'tags'
+                'f_party',
+                's_party',
+                'f2s',
+                's2f'
             ]
         }
     }
@@ -39,19 +55,59 @@ class Like(Model):
 
     queries = LikeQueries()
 
+
     @classmethod
-    def get_user_tags(cls, user_id):
-        result = cls.queries.get_user_tags(user_id)
+    def _create(cls, user1: int, user2: int, f2s: bool, s2f: bool):
+        if user1 == user2:
+            return
+        if user1 > user2:
+            return cls._create(user2, user1, s2f, f2s)
+        cls.queries.create(user1, user2, f2s, s2f)
+
+    @classmethod
+    def _set_state(cls, liker: int, likee: int, value: bool):
+        if liker > likee:
+            cls.queries.update('s2f')(likee, liker, value)
+        elif liker < likee:
+            cls.queries.update('f2s')(liker, likee, value)
+
+    def _self_update(self, field: str, value: bool):
+        cls.queries.update(field)(self.f_party, self.s_party, value)
+
+    @classmethod
+    def get(cls, user1, user2):
+        f_party, s_party = sorted((user1, user2))
+        result = cls.queries.get(f_party, s_party)
         if not result:
             return None
         obj = cls.from_db_row(result)
         return obj
 
-    def create(self, user_id):
-        self.queries.create(user_id, getattr(self, 'tags'))
+    @classmethod
+    def like(cls, liker, likee):
+        if liker == likee:
+            return
+        like_entry = cls.get(liker, likee)
+        if like_entry:
+            cls._set_state(liker, likee, True)
+        else:
+            cls._create(liker, likee, True, False)
 
-    def update(self, user_id):
-        self.queries.update(user_id, getattr(self, 'tags'))
+    @classmethod
+    def unlike(cls, liker, likee):
+        if liker == likee:
+            return
+        like_entry = cls.get(liker, likee)
+        if like_entry:
+            cls._set_state(liker, likee, False)
+        else:
+            cls._create(liker, likee, False, False)
 
-    # def delete(self, user_id):
-    #     self.queries.delete(user_id)
+    @classmethod
+    def is_liked(cls, liker, likee):
+        like = cls.get(liker, likee)
+        if not like:
+            return False
+        if liker < likee:
+            return like.f2s
+        return like.s2f
