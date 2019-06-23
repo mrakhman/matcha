@@ -20,3 +20,9 @@ create table users
 
 alter table users owner to matcha;
 
+create trigger trg_rating
+	after insert or update
+	on users
+	for each row
+	execute procedure update_user_rating_trigger();
+

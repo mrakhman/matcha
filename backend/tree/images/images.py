@@ -24,6 +24,7 @@ def get_image(filename):
 @images.route('/upload', methods=['POST'])
 @authorised_only
 def upload_image():
+    # @TODO: set limit
     file = request.files.get('profile_image')
     source = 'profile_image'
     if not file:
