@@ -20,8 +20,9 @@ class UserQueries(Queries):
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
             AND sex_pref = ANY($6)
+            AND tags @> $7
             ORDER BY {order_by_field} {order_by}
-            LIMIT $7 OFFSET $8
+            LIMIT $8 OFFSET $9
             """)
         self.count = self.query("""
             SELECT COUNT(*) FROM users 
@@ -29,6 +30,7 @@ class UserQueries(Queries):
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
             AND sex_pref = ANY($6)
+            AND tags @> $7
             """)
 
 
@@ -106,6 +108,12 @@ class User(Model):
             'default': None,
             'type': str,
             'validator': None
+        },
+        'rating': {
+            'required': False,
+            'default': None,
+            'type': int,
+            'validator': None
         }
     }
 
@@ -122,7 +130,8 @@ class User(Model):
                 'sex_pref',
                 'tags',
                 'profile_image',
-                'username'
+                'username',
+                'rating'
             ]
         },
         'public': {
@@ -136,7 +145,8 @@ class User(Model):
                 'sex_pref',
                 'tags',
                 'profile_image',
-                'username'
+                'username',
+                'rating'
             ]
         }
     }
@@ -196,16 +206,22 @@ class User(Model):
     def get_filtered(
             cls, *,
             age_min, age_max, rating_min, rating_max,
-            gender, sex_pref, order_by_field, order_by,
+            gender, sex_pref, my_tags, selected_tags, order_by_field, order_by,
             limit, offset):
-        if order_by_field == 'age':
+        reversed_order = {'ASC': 'DESC', 'DESC': 'ASC'}
+        args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset]
+        if order_by_field == 'my_tags':
+            order_by_field = 'count_intersect($10, tags)'
+            order_by = reversed_order[order_by]
+            args.append(my_tags)
+        elif order_by_field == 'tags':
+            order_by_field = 'count_intersect($7, tags)'
+        elif order_by_field == 'age':
             order_by_field = 'dob'
-            if order_by == 'ASC':
-                order_by = 'DESC'
-            elif order_by == 'DESC':
-                order_by = 'ASC'
+            order_by = reversed_order[order_by]
+        print(f"order_by: {order_by}, order_by_field: {order_by_field}")
         result = cls.queries.filter(order_by, order_by_field)(
-            age_min, age_max, rating_min, rating_max, gender, sex_pref, limit, offset
+            *args
         )
         if not result:
             return None
@@ -213,8 +229,8 @@ class User(Model):
         return obj
 
     @classmethod
-    def count_filtered(cls, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, **kwargs):
-        result = cls.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref)
+    def count_filtered(cls, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, **kwargs):
+        result = cls.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags)
         if not result:
             return 0
         return result[0][0]
