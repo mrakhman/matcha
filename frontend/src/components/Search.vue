@@ -190,7 +190,8 @@
                 sort_options: [
                     { value: 'age', text: 'Age', min: 0, max: 99},
                     { value: 'rating', text: 'Fame rating', min: 0, max: 10},
-                    { value: 'distance', text: 'Distance', min: 0, max: 100}
+                    { value: 'distance', text: 'Distance', min: 0, max: 100},
+                    { value: 'tags', text: 'Tags'}
                 ],
                 tag_options: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
                 // tags: [

@@ -29,6 +29,7 @@
 <!--        <h3 class="title"> Details: </h3>-->
 <!--        <h3 class="ml-auto"> Details: </h3>-->
         <b-row><b-col cols="10">
+            <div class="details"> <b> Rating: </b> {{user.rating}} / 10 </div>
             <div class="details"> <b> Name: </b> {{user.first_name}} {{user.last_name}}</div>
             <div class="details"> <b> Gender: </b> {{user.gender}}</div>
             <div class="details"> <b> Age: </b> {{user.age}}</div>
@@ -37,17 +38,18 @@
                 <b> About me: </b><b-col cols="11">{{user.bio_text}}</b-col>
             </b-row></b-col></div>
             <div class="details">
-                <p class="one_line"><b> I like: </b></p>
+                <p class="one_line"><b> My tags: </b></p>
                 <ul class="tags" v-for="tag in user.tags">
-                    <li> {{tag}} </li>
+                    <li> #{{tag}} </li>
                 </ul>
             </div>
         </b-col></b-row>
         <b-row>
             <b-col><div class="details">
                 <p class="one_line">Do you like me?</p>
-                <div v-on:click="has_like = !has_like">
-                    <img v-if="has_like" src="../../img/heart_red.png" width="40">
+<!--                <div v-on:click="user.has_like = !user.has_like">-->
+                <div v-on:click="changeLikeState">
+                    <img v-if="user.has_like" src="../../img/heart_red.png" width="40">
                     <img v-else src="../../img/heart_white.png" width="40">
                 </div>
             </div></b-col>
@@ -103,15 +105,50 @@
                 if (my_pref === 'bi') {
                     return this.i_date = 'boys and girls'
                 }
+            },
+
+            changeLikeState() {
+                // this.user.has_like = !this.user.has_like
+                // Add like
+                if (this.user.has_like === false) {
+                    axios.post(this.$root.API_URL + '/likes/' + this.id, {}, {
+                        withCredentials: true
+                    })
+                        .then(response => {
+                            this.user.has_like = true;
+                            // console.log(response);
+                        })
+                        // TODO: console
+                        // eslint-disable-next-line
+                        .catch(error => console.log(error));
+                }
+                // Remove like
+                else if (this.user.has_like === true) {
+                    axios.delete(this.$root.API_URL + '/likes/' + this.id, {
+                        withCredentials: true
+                    })
+                        .then(response => {
+                            this.user.has_like = false;
+                            // console.log(response);
+                        })
+                        // TODO: console
+                        // eslint-disable-next-line
+                        .catch(error => console.log(error));
+                }
             }
         },
         created() {
             axios.get(this.$root.API_URL + '/users/' + this.id, {
-                params: {with_images: true},
+                params: {
+                    with_images: true,
+                    with_like: true
+                },
                 withCredentials: true
             })
-                .then(response => this.user = response.data.user)
-                // .then(response => console.log(response.data))
+                .then(response => {
+                    this.user = response.data.user;
+                    // console.log(response.data.user);
+                })
                 // TODO: console
                 // eslint-disable-next-line
                 .catch(error => console.log(error));

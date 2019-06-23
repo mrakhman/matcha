@@ -70,8 +70,8 @@ export default {
                 tags: []
             },
             sort_form: {
-            order_by: 'asc',
-                sort_by: 'id'
+                order_by: 'asc',
+                sort_by: 'my_tags'
             },
         }
     },

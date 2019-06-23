@@ -50,7 +50,7 @@
                     <b-col>
                         <FileUpload class="m-1"
                                     uploadFieldName="user_image"
-                                    :max="5"
+                                    :max="4"
                                     :many="true"
                                     v-bind:images="images"
                                     v-on:ImageUploadSuccess="updateImageList"
