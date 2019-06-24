@@ -24,3 +24,9 @@ def mark_as_read(notification_id):
     notification.read = True
     notification.update()
     return jsonify(ok=True)
+
+
+@notifications.route("/send", methods=["POST"])
+@authorised_only
+def add_notification():
+    notification = Notification.create()
