@@ -438,6 +438,7 @@ def send_email():
     message = "I'm testing you again"
     subject = "masha"
     to_email = "mrakhman@student.42.fr"
-    User.send_email(to_email, subject, message)
-    return jsonify({"ok": True})
+    if User.send_email(to_email, subject, message):
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})
 

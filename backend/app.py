@@ -43,7 +43,7 @@ def app_factory(name):
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=True,
         MAIL_USERNAME='robinbad1312@yandex.ru',
-        MAIL_PASSWORD='my_password_baby',
+        MAIL_PASSWORD='parol&pridumai',
     ))
     mail.init_app(flask_app)
 
