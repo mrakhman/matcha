@@ -5,11 +5,9 @@
                 :filter="filter"
                 :sort_form="sort_form"
         />
-        <pre class="mt-3 mb-0">{{ users.length }}</pre>
-        <pre class="mt-3 mb-0">{{ total_users }}</pre>
-        <pre class="mt-3 mb-0">{{ per_page }}</pre>
+        <pre class="mt-3 mb-0">total: {{ total_users }}, per_page: {{ per_page }}</pre>
         <h3> Users List </h3>
-        <b-row>
+        <b-row v-if="users.length > 0">
             <div id="users_list"
                  v-for="user in users"
                  :key="user.id"
@@ -17,6 +15,7 @@
                  :per-page="per_page"
                  :items="users"
             >
+
                 <b-card v-bind:title="user.first_name + ' ' + user.last_name"
                         v-bind:img-src="user.profile_image"
                         img-alt="profile picture"
@@ -24,15 +23,17 @@
                         class="mb-2 add_space"
                 >
                     <b-card-text>
-                        {{user.age}} <br>
-                        {{user.gender}} <br>
+                        Age: {{user.age}} <br>
+                        Rating: {{user.rating}}/10 <br>
+                        Gender: {{user.gender}} <br>
+                        I am: {{user.sex_pref}} <br>
                         {{user.tags}} <br>
-                        {{user.sex_pref}}
                     </b-card-text>
                     <router-link v-bind:to="'users/' + user.id"><b-button variant="outline-primary">Open</b-button></router-link>
                 </b-card>
             </div>
         </b-row>
+        <div v-else class="mb-3"> No users matched your search :( </div>
         <div>
             <b-pagination
                     v-model="current_page"
@@ -73,6 +74,7 @@ export default {
                 order_by: 'asc',
                 sort_by: 'my_tags'
             },
+            i_date: ''
         }
     },
 
