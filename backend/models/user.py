@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from .model import Model, Queries
 
+from flask_mail import Message
+from mail import mail
+
 
 class UserQueries(Queries):
     def __init__(self):
@@ -114,6 +117,12 @@ class User(Model):
             'default': None,
             'type': int,
             'validator': None
+        },
+        'activated': {
+            'required': False,
+            'default': None,
+            'type': bool,
+            'validator': None
         }
     }
 
@@ -131,7 +140,8 @@ class User(Model):
                 'tags',
                 'profile_image',
                 'username',
-                'rating'
+                'rating',
+                'activated'
             ]
         },
         'public': {
@@ -154,7 +164,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image', 'tags', 'password'
+        'email', 'profile_image', 'tags', 'password', 'activated'
     )
 
     queries = UserQueries()
@@ -243,3 +253,16 @@ class User(Model):
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
+
+    # @classmethod
+    # def send_email(cls, subject: str, message: str):
+    #     # mail = Mail()
+    #     # to_email = self.email
+    #     to_email = "mrakhman@student.42.fr"
+    #     msg = Message(subject=subject, sender="mrakhman@student.42.fr", recipients=[to_email])
+    #     msg.body = message
+    #     mail.send(msg)
+    #     return "sent"
+
+
+

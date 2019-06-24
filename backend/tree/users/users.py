@@ -55,7 +55,7 @@ def users_filter(page_number):
     }
     :return:
     """
-    PER_PAGE = 10
+    PER_PAGE = 5
     count_users = 0
     if page_number < 0:
         page_number = 0
@@ -431,3 +431,13 @@ def edit_password():
         return jsonify({"ok": True})
     abort(http.HTTPStatus.UNAUTHORIZED)
     # return jsonify({"ok": False})  # @TODO: think about error handling
+
+
+@users.route('/send_email', methods=['GET'])
+def send_email():
+    message = "I'm testing you again"
+    subject = "masha"
+    to_email = "mrakhman@student.42.fr"
+    User.send_email(to_email, subject, message)
+    return jsonify({"ok": True})
+

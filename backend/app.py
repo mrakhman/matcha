@@ -9,6 +9,7 @@ from werkzeug.exceptions import HTTPException, abort
 from db import db
 from tree import auth, images, notifications, users, tags, likes
 from utils.json_encoder import CustomJSONEncoder
+from mail import mail
 
 APP_NAME = "matcha"
 
@@ -33,6 +34,18 @@ def app_factory(name):
     flask_app.config.from_object('config.DevelopmentConfig')
     flask_app.json_encoder = CustomJSONEncoder
     db.init_app(flask_app)
+
+    # # Mail here
+    flask_app.config.update(dict(
+        DEBUG=True,
+        MAIL_SERVER='smtp.yandex.ru',
+        MAIL_PORT=465,
+        MAIL_USE_TLS=False,
+        MAIL_USE_SSL=True,
+        MAIL_USERNAME='robinbad1312@yandex.ru',
+        MAIL_PASSWORD='my_password_baby',
+    ))
+    mail.init_app(flask_app)
 
     flask_app.register_blueprint(auth, url_prefix="/auth")
     flask_app.register_blueprint(images, url_prefix="/images")
