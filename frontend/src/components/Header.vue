@@ -42,15 +42,15 @@
 
 <!--                    https://bootstrap-vue.js.org/docs/components/dropdown-->
 <!--                    https://profile.intra.42.fr/notifications-->
-                    <div class="text-center">
-                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret v-if="user_id">
+                    <div class="text-center" v-if="user_id">
+                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
                             <template slot="button-content">
                                 <b-badge variant="warning">4</b-badge>
                                 <img alt="Notifications" src="../../img/bell.png" width="30">
                             </template>
-                            <b-dropdown-item href="/notifications">All Notifications</b-dropdown-item>
-                            <b-dropdown-item>Another action</b-dropdown-item>
-                            <b-dropdown-item>Something else here...</b-dropdown-item>
+                            <div v-for="notif in notifs" v-bind:key="notif.id">
+                                <b-dropdown-item>{{notif.text}}</b-dropdown-item>
+                            </div>
                         </b-dropdown>
                     </div>
                     <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>
@@ -79,12 +79,20 @@
         data () {
             return {
                 user: this.$root.$data.user,
-                user_id: this.$root.$data.user_id
+                user_id: this.$root.$data.user_id,
+
+                notifs: [
+                    { id: 4, type: 'message', text: 'you received a new message' },
+                    { id: 3, type: 'like', text: 'XX liked you' },
+                    { id: 2, type: 'view', text: 'ZZ checked your profile' },
+                    { id: 1, type: 'message', text: 'Carney replied' }
+                ]
             }
         },
         props: {
             // session: Object
-        },
+        }
+
         // computed: {
         //     sessionUser() {
         //         return this.session.user_id;
