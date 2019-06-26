@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from .model import Model, Queries
-
+from .user import User
 
 class NotificationQueries(Queries):
     def __init__(self):
-        self.create = self.query("INSERT INTO notifications (user_id, text) VALUES ($1, $2) RETURNING id")
+        self.create = self.query("INSERT INTO notifications (user_id, text, type) VALUES ($1, $2, $3) RETURNING id")
         self.get_user_notifications = self.query("SELECT * FROM notifications WHERE user_id = $1")
         self.get_by_id = self.query("SELECT * FROM notifications WHERE id = $1", one=True)
         self.update_field = lambda field: self.query(f"UPDATE notifications SET {field} = $1 WHERE id = $2")
@@ -25,7 +25,7 @@ class Notification(Model):
             'type': int,
             'validator': None
         },
-        'read': {
+        'is_read': {
             'required': False,
             'default': False,
             'type': bool,
@@ -42,6 +42,12 @@ class Notification(Model):
             'default': None,
             'type': datetime,
             'validator': None
+        },
+        'type': {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
         }
     }
 
@@ -50,14 +56,15 @@ class Notification(Model):
             'fields': [
                 'id',
                 'user_id',
-                'read',
+                'is_read',
                 'text',
-                'created_at'
+                'created_at',
+                'type'
             ]
         }
     }
 
-    _update_watch_fields = ('read',)
+    _update_watch_fields = ('is_read',)
 
     queries = NotificationQueries()
 
@@ -70,8 +77,25 @@ class Notification(Model):
         return obj
 
     def create(self):
-        self.queries.create(self.user_id, self.text)
+        self.queries.create(self.user_id, self.text, self.type)
+        # self.queries.create(getattr(self, 'user_id'), getattr(self, 'text'))
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
 
+    @staticmethod
+    def notification_text(notif_type, sender_id):
+        sender_user = User.get_by_id(sender_id)
+        sender_username = sender_user.username
+        if notif_type == 'like':
+            text = sender_username + " liked your profile"
+            return text
+        if notif_type == 'unlike':
+            text = sender_username + " unliked your profile"
+            return text
+        if notif_type == 'view':
+            text = sender_username + " viewed your profile"
+            return text
+        if notif_type == 'message':
+            text = sender_username + " sent you a message"
+            return text

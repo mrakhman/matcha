@@ -6,6 +6,8 @@ from flask import blueprints, jsonify, abort, current_app, session, request, g, 
 from models.user import User
 from models.image import Image
 from models.like import Like
+from models.notification import Notification
+
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
@@ -27,6 +29,13 @@ def get_user_by_id(user_id):
         if request.args.get('with_like'):
             has_like = Like.is_liked(g.current_user.id, user_id)
             payload['has_like'] = has_like
+
+        # Notification
+        text = Notification.notification_text('view', g.current_user.id)
+        notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
+        notification.create()
+        # TODO: add profile view notification on front
+
         return jsonify(user=payload)
     abort(404)
 
@@ -437,7 +446,7 @@ def edit_password():
 def send_email():
     message = "I'm testing you again"
     subject = "masha"
-    to_email = "mrakhman@student.42.fr"
+    to_email = "ivart@ivart.xyz"
     if User.send_email(to_email, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
