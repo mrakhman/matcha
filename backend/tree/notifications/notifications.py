@@ -1,4 +1,5 @@
 import http
+from datetime import datetime
 
 from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
 
@@ -14,6 +15,7 @@ notifications = blueprints.Blueprint("notifications", __name__)
 @authorised_only
 def get_my_notifications():
     my_notifications = Notification.get_user_notifications(g.current_user.id)
+    # my_notifications.created_at = datetime.fromtimestamp(my_notifications.created_at)
     return jsonify(notifications=my_notifications)
 
 
@@ -26,6 +28,14 @@ def mark_as_read(notification_id):
     notification.is_read = True
     notification.update()
     return jsonify(ok=True)
+
+
+@notifications.route("/all_read", methods=["GET"])
+@authorised_only
+def all_read():
+    if Notification.mark_all_read(g.current_user.id):
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})
 
 
 # @notifications.route("/send", methods=["POST"])

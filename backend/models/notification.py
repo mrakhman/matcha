@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
+
 
 from .model import Model, Queries
 from .user import User
@@ -6,9 +7,10 @@ from .user import User
 class NotificationQueries(Queries):
     def __init__(self):
         self.create = self.query("INSERT INTO notifications (user_id, text, type) VALUES ($1, $2, $3) RETURNING id")
-        self.get_user_notifications = self.query("SELECT * FROM notifications WHERE user_id = $1")
+        self.get_user_notifications = self.query("SELECT * FROM notifications WHERE user_id = $1 AND is_read = FALSE")
         self.get_by_id = self.query("SELECT * FROM notifications WHERE id = $1", one=True)
         self.update_field = lambda field: self.query(f"UPDATE notifications SET {field} = $1 WHERE id = $2")
+        self.mark_all_read = self.query("UPDATE notifications SET is_read = true WHERE user_id = $1")
 
 
 class Notification(Model):
@@ -68,6 +70,13 @@ class Notification(Model):
 
     queries = NotificationQueries()
 
+    @property
+    def created_at(self):
+        if not getattr(self, 'created_at'):
+            return None
+        created_at = datetime.fromtimestamp(self.created_at)
+        return created_at
+
     @classmethod
     def get_user_notifications(cls, user_id):
         result = cls.queries.get_user_notifications(user_id)
@@ -99,3 +108,8 @@ class Notification(Model):
         if notif_type == 'message':
             text = sender_username + " sent you a message"
             return text
+
+    @classmethod
+    def mark_all_read(cls, user_id):
+        cls.queries.mark_all_read(user_id)
+        return True

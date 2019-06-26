@@ -31,11 +31,11 @@ def get_user_by_id(user_id):
             payload['has_like'] = has_like
 
         # Notification
-        text = Notification.notification_text('view', g.current_user.id)
-        notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
-        notification.create()
+        if g.current_user.id != user_id:
+            text = Notification.notification_text('view', g.current_user.id)
+            notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
+            notification.create()
         # TODO: add profile view notification on front
-
         return jsonify(user=payload)
     abort(404)
 
