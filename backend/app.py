@@ -42,8 +42,8 @@ def app_factory(name):
         MAIL_PORT=465,
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=True,
-        MAIL_USERNAME='robinbad1312@yandex.ru',
-        MAIL_PASSWORD='parol&pridumai',
+        MAIL_USERNAME='matcha@coffeebreak42.cf',
+        MAIL_PASSWORD='matcha',
     ))
     mail.init_app(flask_app)
 

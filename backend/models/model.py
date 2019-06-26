@@ -113,7 +113,7 @@ class Model:
 
     @classmethod
     def send_email(cls, to_email: str, subject: str, message: str):
-        msg = Message(subject=subject, sender="robinbad1312@yandex.ru", recipients=[to_email])
+        msg = Message(subject=subject, sender="matcha@coffeebreak42.cf", recipients=[to_email])
         msg.body = message
         mail.send(msg)
         return True
