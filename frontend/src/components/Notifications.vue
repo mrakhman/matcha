@@ -15,25 +15,54 @@
             </b-button>
         </div>
         <div class="table">
-            <b-row><b-col xl="9">
-                <b-table striped bordered v-bind:items="items"></b-table>
-            </b-col></b-row>
+            <b-row>
+                <b-col xl="3"></b-col>
+                <b-col xl="5">
+                    <a v-if="notifications.length > 0" href="#" v-on:click="markAllRead">Mark all as read</a>
+                    <b-table striped bordered :items="notifications" :fields="fields"></b-table>
+                </b-col>
+            </b-row>
         </div>
+        <pre>{{notifications}}</pre>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "Notifications.vue",
         data() {
             return {
-                items: [
-                    { id: 4, type: 'message', text: 'you received a new message' },
-                    { id: 3, type: 'like', text: 'XX liked you' },
-                    { id: 2, type: 'view', text: 'ZZ checked your profile' },
-                    { id: 1, type: 'message', text: 'Carney replied' }
+                fields: ['created_at', 'type', 'text'],
+                notifications: [
                 ]
+                // created_at: null, id: null, is_read: null,
             }
+        },
+        methods: {
+            getNotifications() {
+                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                    .then(response => {
+                        this.notifications = response.data["notifications"];
+                        console.log(response);
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
+            },
+            markAllRead() {
+                axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
+                    .then(response => {
+                        console.log(response);
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
+            }
+        },
+        created() {
+            this.getNotifications();
         }
     }
 </script>

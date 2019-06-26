@@ -45,7 +45,7 @@
                     <div class="text-center" v-if="user_id">
                         <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
                             <template slot="button-content">
-                                <b-badge variant="warning">4</b-badge>
+                                <b-badge variant="warning">{{notifs.length}}</b-badge>
                                 <img alt="Notifications" src="../../img/bell.png" width="30">
                             </template>
                             <div v-for="notif in notifs" v-bind:key="notif.id">
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import Logout from "./Logout";
     import Notifications from "./Notifications";
     // import MyProfile from "./MyProfile";
@@ -82,15 +83,30 @@
                 user_id: this.$root.$data.user_id,
 
                 notifs: [
-                    { id: 4, type: 'message', text: 'you received a new message' },
-                    { id: 3, type: 'like', text: 'XX liked you' },
-                    { id: 2, type: 'view', text: 'ZZ checked your profile' },
-                    { id: 1, type: 'message', text: 'Carney replied' }
+                    // { id: 4, type: 'message', text: 'you received a new message' },
+                    // { id: 3, type: 'like', text: 'XX liked you' },
+                    // { id: 2, type: 'view', text: 'ZZ checked your profile' },
+                    // { id: 1, type: 'message', text: 'Carney replied' }
                 ]
             }
         },
         props: {
             // session: Object
+        },
+        methods: {
+            getNotifications() {
+                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                    .then(response => {
+                        this.notifs = response.data["notifications"];
+                        console.log(response);
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
+            }
+        },
+        created() {
+            this.getNotifications();
         }
 
         // computed: {
