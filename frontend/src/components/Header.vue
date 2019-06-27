@@ -39,17 +39,15 @@
                         <b-button to="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
-
-<!--                    https://bootstrap-vue.js.org/docs/components/dropdown-->
-<!--                    https://profile.intra.42.fr/notifications-->
                     <div class="text-center" v-if="user_id">
                         <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
                             <template slot="button-content">
-                                <b-badge variant="warning">{{notifs.length}}</b-badge>
+                                <b-badge variant="warning" v-if="notifs">{{notifs.length}}</b-badge>
+                                <b-badge variant="warning" v-else>0</b-badge>
                                 <img alt="Notifications" src="../../img/bell.png" width="30">
                             </template>
                             <div v-for="notif in notifs" v-bind:key="notif.id">
-                                <b-dropdown-item>{{notif.text}}</b-dropdown-item>
+                                <b-dropdown-item v-bind:to="'/notifications'">{{notif.text}}</b-dropdown-item>
                             </div>
                         </b-dropdown>
                     </div>

@@ -46,8 +46,8 @@ export default [
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},
     { path: '/', component: Home},
     { path: '/home', component: Home},
-    { path: '/chat', component: Chat},//, beforeEnter: ifNotAuthenticated},
-    { path: '/notifications', component: Notifications},//, beforeEnter: ifNotAuthenticated},
+    { path: '/chat', component: Chat, beforeEnter: ifAuthenticated},
+    { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
     { path: '*', component: NotFound},
 
 // { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
