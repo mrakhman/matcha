@@ -70,12 +70,12 @@ class Notification(Model):
 
     queries = NotificationQueries()
 
-    @property
-    def created_at(self):
-        if not getattr(self, 'created_at'):
-            return None
-        created_at = datetime.fromtimestamp(self.created_at)
-        return created_at
+    # @property
+    # def created_at(self):
+    #     if not getattr(self, 'created_at'):
+    #         return None
+    #     created_at = datetime.fromtimestamp(self.created_at)
+    #     return created_at
 
     @classmethod
     def get_user_notifications(cls, user_id):

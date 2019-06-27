@@ -15,7 +15,6 @@ notifications = blueprints.Blueprint("notifications", __name__)
 @authorised_only
 def get_my_notifications():
     my_notifications = Notification.get_user_notifications(g.current_user.id)
-    # my_notifications.created_at = datetime.fromtimestamp(my_notifications.created_at)
     return jsonify(notifications=my_notifications)
 
 
