@@ -40,7 +40,7 @@
                     </b-button-group>
 
                     <div class="text-center" v-if="user_id">
-                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret>
+                        <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret right>
                             <template slot="button-content">
                                 <b-badge variant="warning" v-if="notifs">{{notifs.length}}</b-badge>
                                 <b-badge variant="warning" v-else>0</b-badge>
