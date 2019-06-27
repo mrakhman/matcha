@@ -254,15 +254,15 @@ class User(Model):
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
 
-    # @classmethod
-    # def send_email(cls, subject: str, message: str):
-    #     # mail = Mail()
-    #     # to_email = self.email
-    #     to_email = "mrakhman@student.42.fr"
-    #     msg = Message(subject=subject, sender="mrakhman@student.42.fr", recipients=[to_email])
+
+    # def send_email(self, subject: str, message: str):
+    #     to = self.email
+    #     msg = Message(subject=subject, sender="matcha@coffeebreak42.cf", recipients=[to])
     #     msg.body = message
     #     mail.send(msg)
-    #     return "sent"
+    #     return True
+
+
 
 
 

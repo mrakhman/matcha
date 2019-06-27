@@ -11,6 +11,8 @@ from models.notification import Notification
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
+from utils.security import send_email, send_activation_email, generate_activation_token, confirm_token
+
 users = blueprints.Blueprint("users", __name__)
 
 
@@ -240,6 +242,11 @@ def create_user():
     new_user = User.from_dict(req_data)
     new_user.set_password(req_data["password"])
     new_user.create()
+
+    # Send activation email
+    token = generate_activation_token(new_user.email)
+    send_activation_email(new_user.email, token)
+
     return jsonify({"ok": True, "user": new_user.get_view("personal")})
 
 
@@ -443,11 +450,13 @@ def edit_password():
 
 
 @users.route('/send_email', methods=['GET'])
-def send_email():
+def send_email_test():
     message = "I'm testing you again"
-    subject = "masha"
-    to_email = "ivart@ivart.xyz"
-    if User.send_email(to_email, subject, message):
+    subject = "Matcha - confirm your email"
+    to_email = "robinbad1312@yandex.ru"
+    if send_email(to_email, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
+
+
 

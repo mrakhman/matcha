@@ -10,6 +10,7 @@ from db import db
 from tree import auth, images, notifications, users, tags, likes
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
+# from signature import signature
 
 APP_NAME = "matcha"
 
@@ -44,8 +45,11 @@ def app_factory(name):
         MAIL_USE_SSL=True,
         MAIL_USERNAME='matcha@coffeebreak42.cf',
         MAIL_PASSWORD='matcha',
+        SECRET_KEY='kukushka',
+        SECURITY_SALT='what_is_salt'
     ))
     mail.init_app(flask_app)
+    # signature.init_app(flask_app)  # TODO: Artem, do I need this line and this import?
 
     flask_app.register_blueprint(auth, url_prefix="/auth")
     flask_app.register_blueprint(images, url_prefix="/images")
