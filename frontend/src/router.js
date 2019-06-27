@@ -13,6 +13,7 @@ import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Notifications from "./components/Notifications";
 import Chat from "./components/Chat";
+import Activation from "./components/Activation";
 
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
@@ -48,6 +49,7 @@ export default [
     { path: '/home', component: Home},
     { path: '/chat', component: Chat, beforeEnter: ifAuthenticated},
     { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
+    { path: '/activation', component: Activation}, //, beforeEnter: ifNotAuthenticated},
     { path: '*', component: NotFound},
 
 // { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
