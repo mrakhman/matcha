@@ -73,6 +73,7 @@
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
                     .then(response => {
                         this.getNotifications();
+                        this.$router.go();
                         console.log(response);
                     })
                     // TODO: console

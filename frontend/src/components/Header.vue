@@ -51,7 +51,7 @@
                             </div>
                         </b-dropdown>
                     </div>
-                    <b-nav-item v-if="user_id">Hello, {{ user.first_name }}!</b-nav-item>
+                    <b-nav-item v-if="user_id">Hello, {{ display_first_name }}!</b-nav-item>
                     <Logout v-if="user_id"/>
 <!--                    v-on:del_session="$emit('del_session')"/>-->
 
@@ -66,17 +66,17 @@
 <script>
     import axios from 'axios'
     import Logout from "./Logout";
-    import Notifications from "./Notifications";
+    // import Notifications from "./Notifications";
     // import MyProfile from "./MyProfile";
 
     export default {
         name: "Header.vue",
         components: {
-            Logout,
-            Notifications
+            Logout
         },
         data () {
             return {
+                display_first_name: null,
                 user: this.$root.$data.user,
                 user_id: this.$root.$data.user_id,
 
@@ -101,10 +101,20 @@
                     // TODO: console
                     // eslint-disable-next-line
                     .catch(error => console.log(error));
+            },
+            getUserFirstName() {
+                axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                    .then(response => {
+                        this.display_first_name = response.data.user.first_name;
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+                    .catch(error => console.log(error));
             }
         },
         created() {
             this.getNotifications();
+            this.getUserFirstName();
         }
 
         // computed: {

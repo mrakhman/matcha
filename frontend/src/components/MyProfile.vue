@@ -103,9 +103,8 @@
                     .then(response => {
                         this.user_details = response.data["user"];
                         this.user_details.dob = this.user_details.dob.substring(0, 10);
-                        return response
+                        // return response // IDK why I need it???
                     })
-                    .then(response => console.log(response))
                     // TODO: console
                     // eslint-disable-next-line
                     .catch(error => console.log(error));
