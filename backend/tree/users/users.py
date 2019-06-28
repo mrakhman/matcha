@@ -459,4 +459,21 @@ def send_email_test():
     return jsonify({"ok": False})
 
 
+@users.route('/activate/<token>', methods=['GET'])
+def activate_user(token):
+    email = confirm_token(token)
+    if not email:
+        abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
+
+    current_user = User.get_by_email(email)
+
+    if not current_user:
+        abort(http.HTTPStatus.NOT_FOUND)
+
+    if current_user.activated == True:
+        return jsonify({"Account already activated, you can login": True})
+    else:
+        current_user.activated = True
+        current_user.update()
+        return jsonify({"ok": True})
 

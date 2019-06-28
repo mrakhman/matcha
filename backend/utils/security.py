@@ -34,7 +34,7 @@ def send_email(to_email, subject, message):
 def send_activation_email(to, token):
     subject = "Matcha - confirm your email"
     message = "Welcome to Matcha! Click the link to verify your email: " \
-              "http://localhost:8080/activation?" + token
+              "http://localhost:8080/activation/" + token
     if send_email(to, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
