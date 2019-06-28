@@ -49,7 +49,7 @@ export default [
     { path: '/home', component: Home},
     { path: '/chat', component: Chat, beforeEnter: ifAuthenticated},
     { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
-    { path: '/activation', component: Activation}, //, beforeEnter: ifNotAuthenticated},
+    { path: '/activation/:token', component: Activation}, //, beforeEnter: ifNotAuthenticated},
     { path: '*', component: NotFound},
 
 // { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted
