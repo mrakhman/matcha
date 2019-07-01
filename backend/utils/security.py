@@ -40,6 +40,15 @@ def send_activation_email(to, token):
     return jsonify({"ok": False})
 
 
+def send_passreset_email(to, token):
+    subject = "Matcha - forgot password"
+    message = "Click the link to reset your password: " \
+              "http://localhost:8080/reset_password/" + token
+    if send_email(to, subject, message):
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})
+
+
 # TODO: app.config import
 # salt=app.config['SECURITY_SALT']
 # app.config['SECRET_KEY']

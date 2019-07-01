@@ -11,7 +11,7 @@ from models.notification import Notification
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
-from utils.security import send_email, send_activation_email, generate_activation_token, confirm_token
+from utils.security import send_email, send_activation_email, send_passreset_email, generate_activation_token, confirm_token
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -500,3 +500,64 @@ def resend_activation():
     send_activation_email(req_data['email'], token)
     return jsonify({"ok": True})
 
+
+@users.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    req_data = request.get_json()
+    form_values = {
+        "email": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': lambda x: '@' in x[1:-1]
+        }
+    }
+    check_fields(req_data, form_values)
+
+    current_user = User.get_by_email(req_data['email'])
+    if not current_user:
+        abort(http.HTTPStatus.NOT_FOUND)  # If user with this email doesn't exist
+
+    # Send activation email
+    token = generate_activation_token(req_data['email'])
+    send_passreset_email(req_data['email'], token)
+    return jsonify({"ok": True})
+
+
+@users.route('/check_passreset_token/<token>', methods=['GET'])
+def check_passreset_token(token):
+    email = confirm_token(token)
+    if not email:
+        abort(http.HTTPStatus.UNAUTHORIZED)  # The passreset link is invalid or has expired
+    current_user = User.get_by_email(email)
+    if not current_user:
+        abort(http.HTTPStatus.NOT_FOUND)
+    return jsonify({"user_email": email})
+
+
+@users.route('/reset_password', methods=['POST'])
+def reset_password():
+    req_data = request.get_json()
+    form_values = {
+        "password": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': None
+        },
+        "email": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': lambda x: '@' in x[1:-1]
+        }
+    }
+    check_fields(req_data, form_values)
+    current_user = User.get_by_email(req_data["email"])
+
+    if current_user:
+        current_user.set_password(req_data["password"])
+        current_user.update()
+
+        return jsonify({"ok": True})
+    abort(http.HTTPStatus.UNAUTHORIZED)
