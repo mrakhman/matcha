@@ -558,6 +558,6 @@ def reset_password():
     if current_user:
         current_user.set_password(req_data["password"])
         current_user.update()
-
         return jsonify({"ok": True})
+
     abort(http.HTTPStatus.UNAUTHORIZED)
