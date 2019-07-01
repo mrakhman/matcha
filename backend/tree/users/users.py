@@ -477,3 +477,26 @@ def activate_user(token):
         current_user.update()
         return jsonify({"ok": True})
 
+
+@users.route('/resend_activation', methods=['POST'])
+def resend_activation():
+    req_data = request.get_json()
+    form_values = {
+        "email": {
+            'required': True,
+            'default': None,
+            'type': str,
+            'validator': lambda x: '@' in x[1:-1]
+        }
+    }
+    check_fields(req_data, form_values)
+
+    current_user = User.get_by_email(req_data['email'])
+    if not current_user:
+        abort(http.HTTPStatus.NOT_FOUND)  # If user with this email doesn't exist
+
+    # Send activation email
+    token = generate_activation_token(req_data['email'])
+    send_activation_email(req_data['email'], token)
+    return jsonify({"ok": True})
+
