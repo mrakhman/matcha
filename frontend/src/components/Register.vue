@@ -144,7 +144,7 @@ import axios from 'axios';
                     has_error = 1;
                 }
 
-                // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // // Show alert on weak password
                 // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
                 // if (!this.form.password.match(reg2))

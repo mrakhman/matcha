@@ -1,7 +1,7 @@
 <template>
 	<div class="main">
 		<div v-if="status === true">
-			<p> Your account is activated! You can now <a href="/login">login</a></p>
+			<p> Your account is activated! You can now <router-link v-bind:to="'/login'">login</router-link></p>
 		</div>
 		<div v-else>
 			<p class="text-danger m-3"> Activation link is damaged or has expired </p>
@@ -14,7 +14,7 @@
 						<b-form-input required v-model="email" type="email"></b-form-input>
 						<b-form-text>You will receive new activation link</b-form-text>
 					</b-form-group>
-					<p class="text-success" v-if="email_sent === true">Email sent!</p>
+					<p class="text-success" v-if="email_sent === true">Check your email!</p>
 					<b-button type="submit" variant="primary">Send</b-button>
 				</form>
 			</b-col></b-row></div>
@@ -37,6 +37,7 @@
 		},
 		methods: {
 			getToken() {
+				this.status = null;
 				axios.get(this.$root.API_URL + '/users/activate/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
@@ -54,6 +55,7 @@
 					})
 			},
 			resendActivation() {
+				this.email_sent = false;
 				axios.post(this.$root.API_URL + '/users/resend_activation', {
 					email: this.email,
 				}, {withCredentials: true})

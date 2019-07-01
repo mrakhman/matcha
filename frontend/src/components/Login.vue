@@ -4,19 +4,18 @@
         <b-row><b-col xl="7">
             <b-alert v-model="input_error" variant="danger" dismissible>Empty input field</b-alert>
             <b-alert v-model="bad_request" variant="danger" dismissible>User does not exist</b-alert>
-            <b-alert show variant="danger">Click the link in your email before login</b-alert>
-            <b-alert v-model="unauthorized" variant="danger" dismissible>Wrong password or email not confirmed</b-alert>
+            <b-alert v-model="forbidden" variant="danger" dismissible>Click activation link in your email before login</b-alert>
+            <b-alert v-model="unauthorized" variant="danger" dismissible>Wrong password</b-alert>
 
             <b-alert v-model="login_success" variant="success" dismissible>User logged in!</b-alert>
 
 
-            <a id="forgot" href="/forgot_password">Forgot password?</a>
+            <router-link id="forgot" v-bind:to="'/forgot_password'">Forgot password?</router-link>
 
             <b-form v-on:submit.prevent="login">
                 <b-form-group id="login_username" label-cols-sm="2" label-cols-lg="2" label="Username" label-for="input-horizontal" required>
                     <b-form-input required v-model="form.username" type="text"></b-form-input>
                     <b-form-text>This is your displayed name</b-form-text>
-                    <small class="text-danger">hello</small> // Can be deleted
                 </b-form-group>
                     <b-form-group id="login_password" label-cols-sm="2" label-cols-lg="2" label="Password" label-for="input-horizontal" required>
                     <b-form-input required v-model="form.password" type="password"></b-form-input>
@@ -44,6 +43,7 @@
                 input_error: false,
                 unauthorized: false,
                 bad_request: false,
+                forbidden: false,
 
                 errors: [] // Can be deleted
             }
@@ -83,8 +83,6 @@
                                 console.log(response);
                                 localStorage.setItem('user_id', response.data.user.id);
                                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                                // this.$root.$data.user_id = response.data.user_id;
-                                // this.$root.$data.user = response.data.context;
                                 this.$router.push('/my_profile');
                                 this.$router.go();
                             })
@@ -117,7 +115,10 @@
                         if (error.response.status === 400) {
                             this.bad_request = true;
                         }
-                        alert('Couldn`t login')
+                        if (error.response.status === 403) {
+                            this.forbidden = true;
+                        }
+                        // alert('Couldn\'t login')
                 });
             },
 

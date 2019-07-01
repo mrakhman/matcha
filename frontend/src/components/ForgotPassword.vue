@@ -1,13 +1,15 @@
 <template>
-    <div class="main"><b-row><b-col xl="6">
+    <div class="main"><b-row><b-col xl="5">
         <h3 class="title"> Forgot password </h3>
         <p> Enter email you registered your account with </p>
-        <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
-            <b-form-input v-model="form.email" type="email"></b-form-input>
-            <b-form-text>You will receive password reset link</b-form-text>
-        </b-form-group>
-        <b-button type="sub mit" variant="primary" v-on:click="submitForgotPassword">Send</b-button>
-
+        <form v-on:submit.prevent="forgotPassword">
+            <b-form-group id="3" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal">
+                <b-form-input required v-model="email" type="email"></b-form-input>
+                <b-form-text>You will receive password reset link</b-form-text>
+            </b-form-group>
+            <p class="text-success" v-if="email_sent === true">Check your email!</p>
+            <b-button type="submit" variant="primary">Send</b-button>
+        </form>
     </b-col></b-row></div>
 </template>
 
@@ -21,20 +23,33 @@ import axios from 'axios';
         name: "ForgotPassword.vue",
         data() {
             return {
-                form: {
-                    email: ''
-                }
+                email: null,
+                email_sent: false
             }
         },
         methods: {
-            submitForgotPassword() {
-                axios.post(this.$root.API_URL + "/api/auth/forgot_password", {
-                    email: this.form.email
-                }).then(response => {
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error)
-                })
+            forgotPassword() {
+                this.email_sent = false;
+                axios.post(this.$root.API_URL + '/users/forgot_password', {
+                    email: this.email,
+                }, {withCredentials: true})
+                    .then(response => {
+                        if(response.status === 200)
+                        {
+                            this.$notify({group: 'foo', type: 'success', title: 'Sent', text: 'Link to reset your password is sent to your email', duration: -1});
+                            this.email = null;
+                            this.email_sent = true;
+                        }
+                        // TODO: console
+                        console.log(response)
+                    })
+                    .catch(error => {
+                        if (error.response.status === 404) {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: -1});
+                        }
+                        // TODO: console
+                        console.log(error)
+                    })
             }
         }
     }

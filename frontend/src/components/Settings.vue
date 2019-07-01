@@ -229,7 +229,7 @@
                     return this.alerts.spaces = true;
                 }
 
-                // Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // // Show alert on weak password
                 // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
                 // if (!this.form_edit.new_password.match(reg2))
@@ -255,7 +255,7 @@
                             this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: -1});
                         }
                         // TODO: console
-                        if (error.response.status !== 401 && error.response.status !== 409)
+                        if (error.response.status !== 401)
                             console.log(error)
                     })
             },
