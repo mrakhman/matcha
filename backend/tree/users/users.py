@@ -584,3 +584,11 @@ def reset_password():
     abort(http.HTTPStatus.UNAUTHORIZED)
 
 
+# Blocked user won't generate any notifications
+@users.route('/block_user/<int:user_id>', methods=['GET'])
+def block_user(user_id):
+    current_user = User.get_by_id(session['user_id'])
+    if not current_user:
+        abort(http.HTTPStatus.UNAUTHORIZED)
+    # next?
+
