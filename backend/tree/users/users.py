@@ -11,7 +11,8 @@ from models.notification import Notification
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
-from utils.security import send_email, send_activation_email, send_passreset_email, generate_activation_token, confirm_token
+from utils.security import send_email, send_activation_email, send_passreset_email, generate_activation_token, \
+    confirm_token, send_newemail_email
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -410,12 +411,33 @@ def edit_email():
         if getattr(current_user, 'email') != req_data['email']:
             if User.get_by_email(req_data['email']):
                 abort(http.HTTPStatus.CONFLICT)  # If another user has this email
-            current_user.email = req_data['email']
-        current_user.update()
+
+            User.save_new_email(current_user.id, req_data['email'])
+
+            # Send activation email
+            token = generate_activation_token(req_data['email'])
+            send_newemail_email(req_data['email'], token)
 
         return jsonify({"ok": True})
     abort(http.HTTPStatus.UNAUTHORIZED)
     # return jsonify({"ok": False})  # @TODO: think about error handling
+
+
+@users.route('/new_email/<token>', methods=['GET'])
+def set_new_email(token):
+    email = confirm_token(token)
+    if not email:
+        abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
+
+    current_user = User.get_by_id(session['user_id'])  # If user is offline I can't update his email
+    # current_user = User.get_by_email(email)
+
+    if not current_user:
+        abort(http.HTTPStatus.NOT_FOUND)
+
+    current_user.email = email
+    current_user.update()
+    return jsonify({"ok": True})
 
 
 @users.route('/edit_password', methods=['POST'])
@@ -449,14 +471,14 @@ def edit_password():
     # return jsonify({"ok": False})  # @TODO: think about error handling
 
 
-@users.route('/send_email', methods=['GET'])
-def send_email_test():
-    message = "I'm testing you again"
-    subject = "Matcha - confirm your email"
-    to_email = "robinbad1312@yandex.ru"
-    if send_email(to_email, subject, message):
-        return jsonify({"ok": True})
-    return jsonify({"ok": False})
+# @users.route('/send_email', methods=['GET'])
+# def send_email_test():
+#     message = "I'm testing you again"
+#     subject = "Matcha - confirm your email"
+#     to_email = "robinbad1312@yandex.ru"
+#     if send_email(to_email, subject, message):
+#         return jsonify({"ok": True})
+#     return jsonify({"ok": False})
 
 
 @users.route('/activate/<token>', methods=['GET'])
@@ -559,5 +581,6 @@ def reset_password():
         current_user.set_password(req_data["password"])
         current_user.update()
         return jsonify({"ok": True})
-
     abort(http.HTTPStatus.UNAUTHORIZED)
+
+

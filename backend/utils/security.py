@@ -49,6 +49,15 @@ def send_passreset_email(to, token):
     return jsonify({"ok": False})
 
 
+def send_newemail_email(to, token):
+    subject = "Matcha - change your email"
+    message = "Click the link to change your email: " \
+              "http://localhost:8080/new_email/" + token
+    if send_email(to, subject, message):
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})
+
+
 # TODO: app.config import
 # salt=app.config['SECURITY_SALT']
 # app.config['SECRET_KEY']

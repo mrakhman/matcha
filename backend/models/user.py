@@ -16,7 +16,8 @@ class UserQueries(Queries):
                                  "VALUES ($1, $2, $3, $4, $5) RETURNING id")
         self.get_by_unique_field = lambda field: self.query(f"SELECT * FROM users WHERE {field} = $1", one=True)
         self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2")
-
+        self.save_new_email = self.query("INSERT INTO change_email (user_id, new_email) "
+                                         "VALUES ($1, $2) RETURNING id")
         self.filter = lambda order_by, order_by_field: self.query(f"""
             SELECT * FROM users 
             WHERE date_part('year', age(dob)) BETWEEN $1 AND $2 
@@ -253,6 +254,10 @@ class User(Model):
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
+
+    @classmethod
+    def save_new_email(cls, user_id, new_email):
+        cls.queries.save_new_email(user_id, new_email)
 
 
     # def send_email(self, subject: str, message: str):
