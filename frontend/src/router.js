@@ -15,6 +15,7 @@ import Notifications from "./components/Notifications";
 import Chat from "./components/Chat";
 import Activation from "./components/Activation";
 import ResetPassword from "./components/ResetPassword";
+import SetNewEmail from "./components/SetNewEmail";
 
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
@@ -52,6 +53,7 @@ export default [
     { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
     { path: '/activation/:token', component: Activation, beforeEnter: ifNotAuthenticated},
     { path: '/reset_password/:token', component: ResetPassword, beforeEnter: ifNotAuthenticated},
+    { path: '/new_email/:token', component: SetNewEmail},
     { path: '*', component: NotFound},
 
 // { path: '/view_profile', component: ViewProfile, beforeEnter: ifAuthenticated}, // This can be deleted

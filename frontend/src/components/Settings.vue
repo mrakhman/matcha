@@ -43,7 +43,7 @@
             </b-form>
 
             <b-alert v-model="alerts.unauthorized" variant="danger" dismissible>Wrong password</b-alert>
-            <b-alert v-model="alerts.email_saved" variant="success" dismissible>Email will be changed after you confirm it, check your email!</b-alert>
+            <b-alert v-model="alerts.email_saved" variant="success" dismissible>Email will be changed after you confirm it, check your email and press activation link!</b-alert>
 
             <b-form v-on:submit.prevent="submitChangeEmail">
                 <b-card class="card_section" bg-variant="light">
@@ -180,7 +180,7 @@
                     .then(response => {
                         if(response.status === 200)
                         {
-                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email!', duration: -1});
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email and press activation link!', duration: -1});
                             this.alerts.email_saved = true;
                         }
                         // TODO: console
