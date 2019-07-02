@@ -24,6 +24,7 @@
                     <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifs</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
+                    <b-nav-item v-bind:to="'/history'">History</b-nav-item>
 <!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
 
 

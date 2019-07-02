@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <h3 class="title"> Notifications </h3>
         <div class="ml-4">
 <!--            <b-badge variant="light">9 <span class="sr-only"></span></b-badge>-->
             <b-button class="notif_button" variant="" v-on:click="notifications = notifications2">

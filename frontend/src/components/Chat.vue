@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <h2>RealTime chat</h2>
+        <h3 class="title"> Real time chat </h3>
         <p v-if="messages.length === 0">No messages yet</p>
         <div class="messages" v-chat-scroll="{always: false, smooth: true}">
             <div v-for="message in messages" :key="message.id">

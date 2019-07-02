@@ -1,5 +1,7 @@
 <template>
     <div class="main">
+        <h3 class="title"> Search </h3>
+        <br>
         <b-form v-on:submit.prevent="sendSortFilter">
     <!-- AGE container -->
             <b-container id="age" class="bv-example-row" fluid>
