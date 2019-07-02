@@ -54,7 +54,11 @@
                 </div>
             </div></b-col>
         </b-row>
-
+        <div id="report" class="mt-5">
+            <a href="#" v-on:click="reportFake"><small> Report this user as fake </small></a>
+            <br>
+            <a href="#" v-on:click="blockUser"><small> Block this user </small></a>
+        </div>
     </div>
 </template>
 
@@ -134,6 +138,20 @@
                         // TODO: console
                         // eslint-disable-next-line
                         .catch(error => console.log(error));
+                }
+            },
+
+            reportFake() {
+                let popup = confirm("This account will be reported as fake and will not appear in your search anymore");
+                if (popup === true) {
+                    alert("Function here!");
+                    axios.get()
+                }
+            },
+            blockUser() {
+                let popup = confirm("This account will be blocked. It will not appear in your search anymore, and will not generate any notifications");
+                if (popup === true) {
+                    alert("Function here!");
                 }
             }
         },
