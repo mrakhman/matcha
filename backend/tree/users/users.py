@@ -34,13 +34,23 @@ def get_user_by_id(user_id):
             has_like = Like.is_liked(g.current_user.id, user_id)
             payload['has_like'] = has_like
 
-        # Notification
-        if g.current_user.id != user_id:
-            text = Notification.notification_text('view', g.current_user.id)
-            notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
-            notification.create()
+        # If I blocked this user [blocked, blocker]
+        if User.user_is_blocked(user_id, g.current_user.id):
+            u_is_blocked = True
+        else:
+            u_is_blocked = False
+        if request.args.get('with_block'):
+            payload['is_blocked'] = u_is_blocked
 
-        # History
+        # If user didn't block me [blocked, blocker]
+        # Send notification
+        if not User.user_is_blocked(g.current_user.id, user_id):
+            if g.current_user.id != user_id:
+                text = Notification.notification_text('view', g.current_user.id)
+                notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
+                notification.create()
+
+        # View history
         if g.current_user.id != user_id:
             History.add_to_history(g.current_user.id, user_id)
 
@@ -590,10 +600,34 @@ def reset_password():
 
 
 # Blocked user won't generate any notifications
-@users.route('/block_user/<int:user_id>', methods=['GET'])
-def block_user(user_id):
+# TODO: problem with double block of same user
+@users.route('/block/<int:blocked_id>', methods=['GET'])
+def block_user(blocked_id):
     current_user = User.get_by_id(session['user_id'])
     if not current_user:
         abort(http.HTTPStatus.UNAUTHORIZED)
-    # next?
+    blocker_id = current_user.id
+    User.block_user(blocked_id, blocker_id)
+    return jsonify({"ok": True})
+    # return jsonify({"Already Blocked": False})
 
+
+# Blocked user won't generate any notifications
+# TODO: problem with double block of same user
+@users.route('/unblock/<int:blocked_id>', methods=['DELETE'])
+def unblock_user(blocked_id):
+    current_user = User.get_by_id(session['user_id'])
+    if not current_user:
+        abort(http.HTTPStatus.UNAUTHORIZED)
+    blocker_id = current_user.id
+    User.unblock_user(blocked_id, blocker_id)
+    return jsonify({"ok": True})
+    # return jsonify({"Already Blocked": False})
+
+
+# @users.route('/is_blocked/<int:user_id>', methods=['GET'])
+# def is_blocked(user_id):
+#     current_user = User.get_by_id(session['user_id'])
+#     if User.user_is_blocked(user_id, current_user.id):
+#         return jsonify({"is_blocked": True})
+#     return jsonify({"is_blocked": False})

@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 from typing import Optional
-
+# from psycopg2 import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .model import Model, Queries
@@ -36,6 +36,10 @@ class UserQueries(Queries):
             AND sex_pref = ANY($6)
             AND tags @> $7
             """)
+
+        self.block_user = self.query("INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
+        self.unblock_user = self.query("DELETE FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
+        self.user_is_blocked = self.query("SELECT * FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
 
 
 class User(Model):
@@ -124,7 +128,25 @@ class User(Model):
             'default': None,
             'type': bool,
             'validator': None
-        }
+        },
+        # 'is_blocked': {
+        #     'required': False,
+        #     'default': None,
+        #     'type': bool,
+        #     'validator': None
+        # },
+        # 'blocked_id': {
+        #     'required': False,
+        #     'default': None,
+        #     'type': str,
+        #     'validator': None
+        # },
+        # 'blocker_id': {
+        #     'required': False,
+        #     'default': None,
+        #     'type': str,
+        #     'validator': None
+        # }
     }
 
     _views = {
@@ -142,7 +164,7 @@ class User(Model):
                 'profile_image',
                 'username',
                 'rating',
-                'activated'
+                'activated',
             ]
         },
         'public': {
@@ -157,7 +179,8 @@ class User(Model):
                 'tags',
                 'profile_image',
                 'username',
-                'rating'
+                'rating',
+                # 'is_blocked'
             ]
         }
     }
@@ -165,7 +188,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image', 'tags', 'password', 'activated'
+        'email', 'profile_image', 'tags', 'password', 'activated', 'is_blocked'
     )
 
     queries = UserQueries()
@@ -259,15 +282,31 @@ class User(Model):
     def save_new_email(cls, user_id, new_email):
         cls.queries.save_new_email(user_id, new_email)
 
+    @classmethod
+    def block_user(cls, blocked_id, blocker_id):
+        cls.queries.block_user(blocked_id, blocker_id)
 
-    # def send_email(self, subject: str, message: str):
-    #     to = self.email
-    #     msg = Message(subject=subject, sender="matcha@coffeebreak42.cf", recipients=[to])
-    #     msg.body = message
-    #     mail.send(msg)
-    #     return True
+    # @classmethod
+    # def block_user(cls, blocked_id, blocker_id):
+    #     try:
+    #         cls.queries.block_user(blocked_id, blocker_id)
+    #     except IntegrityError as e:
+    #         print(e, "caught")  # TODO: Artem, help!
 
+    # I tried:
+    # pip install psycopg2
+    # pip install psycopg2 --no-binary psycopg2
 
+    # Error: pg_config executable not found.
 
+    @classmethod
+    def unblock_user(cls, blocked_id, blocker_id):
+        cls.queries.unblock_user(blocked_id, blocker_id)  # TODO: Artem, help! Same here
 
+    @classmethod
+    def user_is_blocked(cls, blocked_id, blocker_id):
+        result = cls.queries.user_is_blocked(blocked_id, blocker_id)
+        if not result:
+            return False
+        return True
 
