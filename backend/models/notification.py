@@ -8,7 +8,8 @@ from .user import User
 class NotificationQueries(Queries):
     def __init__(self):
         self.create = self.query("INSERT INTO notifications (user_id, text, type) VALUES ($1, $2, $3) RETURNING id")
-        self.get_user_notifications = self.query("SELECT * FROM notifications WHERE user_id = $1 AND is_read = FALSE")
+        self.get_user_notifications = self.query("SELECT * FROM notifications WHERE user_id = $1 AND is_read = FALSE "
+                                                 "ORDER BY created_at DESC")
         self.get_by_id = self.query("SELECT * FROM notifications WHERE id = $1", one=True)
         self.update_field = lambda field: self.query(f"UPDATE notifications SET {field} = $1 WHERE id = $2")
         self.mark_all_read = self.query("UPDATE notifications SET is_read = true WHERE user_id = $1")

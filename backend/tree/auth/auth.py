@@ -30,10 +30,10 @@ def login():
 
     current_user = User.get_by_username(req_data["username"])
 
-    if current_user.activated is not True:
-        abort(http.HTTPStatus.FORBIDDEN)
-
     if current_user and current_user.check_password(req_data["password"]):
+        if current_user.activated is not True:
+            abort(http.HTTPStatus.FORBIDDEN)
+
         session['user_id'] = current_user.id
         return jsonify({'status': 'ok'})
     abort(http.HTTPStatus.UNAUTHORIZED)
