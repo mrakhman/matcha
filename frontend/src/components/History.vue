@@ -1,13 +1,80 @@
 <template>
 	<div class="main">
-		<h3 class="title"> History </h3>
-
+		<h3 class="title"> Visit history </h3>
+		<div class="table">
+			<b-row>
+				<b-col xl="6">
+					<a class="ml-4" v-if="history" href="#" v-on:click="deleteHistory">Delete history</a>
+					<a class="ml-4" v-else>No history</a>
+					<b-table striped bordered :items="history" :fields="fields">
+						<template slot="N" slot-scope="data">
+							{{ data.index + 1 }}
+						</template>
+						<template slot="profile_id" slot-scope="data">
+							<router-link v-bind:to="data.value">link</router-link>
+						</template>
+						<template slot="created_at" slot-scope="data">
+							{{ data.value }}
+						</template>
+					</b-table>
+				</b-col>
+			</b-row>
+		</div>
 	</div>
 </template>
 
 <script>
+	import axios from 'axios';
+
 	export default {
-		name: "History.vue"
+		name: "History.vue",
+		data() {
+			return {
+				fields: [
+					'N',
+					{key: 'profile_id', label: 'Profile',
+						formatter: value => {
+							return '/users/' + value
+						}
+					},
+					{key: 'created_at', label: 'Date',
+						formatter: value => {
+							return value.slice(0, 10) + ' at ' + value.slice(11, 16)
+						}
+					}
+				],
+				history: [],
+				// notifications2: [],
+			}
+		},
+		methods: {
+			getHistory() {
+				axios.get(this.$root.API_URL + '/history/get', {withCredentials: true})
+					.then(response => {
+						this.history = response.data["history"];
+						// this.notifications2 = this.notifications;
+						console.log(response);
+					})
+					// TODO: console
+					// eslint-disable-next-line
+					.catch(error => console.log(error));
+			},
+			deleteHistory() {
+				axios.delete(this.$root.API_URL + '/history/delete', {withCredentials: true})
+					.then(response => {
+						this.getHistory();
+						this.$router.go();
+						console.log(response);
+					})
+					// TODO: console
+					// eslint-disable-next-line
+					.catch(error => console.log(error));
+			}
+		},
+		created() {
+			this.getHistory();
+
+		}
 	}
 </script>
 
