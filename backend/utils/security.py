@@ -10,6 +10,8 @@ from mail import mail
 # from app import app
 from itsdangerous import URLSafeTimedSerializer
 
+LOCAL_URL = "http://localhost:8080"
+
 
 def authorised_only(f):
     @wraps(f)
@@ -34,7 +36,7 @@ def send_email(to_email, subject, message):
 def send_activation_email(to, token):
     subject = "Matcha - confirm your email"
     message = "Welcome to Matcha! Click the link to verify your email: " \
-              "http://localhost:8080/activation/" + token
+              + LOCAL_URL + "/activation/" + token
     if send_email(to, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
@@ -43,7 +45,7 @@ def send_activation_email(to, token):
 def send_passreset_email(to, token):
     subject = "Matcha - forgot password"
     message = "Click the link to reset your password: " \
-              "http://localhost:8080/reset_password/" + token
+              + LOCAL_URL + "/reset_password/" + token
     if send_email(to, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
@@ -52,7 +54,7 @@ def send_passreset_email(to, token):
 def send_newemail_email(to, token):
     subject = "Matcha - change your email"
     message = "Click the link to change your email: " \
-              "http://localhost:8080/new_email/" + token
+              + LOCAL_URL + "/new_email/" + token
     if send_email(to, subject, message):
         return jsonify({"ok": True})
     return jsonify({"ok": False})

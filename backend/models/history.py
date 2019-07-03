@@ -8,14 +8,13 @@ from .user import User
 class HistoryQueries(Queries):
 	def __init__(self):
 		self.add_to_history = self.query("INSERT INTO history (user_id, profile_id) "
-		                                 "VALUES ($1, $2) RETURNING id")
-
-		# Insert username as foreign value by profile_id; assign use_id and profile_id to foreign key
+											"VALUES ($1, $2) RETURNING id")
 
 		self.get_user_history = self.query("SELECT profile_id, created_at, users.username "
-		                                   "FROM history INNER JOIN users "
-		                                   "ON history.profile_id = users.id "
-		                                   "WHERE history.user_id = $1 ORDER BY created_at DESC")
+											"FROM history INNER JOIN users "
+											"ON history.profile_id = users.id "
+											"WHERE history.user_id = $1 ORDER BY created_at DESC")
+
 		self.delete_history = self.query("DELETE FROM history WHERE user_id = $1")
 
 
