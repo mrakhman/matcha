@@ -32,6 +32,7 @@
 			return {
 				fields: [
 					'N',
+					'username',
 					{key: 'profile_id', label: 'Profile',
 						formatter: value => {
 							return '/users/' + value
@@ -44,7 +45,6 @@
 					}
 				],
 				history: [],
-				// notifications2: [],
 			}
 		},
 		methods: {
@@ -52,7 +52,6 @@
 				axios.get(this.$root.API_URL + '/history/get', {withCredentials: true})
 					.then(response => {
 						this.history = response.data["history"];
-						// this.notifications2 = this.notifications;
 						console.log(response);
 					})
 					// TODO: console
