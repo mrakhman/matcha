@@ -6,6 +6,7 @@ from flask import blueprints, jsonify, abort, current_app, session, request, g, 
 from models.user import User
 from models.image import Image
 from models.like import Like
+from models.history import History
 from models.notification import Notification
 
 from utils.form_validator import check_fields
@@ -38,7 +39,11 @@ def get_user_by_id(user_id):
             text = Notification.notification_text('view', g.current_user.id)
             notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
             notification.create()
-        # TODO: add profile view notification on front
+
+        # History
+        if g.current_user.id != user_id:
+            History.add_to_history(g.current_user.id, user_id)
+
         return jsonify(user=payload)
     abort(404)
 

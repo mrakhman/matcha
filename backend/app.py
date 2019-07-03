@@ -7,7 +7,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from db import db
-from tree import auth, images, notifications, users, tags, likes
+from tree import auth, images, notifications, users, tags, likes, history
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
 # from signature import signature
@@ -57,6 +57,7 @@ def app_factory(name):
     flask_app.register_blueprint(users, url_prefix="/users")
     flask_app.register_blueprint(tags, url_prefix="/tags")
     flask_app.register_blueprint(likes, url_prefix="/likes")
+    flask_app.register_blueprint(history, url_prefix="/history")
 
     CORS(flask_app, supports_credentials=True)
     return flask_app

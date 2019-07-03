@@ -66,3 +66,9 @@ def all_read():
 #     notification.create()
 #     return jsonify({"ok": True})
 
+
+@notifications.route("/add_history/<int:profile_id>", methods=["GET"])
+@authorised_only
+def add_history(profile_id):
+    Notification.add_to_history(g.current_user.id, profile_id)
+    return jsonify({"ok": True})
