@@ -5,7 +5,7 @@
             <b-alert v-model="input_error" variant="danger" dismissible>Empty input field</b-alert>
             <b-alert v-model="bad_request" variant="danger" dismissible>User does not exist</b-alert>
             <b-alert v-model="forbidden" variant="danger" dismissible>Click activation link in your email before login</b-alert>
-            <b-alert v-model="unauthorized" variant="danger" dismissible>Wrong password</b-alert>
+            <b-alert v-model="unauthorized" variant="danger" dismissible>Wrong password or user doesn't exist</b-alert>
 
             <b-alert v-model="login_success" variant="success" dismissible>User logged in!</b-alert>
 
