@@ -4,7 +4,8 @@
 		<!--        <b-img src="'../../img/' + {{user.profile_image}}" fluid alt="Profile image"></b-img>-->
 		<b-row id="photos">
 			<b-col>
-				<b-img v-bind:src="user.profile_image" fluid alt="Profile image" width="300"></b-img>
+				<b-img v-if="user.profile_image" v-bind:src="user.profile_image" fluid alt="Profile image" width="300"></b-img>
+				<small v-else>User has no profile image</small>
 			</b-col>
 			<b-col>
 				<b-img ref="big_photo" fluid alt="First image" width="200" rounded
@@ -12,6 +13,7 @@
 					v-bind:id="user.images[0].id"
 					v-bind:src="user.images[0].src"
 				></b-img>
+				<small v-else>No images</small>
 				<b-row>
 
 				</b-row>
@@ -46,6 +48,8 @@
 		</b-col></b-row>
 		<b-row>
 			<b-col><div class="details">
+				<p class="text-danger" v-if="no_photo">Please, upload profile image before liking another user</p>
+				<p class="text-danger" v-if="is_blocked">You can't like user who blocked you</p>
 				<p class="one_line">Do you like me?</p>
 				<!--                <div v-on:click="user.has_like = !user.has_like">-->
 				<div v-on:click="changeLikeState">
@@ -72,6 +76,8 @@
 		name: "CheckProfile.vue",
 		data() {
 			return {
+				no_photo: null,
+				is_blocked: null,
 				big_photo: '',
 				i_date: '',
 				id: this.$route.params.id,
@@ -143,7 +149,17 @@
 						})
 						// TODO: console
 						// eslint-disable-next-line
-						.catch(error => console.log(error));
+						.catch(error => {
+							if (error.response.status === 403) {
+								this.is_blocked = true;
+								this.$notify({group: 'foo', type: 'error', title: 'User blocked you', text: 'You cannot connect with user who blocked you', duration: 3000});
+							}
+							if (error.response.status === 401) {
+								this.no_photo = true;
+								this.$notify({group: 'foo', type: 'error', title: 'Upload profile image', text: 'You cannot connect with another user without profile image', duration: 3000});
+							}
+							console.log(error);
+						});
 				}
 				// Remove like
 				else if (this.user.has_like === true) {
