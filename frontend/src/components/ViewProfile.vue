@@ -56,6 +56,10 @@
 					<img v-if="user.has_like" src="../../img/heart_red.png" width="40">
 					<img v-else src="../../img/heart_white.png" width="40">
 				</div>
+				<div class="mt-3" id="am_i_liked">
+					<small class="likes_me" v-if="user.likes_me"> P.S. <b>{{user.first_name}} {{user.last_name}}</b> likes you :) </small>
+					<small class="likes_me" v-else> <b>{{user.first_name}} {{user.last_name}}</b> didn't like you yet... </small>
+				</div>
 			</div></b-col>
 		</b-row>
 		<div id="report" class="mt-5" v-if="!user.is_blocked">
@@ -241,5 +245,10 @@
 	.details {
 		margin-bottom: 5px;
 		margin-top: 10px;
+	}
+
+	.likes_me {
+		/*color: goldenrod;*/
+		color: #eb6562;
 	}
 </style>
