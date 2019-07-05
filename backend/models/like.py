@@ -8,6 +8,7 @@ class LikeQueries(Queries):
         self.update = lambda field: \
             self.query(f"UPDATE likes SET {field} = $3 WHERE f_party = $1 AND s_party = $2") if field in ('f2s', 's2f') else None
         self.get = self.query("SELECT * FROM likes WHERE f_party = $1 AND s_party = $2", one=True)
+        self.able_to_like = self.query("SELECT profile_image FROM users WHERE profile_image IS NOT NULL AND id = $1")
         # self.get_user_likes = self.query("SELECT * FROM likes WHERE user_id = $1")
         # self.delete = self.query("DELETE FROM tags_array WHERE user_id = $1")
 
@@ -72,7 +73,7 @@ class Like(Model):
             cls.queries.update('f2s')(liker, likee, value)
 
     def _self_update(self, field: str, value: bool):
-        cls.queries.update(field)(self.f_party, self.s_party, value)
+        self.queries.update(field)(self.f_party, self.s_party, value)
 
     @classmethod
     def get(cls, user1, user2):
@@ -111,3 +112,12 @@ class Like(Model):
         if liker < likee:
             return like.f2s
         return like.s2f
+
+    @classmethod
+    def able_to_like(cls, user_id):
+        result = cls.queries.able_to_like(user_id)
+        if not result:
+            return False
+        return True
+
+

@@ -13,7 +13,7 @@ class HistoryQueries(Queries):
 		self.get_user_history = self.query("SELECT profile_id, created_at, users.username "
 											"FROM history INNER JOIN users "
 											"ON history.profile_id = users.id "
-											"WHERE history.user_id = $1 ORDER BY created_at DESC")
+											"WHERE history.user_id = $1 ORDER BY created_at DESC LIMIT 50")
 
 		self.delete_history = self.query("DELETE FROM history WHERE user_id = $1")
 
