@@ -32,7 +32,9 @@ def get_user_by_id(user_id):
                 payload['images'] = [{"src": i.image_src, "id": i.id} for i in user_images]
         if request.args.get('with_like'):
             has_like = Like.is_liked(g.current_user.id, user_id)
+            likes_me = Like.is_liked(user_id, g.current_user.id)
             payload['has_like'] = has_like
+            payload['likes_me'] = likes_me
 
         # If I blocked this user [blocked, blocker]
         if User.user_is_blocked(user_id, g.current_user.id):
