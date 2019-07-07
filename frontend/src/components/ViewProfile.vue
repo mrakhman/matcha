@@ -1,5 +1,10 @@
 <template>
 	<div class="main">
+		<div id="user_not_exist" v-if="user_not_exist">
+			<h3>No user</h3>
+			<p>Sorry, this user doesn't exist</p>
+		</div>
+		<div id="user_exists" v-else>
 		<h3 class="title"> View profile: <b>{{ user.username }}</b> </h3>
 		<!--        <b-img src="'../../img/' + {{user.profile_image}}" fluid alt="Profile image"></b-img>-->
 		<b-row id="photos">
@@ -70,6 +75,8 @@
 		<div class="mt-5" v-else>
 			<p class="text-danger">You blocked or reported this user as fake. <a href="#" v-on:click="undoBlock">Undo</a></p>
 		</div>
+		</div>
+
 	</div>
 </template>
 
@@ -80,6 +87,7 @@
 		name: "CheckProfile.vue",
 		data() {
 			return {
+				user_not_exist: null,
 				no_photo: null,
 				is_blocked: null,
 				big_photo: '',
@@ -138,7 +146,19 @@
 					})
 					// TODO: console
 					// eslint-disable-next-line
-					.catch(error => console.log(error));
+					.catch(error => {
+						if (error.response.status === 404) {
+							this.user_not_exist = true;
+							this.$notify({
+								group: 'foo',
+								type: 'error',
+								title: 'Error #404',
+								text: 'User doesn\t exist',
+								duration: 3000
+							});
+						}
+						console.log(error)
+					});
 			},
 			changeLikeState() {
 				// this.user.has_like = !this.user.has_like
