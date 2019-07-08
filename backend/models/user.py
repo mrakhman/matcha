@@ -1,12 +1,10 @@
-from datetime import date, timedelta
+import postgresql
+from datetime import date, timedelta, datetime
 from typing import Optional
 # from psycopg2 import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from .model import Model, Queries
-
-from flask_mail import Message
-from mail import mail
+import postgresql.exceptions
 
 
 class UserQueries(Queries):
@@ -40,6 +38,7 @@ class UserQueries(Queries):
         self.block_user = self.query("INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
         self.unblock_user = self.query("DELETE FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
         self.user_is_blocked = self.query("SELECT * FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
+        self.update_last_connection = self.query("UPDATE users SET last_connection = NOW() WHERE id = $1")
 
 
 class User(Model):
@@ -129,24 +128,12 @@ class User(Model):
             'type': bool,
             'validator': None
         },
-        # 'is_blocked': {
-        #     'required': False,
-        #     'default': None,
-        #     'type': bool,
-        #     'validator': None
-        # },
-        # 'blocked_id': {
-        #     'required': False,
-        #     'default': None,
-        #     'type': str,
-        #     'validator': None
-        # },
-        # 'blocker_id': {
-        #     'required': False,
-        #     'default': None,
-        #     'type': str,
-        #     'validator': None
-        # }
+        'last_connection': {
+            'required': False,
+            'default': None,
+            'type': datetime,
+            'validator': None
+        },
     }
 
     _views = {
@@ -165,6 +152,8 @@ class User(Model):
                 'username',
                 'rating',
                 'activated',
+                'last_connection',
+                'online'
             ]
         },
         'public': {
@@ -180,7 +169,7 @@ class User(Model):
                 'profile_image',
                 'username',
                 'rating',
-                # 'is_blocked'
+                'online'
             ]
         }
     }
@@ -188,7 +177,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image', 'tags', 'password', 'activated', 'is_blocked'
+        'email', 'profile_image', 'tags', 'password', 'activated',
     )
 
     queries = UserQueries()
@@ -203,6 +192,15 @@ class User(Model):
                 or (today.month == self.dob.month and today.day < self.dob.day):
             age -= 1
         return age
+
+    @property
+    def online(self) -> bool:
+        if not getattr(self, 'last_connection'):
+            return False
+        now = datetime.utcnow()
+        if (now - self.last_connection) < timedelta(minutes=15):
+            return True
+        return False
 
     @property
     def opposite_gender(self):
@@ -284,24 +282,14 @@ class User(Model):
 
     @classmethod
     def block_user(cls, blocked_id, blocker_id):
-        cls.queries.block_user(blocked_id, blocker_id)
-
-    # @classmethod
-    # def block_user(cls, blocked_id, blocker_id):
-    #     try:
-    #         cls.queries.block_user(blocked_id, blocker_id)
-    #     except IntegrityError as e:
-    #         print(e, "caught")  # TODO: Artem, help!
-
-    # I tried:
-    # pip install psycopg2
-    # pip install psycopg2 --no-binary psycopg2
-
-    # Error: pg_config executable not found.
+        try:
+            cls.queries.block_user(blocked_id, blocker_id)
+        except postgresql.exceptions.UniqueError as error:
+            return error
 
     @classmethod
     def unblock_user(cls, blocked_id, blocker_id):
-        cls.queries.unblock_user(blocked_id, blocker_id)  # TODO: Artem, help! Same here
+        cls.queries.unblock_user(blocked_id, blocker_id)
 
     @classmethod
     def user_is_blocked(cls, blocked_id, blocker_id):
@@ -310,3 +298,5 @@ class User(Model):
             return False
         return True
 
+    def made_request(self):
+        self.queries.update_last_connection(self.id)

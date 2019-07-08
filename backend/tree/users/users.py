@@ -12,7 +12,7 @@ from models.notification import Notification
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
-from utils.security import send_email, send_activation_email, send_passreset_email, generate_activation_token, \
+from utils.emails import send_email, send_activation_email, send_passreset_email, generate_activation_token, \
     confirm_token, send_newemail_email
 
 users = blueprints.Blueprint("users", __name__)
@@ -574,8 +574,8 @@ def check_passreset_token(token):
     return jsonify({"user_email": email})
 
 
-@users.route('/reset_password', methods=['POST'])
-def reset_password():
+@users.route('/reset_password/<token>', methods=['POST'])
+def reset_password(token):
     req_data = request.get_json()
     form_values = {
         "password": {
@@ -583,17 +583,14 @@ def reset_password():
             'default': None,
             'type': str,
             'validator': None
-        },
-        "email": {
-            'required': True,
-            'default': None,
-            'type': str,
-            'validator': lambda x: '@' in x[1:-1]
         }
     }
     check_fields(req_data, form_values)
-    current_user = User.get_by_email(req_data["email"])
 
+    email = confirm_token(token)
+    if not email:
+        abort(http.HTTPStatus.UNAUTHORIZED)
+    current_user = User.get_by_email(email)
     if current_user:
         current_user.set_password(req_data["password"])
         current_user.update()
@@ -601,8 +598,6 @@ def reset_password():
     abort(http.HTTPStatus.UNAUTHORIZED)
 
 
-# Blocked user won't generate any notifications
-# TODO: problem with double block of same user
 @users.route('/block/<int:blocked_id>', methods=['GET'])
 def block_user(blocked_id):
     current_user = User.get_by_id(session['user_id'])
@@ -614,8 +609,6 @@ def block_user(blocked_id):
     # return jsonify({"Already Blocked": False})
 
 
-# Blocked user won't generate any notifications
-# TODO: problem with double block of same user
 @users.route('/unblock/<int:blocked_id>', methods=['DELETE'])
 def unblock_user(blocked_id):
     current_user = User.get_by_id(session['user_id'])
@@ -624,7 +617,6 @@ def unblock_user(blocked_id):
     blocker_id = current_user.id
     User.unblock_user(blocked_id, blocker_id)
     return jsonify({"ok": True})
-    # return jsonify({"Already Blocked": False})
 
 
 # @users.route('/is_blocked/<int:user_id>', methods=['GET'])
