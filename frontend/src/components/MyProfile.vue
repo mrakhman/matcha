@@ -1,7 +1,8 @@
 <template>
 <div class="main">
     <h3 class="title"> My profile </h3>
-
+    <p v-if="user_details.online" class="text-success ml-3"><b> Online </b></p>
+    <p v-else class="text-danger ml-3"><b> Offline <br> <small v-if="user_details.last_connection">Last seen: {{last_online_timezone}}</small></b></p>
     <b-tabs content-class="mt-3">
         <b-tab title="About me" active>
             <AboutMe
@@ -28,6 +29,7 @@
     import AboutMe from "./AboutMe";
     import Settings from "./Settings";
     import axios from 'axios';
+    // import Moment from 'moment-timezone';
 
     export default {
         name: "MyProfile.vue",
@@ -38,7 +40,7 @@
         // props: ['user_id'],
         data() {
             return {
-
+                last_online_timezone: null,
                 // user_id: this.$props.user_id,
                 user_details: {},
 
@@ -94,9 +96,6 @@
                 },
             }
         },
-        created() {
-            this.getMe();
-        },
         methods: {
             getMe() {
                 axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
@@ -108,8 +107,16 @@
                     // TODO: console
                     // eslint-disable-next-line
                     .catch(error => console.log(error));
+            },
+            editTimezone() {
+                var moment = require('moment');
+                this.last_online_timezone = moment.tz(this.user_details.last_connection, "Europe/Paris").format('LLL');
             }
-        }
+        },
+        created() {
+            this.getMe();
+            this.editTimezone();
+        },
 
     }
 </script>
