@@ -1,12 +1,13 @@
 import logging
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, session, g
 from flask import request
 from flask.logging import default_handler
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from db import db
+from models.user import User
 from tree import auth, images, notifications, users, tags, likes, history
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
@@ -45,6 +46,8 @@ def app_factory(name):
         MAIL_USE_SSL=True,
         MAIL_USERNAME='matcha@coffeebreak42.cf',
         MAIL_PASSWORD='matcha',
+
+        # for token
         SECRET_KEY='kukushka',
         SECURITY_SALT='what_is_salt'
     ))
@@ -73,6 +76,17 @@ def not_found(error):
         "error": error.name,
         "description": error.description
     }), error.code
+
+
+@app.before_request
+def track_last_connection():
+    g.current_user = None
+    current_user_id = session.get('user_id')
+    if current_user_id and type(current_user_id) == int:
+        current_user = User.get_by_id(current_user_id)
+        if current_user:
+            g.current_user = current_user
+            g.current_user.made_request()
 
 
 @app.route('/')
