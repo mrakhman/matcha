@@ -606,7 +606,6 @@ def block_user(blocked_id):
     blocker_id = current_user.id
     User.block_user(blocked_id, blocker_id)
     return jsonify({"ok": True})
-    # return jsonify({"Already Blocked": False})
 
 
 @users.route('/unblock/<int:blocked_id>', methods=['DELETE'])
