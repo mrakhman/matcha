@@ -31,7 +31,6 @@
 		name: "ResetPassword.vue",
 		data () {
 			return {
-				user_email: null,
 				status: null,
 				token: this.$route.params.token,
 				password: null,
@@ -47,7 +46,6 @@
 						if(response.status === 200)
 						{
 							this.status = true;
-							this.user_email = response.data.user_email;
 							// TODO: console
 							console.log(response)
 						}
@@ -99,9 +97,8 @@
 				if (this.validateFields())
 					return false;
 
-				axios.post(this.$root.API_URL + '/users/reset_password', {
+				axios.post(this.$root.API_URL + '/users/reset_password/' + this.token, {
 					password: this.password,
-					email: this.user_email
 				}, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)

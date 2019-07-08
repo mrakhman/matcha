@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import Routes from './router'
 import Notifications from 'vue-notification'
 import VueChatScroll from 'vue-chat-scroll'
+import Moment from 'moment-timezone'
 // import {Auth} from './auth'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -15,6 +16,7 @@ Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
+Vue.use(Moment);
 
 const router = new VueRouter({
   routes: Routes,
@@ -50,6 +52,7 @@ new Vue({
     user_id: userId ? userId : null,
     user: userData ? JSON.parse(userData) : {},
     // API_URL: "http://ivart:5000",
+    // API_URL: "https://api.coffeebreak42.cf",
     API_URL: "http://localhost:5000",
     LOCAL_URL: "http://localhost:8080"
     // API_URL: " http://127.0.0.1:5000"
