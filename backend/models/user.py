@@ -1,7 +1,7 @@
 import postgresql
+# import pytz
 from datetime import date, timedelta, datetime
 from typing import Optional
-# from psycopg2 import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from .model import Model, Queries
 import postgresql.exceptions
@@ -38,6 +38,7 @@ class UserQueries(Queries):
         self.block_user = self.query("INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
         self.unblock_user = self.query("DELETE FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
         self.user_is_blocked = self.query("SELECT * FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
+
         self.update_last_connection = self.query("UPDATE users SET last_connection = NOW() WHERE id = $1")
 
 
@@ -169,6 +170,7 @@ class User(Model):
                 'profile_image',
                 'username',
                 'rating',
+                'last_connection',
                 'online'
             ]
         }
