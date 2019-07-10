@@ -1,6 +1,11 @@
 <template>
     <div>
+        <pre>{{user_details}}</pre>
         <b-container class="bv-example-row"><b-row><b-col xl="9">
+            <div class="mb-3">
+                <h4>Get my location</h4>
+                <b-button variant="primary">Update location</b-button>
+            </div>
             <h4>Profile main image</h4>
             <b-row id="profile_image_2">
                 <b-col>
