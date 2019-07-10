@@ -14,6 +14,7 @@ from utils.security import authorised_only
 
 from utils.emails import send_email, send_activation_email, send_passreset_email, generate_activation_token, \
     confirm_token, send_newemail_email
+# import simplejson
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -617,6 +618,39 @@ def unblock_user(blocked_id):
     User.unblock_user(blocked_id, blocker_id)
     return jsonify({"ok": True})
 
+
+@users.route('/location', methods=['POST'])
+def update_location():
+    req_data = request.get_json()
+    form_values = {
+        "latitude": {
+            'required': False,
+            'default': None,
+            'type': float,
+            'validator': None
+        },
+        "longitude": {
+            'required': False,
+            'default': None,
+            'type': float,
+            'validator': None
+        }
+    }
+    current_app.logger.info(f"Here we are, the request is: {req_data}")
+    check_fields(req_data, form_values)
+    current_user = User.get_by_id(session['user_id'])
+
+    if current_user:
+        if getattr(current_user, 'latitude') != req_data['latitude']:
+            current_user.latitude = str(req_data['latitude'])
+
+        if getattr(current_user, 'longitude') != req_data['longitude']:
+            current_user.longitude = str(req_data['longitude'])
+
+        current_user.update()
+
+        return jsonify({"ok": True})
+    return jsonify({"ok": False})
 
 # @users.route('/is_blocked/<int:user_id>', methods=['GET'])
 # def is_blocked(user_id):

@@ -135,6 +135,18 @@ class User(Model):
             'type': datetime,
             'validator': None
         },
+        'latitude': {
+            'required': False,
+            'default': None,
+            'type': float,  # why it doesn't complain on data type?
+            'validator': None
+        },
+        'longitude': {
+            'required': False,
+            'default': None,
+            'type': float,  # why it doesn't complain on data type?
+            'validator': None
+        },
     }
 
     _views = {
@@ -154,7 +166,9 @@ class User(Model):
                 'rating',
                 'activated',
                 'last_connection',
-                'online'
+                'online',
+                'latitude',
+                'longitude'
             ]
         },
         'public': {
@@ -171,7 +185,9 @@ class User(Model):
                 'username',
                 'rating',
                 'last_connection',
-                'online'
+                'online',
+                'latitude',
+                'longitude'
             ]
         }
     }
@@ -179,7 +195,7 @@ class User(Model):
     _update_watch_fields = (
         'gender', 'sex_pref', 'dob', 'bio_text',
         'first_name', 'last_name', 'username',
-        'email', 'profile_image', 'tags', 'password', 'activated',
+        'email', 'profile_image', 'tags', 'password', 'activated', 'latitude', 'longitude'
     )
 
     queries = UserQueries()
