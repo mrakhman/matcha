@@ -223,7 +223,10 @@
                 // console.log(sort, filter);
                 this.$emit('sendSortFilter', sort, filter)
             }
-        }
+        },
+        created() {
+            // this.getLocation(); // TODO: silently update user location / ask for permission to get location
+        },
     }
 </script>
 

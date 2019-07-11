@@ -31,16 +31,13 @@
         <b-row>
             <b-col xl="6">
                 <b-row class="m-2">
-<!--                    <b-form v-on:submit.prevent="getLocationByAddress">-->
                         <label for="address">Enter address</label>
                         <b-form-input class="mb-2" id="address" type="text" v-model="address"></b-form-input>
-<!--                        <b-button variant="primary" type="submit" >Search</b-button>-->
                         <b-button variant="outline-primary"
                                   v-bind:disabled="!address"
                                   v-on:click="getLocationByAddress"
                         >Search</b-button>
                         <small class="text-danger m-2" v-if="empty_address">Enter address</small>
-<!--                    </b-form>-->
                 </b-row>
             </b-col>
         </b-row><br>
@@ -87,15 +84,6 @@
             }
         },
         methods: {
-            // showPosition(position) {
-            //     this.lat = position.coords.latitude;
-            //     this.lon = position.coords.longitude;
-            //
-            //     this.geo_info = "Coordinates are updated";
-            // },
-            // geoError() {
-            //     this.geo_info = "You chose not to detect your location";
-            // },
             errorCallback(error) {
                 switch (error.code) {
                     case error.TIMEOUT:
@@ -116,15 +104,7 @@
                 this.geo_info = "Coordinates are updated";
             },
             getLocation() {
-                // if ("geolocation" in navigator) {
-                //     this.geo_info = "Geolocation is available, but blocked by user"
-                //
-                // }
-                // else {
-                //     this.geo_info = "Geolocation is not available"
-                // }
                 if(navigator.geolocation) {
-                    // navigator.geolocation.getCurrentPosition(this.showPosition, this.geoError, this.geo_options);
                     navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
                     this.search_lat = null;
                     this.search_lon = null;
@@ -132,13 +112,6 @@
                 else {
                     this.geo_info = "Geolocation is not supported."
                 }
-            },
-            watchLocation() {
-                if(navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
-                }
-                // this.watchID = navigator.geolocation.watchPosition(this.showPosition, this.geoError, this.geo_options);
-                // this.saveLocation();
             },
             getLocationByAddress() {
                 this.empty_address = null;
@@ -176,37 +149,34 @@
                 }
             },
             saveLocation(lat, lon) {
-                // if(this.lat && this.lon) {
                     axios.post(this.$root.API_URL + '/users/location', {
                         latitude: lat,
                         longitude: lon
                     }, {withCredentials: true})
-                            .then(response => {
-                                if(response.status === 200)
-                                {
-                                    this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
-                                    console.log("Saved to db!");
-                                }
-                                // TODO: console
-                                console.log(response)
-                            })
-                            .catch(error => {
-                                this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
-                                // TODO: console
-                                console.log(error)
-                            })
-                // }
+                        .then(response => {
+                            if(response.status === 200)
+                            {
+                                this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
+                                console.log("Saved to db!");
+                            }
+                            // TODO: console
+                            console.log(response)
+                        })
+                        .catch(error => {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
+                            // TODO: console
+                            console.log(error)
+                        })
             },
-
-
-
-
+            watchLocation() {
+                if(navigator.geolocation) {
+                    this.watchID = navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
+                }
+                // this.saveLocation();
+            }
     },
         created() {
-            if (this.getLocation()) {
-                this.saveLocation(this.lat, this.lon);
-            }
-
+            this.getLocation();
         },
         beforeUpdate() {
             // this.watchLocation(); // TODO: figure our when to update me !!!!!
