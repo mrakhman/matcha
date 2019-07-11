@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <h3>Check your location</h3>
-        <b-button size="lg" variant="success"
+        <b-button block variant="outline-success"
                   v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"
                   v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"
         >Save</b-button>
@@ -35,13 +35,20 @@
                         <label for="address">Enter address</label>
                         <b-form-input class="mb-2" id="address" type="text" v-model="address"></b-form-input>
 <!--                        <b-button variant="primary" type="submit" >Search</b-button>-->
-                        <b-button variant="outline-primary" v-on:click="getLocationByAddress">Search</b-button>
+                        <b-button variant="outline-primary"
+                                  v-bind:disabled="!address"
+                                  v-on:click="getLocationByAddress"
+                        >Search</b-button>
                         <small class="text-danger m-2" v-if="empty_address">Enter address</small>
 <!--                    </b-form>-->
                 </b-row>
             </b-col>
         </b-row><br>
 
+        <b-button block variant="outline-success"
+                  v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"
+                  v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"
+        >Save</b-button>
 
     </div>
 </template>
