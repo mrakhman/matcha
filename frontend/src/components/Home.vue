@@ -1,14 +1,14 @@
 <template>
     <div class="main">
         <h3>Check your location</h3>
-        <b-button block variant="outline-success"
+        <p id="demo">{{geo_info}}</p>
+        <b-button class="mb-3" size="lg" variant="success"
                   v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"
                   v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"
-        >Save</b-button>
-<!--        <pre class="text-danger">Update location, {{watchID}}</pre>-->
-
-        <p id="demo">{{geo_info}}</p>
-        <b-button v-on:click="getLocation" variant="outline-primary">Get my location</b-button>
+        >Save my location</b-button>
+        <!--        <pre class="text-danger">Update location, {{watchID}}</pre>-->
+        <br>
+        <b-button class="mb-3" v-on:click="getLocation" variant="outline-primary">Find me</b-button>
         <h5 v-if="(lat && lon) && (!search_lat && !search_lon)"><b>My location:</b> {{lat}}, {{lon}}</h5>
         <h5 v-if="search_lat && search_lon"><b>Search location:</b> {{search_lat}}, {{search_lon}}</h5>
         <iframe
@@ -45,10 +45,17 @@
             </b-col>
         </b-row><br>
 
-        <b-button block variant="outline-success"
-                  v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"
-                  v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"
-        >Save</b-button>
+        <b-row>
+            <b-col>
+                <b-button block variant="success"
+                          v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"
+                          v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"
+                >Save my location</b-button>
+            </b-col>
+            <b-col>
+
+            </b-col>
+        </b-row>
 
     </div>
 </template>
