@@ -27,16 +27,16 @@
                             <b-col xl="4">
                                 <b-form-input id="age_min" type="range"
                                               v-model="filter.age.min"
-                                              v-bind:min="sort_options[0].min"
-                                              v-bind:max="Math.min(sort_options[0].max, filter.age.max)"
+                                              v-bind:min="sort_options[1].min"
+                                              v-bind:max="Math.min(sort_options[1].max, filter.age.max)"
                                 ></b-form-input>
                             </b-col>
                             <label for="age_max">To</label>
                             <b-col xl="4">
                                 <b-form-input id="age_max" type="range"
                                           v-model="filter.age.max"
-                                          v-bind:min="Math.max(sort_options[0].min, filter.age.min)"
-                                          v-bind:max="sort_options[0].max"
+                                          v-bind:min="Math.max(sort_options[1].min, filter.age.min)"
+                                          v-bind:max="sort_options[1].max"
                                 ></b-form-input>
                             </b-col>
                         </b-row>
@@ -71,16 +71,16 @@
                             <b-col xl="4">
                                 <b-form-input id="rating_min" type="range"
                                               v-model="filter.rating.min"
-                                              v-bind:min="sort_options[1].min"
-                                              v-bind:max="Math.min(sort_options[1].max, filter.rating.max)"
+                                              v-bind:min="sort_options[2].min"
+                                              v-bind:max="Math.min(sort_options[2].max, filter.rating.max)"
                                 ></b-form-input>
                             </b-col>
                             <label for="rating_max">To</label>
                             <b-col xl="4">
                                 <b-form-input id="rating_max" type="range"
                                               v-model="filter.rating.max"
-                                              v-bind:max="sort_options[1].max"
-                                              v-bind:min="Math.max(sort_options[1].min, filter.rating.min)"
+                                              v-bind:max="sort_options[2].max"
+                                              v-bind:min="Math.max(sort_options[2].min, filter.rating.min)"
                                 ></b-form-input>
                             </b-col>
                         </b-row>
@@ -115,16 +115,16 @@
                             <b-col xl="4">
                                 <b-form-input id="distance_min" type="range"
                                               v-model="filter.distance.min"
-                                              v-bind:min="sort_options[2].min"
-                                              v-bind:max="Math.min(sort_options[2].max, filter.distance.max)"
+                                              v-bind:min="sort_options[3].min"
+                                              v-bind:max="Math.min(sort_options[3].max, filter.distance.max)"
                                 ></b-form-input>
                             </b-col>
                             <label for="distance_max">To</label>
                             <b-col xl="4">
                                 <b-form-input id="distance_max" type="range"
                                               v-model="filter.distance.max"
-                                              v-bind:max="sort_options[2].max"
-                                              v-bind:min="Math.max(sort_options[2].min, filter.distance.min)"
+                                              v-bind:max="sort_options[3].max"
+                                              v-bind:min="Math.max(sort_options[3].min, filter.distance.min)"
                                 ></b-form-input>
                             </b-col>
                         </b-row>
@@ -175,8 +175,8 @@
 <!--            </b-container>-->
             <b-button type="submit" variant="primary">Sort</b-button>
         </b-form>
-        <pre class="mt-3 mb-0">{{ sort_form }}</pre>
-        <pre class="mt-3 mb-0">{{ filter }}</pre>
+<!--        <pre class="mt-3 mb-0">{{ sort_form }}</pre>-->
+<!--        <pre class="mt-3 mb-0">{{ filter }}</pre>-->
         <hr>
     </div>
 </template>
@@ -190,6 +190,7 @@
         data() {
             return {
                 sort_options: [
+                    { value: 'my_tags', text: 'My tags matches'},
                     { value: 'age', text: 'Age', min: 0, max: 99},
                     { value: 'rating', text: 'Fame rating', min: 0, max: 10},
                     { value: 'distance', text: 'Distance', min: 0, max: 100},

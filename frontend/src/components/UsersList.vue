@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <Location/>
         <Search
                 v-on:sendSortFilter="updateFilters"
                 :filter="filter"
@@ -51,11 +52,13 @@
 <script>
 import axios from 'axios';
 import Search from "./Search";
+import Location from './Location';
 
 export default {
     name: "UsersList.vue",
     components: {
-        Search
+        Search,
+        Location
     },
     data() {
         return {
@@ -71,10 +74,12 @@ export default {
                 tags: []
             },
             sort_form: {
-                order_by: 'asc',
+                order_by: 'desc',
                 sort_by: 'my_tags'
             },
-            i_date: ''
+            i_date: '',
+            lat: null,
+            lon: null
         }
     },
 
@@ -100,11 +105,111 @@ export default {
                 // eslint-disable-next-line
                 .catch(error => console.log(error));
         },
-        // updateUserList(response_data) {
-        //     this.users = response_data["users"];
-        //     this.total_users = response_data["total_users"];
-        //     this.per_page = response_data["per_page"];
-        // }
+
+
+
+
+
+        errorCallback(error) {
+            switch (error.code) {
+                case error.TIMEOUT:
+                    this.geo_info = "Request timed out";
+                    navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    this.geo_info = "The position of the device could not be determined";
+                    break;
+                case error.PERMISSION_DENIED:
+                    this.geo_info = "No permission to use geolocation";
+                    break;
+            }
+        },
+        successCallback(position) {
+            this.lat = position.coords.latitude;
+            this.lon = position.coords.longitude;
+            this.geo_info = "Coordinates are updated";
+        },
+        getLocation() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
+                this.search_lat = null;
+                this.search_lon = null;
+            }
+            else {
+                this.geo_info = "Geolocation is not supported."
+            }
+        },
+        getLocationByAddress() {
+            this.empty_address = null;
+            this.error_request = null;
+            if(this.address) {
+                const googleMapsClient = require('@google/maps').createClient({
+                    key: 'AIzaSyDxxEhAC0zLdWys3h-ry5jBzbcQObyrDOY',
+                    Promise: Promise
+                });
+
+                googleMapsClient.geocode({address: this.address})
+                        .asPromise()
+                        .then((response) => {
+                            // TODO: console
+                            console.log(response.json);
+
+                            if (response.json.status === "ZERO_RESULTS" ||
+                                    response.json.status === "REQUEST_DENIED" ||
+                                    response.json.status === "ERROR") {
+                                this.error_request = true;
+                            }
+                            if (response.json.status === "OK") {
+                                this.search_lat = response.json.results[0].geometry.location.lat;
+                                this.search_lon = response.json.results[0].geometry.location.lng;
+                            }
+
+                        })
+                        .catch((err) => {
+                            // TODO: console
+                            console.log(err);
+                        });
+            }
+            else {
+                this.empty_address = true
+            }
+        },
+        saveLocation(lat, lon) {
+            axios.post(this.$root.API_URL + '/users/location', {
+                latitude: lat,
+                longitude: lon
+            }, {withCredentials: true})
+                    .then(response => {
+                        if(response.status === 200)
+                        {
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
+                            console.log("Saved to db!");
+                        }
+                        // TODO: console
+                        console.log(response)
+                    })
+                    .catch(error => {
+                        this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
+                        // TODO: console
+                        console.log(error)
+                    })
+        },
+        ipLocation() {
+            axios.get('https://europe-west1-matcha-246115.cloudfunctions.net/geolocation')
+                    .then(response => {
+                        if(response.status === 200)
+                        {
+                            let lat_long = response.data.cityLatLong;
+                            lat_long = lat_long.split(",");
+                            this.lat = lat_long[0];
+                            this.lon = lat_long[1];
+                        }
+                    })
+                    .catch(error => {
+                        // TODO: console
+                        console.log(error)
+                    })
+        }
     },
 
     created() {
