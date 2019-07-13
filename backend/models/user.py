@@ -17,21 +17,34 @@ class UserQueries(Queries):
         self.save_new_email = self.query("INSERT INTO change_email (user_id, new_email) "
                                          "VALUES ($1, $2) RETURNING id")
         self.filter = lambda order_by, order_by_field: self.query(f"""
-            SELECT * FROM users 
+            SELECT * FROM users LEFT JOIN blocked_users 
+            ON users.id = blocked_users.blocked_id
             WHERE date_part('year', age(dob)) BETWEEN $1 AND $2 
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
-            AND sex_pref = ANY($6)
+            AND sex_pref = ANY($6) 
+            AND users.id NOT IN (
+                        SELECT blocked_users.blocked_id 
+                        FROM blocked_users 
+                        WHERE blocked_users.blocked_id = users.id
+                        )
             AND tags @> $7
             ORDER BY {order_by_field} {order_by}
             LIMIT $8 OFFSET $9
             """)
+
         self.count = self.query("""
-            SELECT COUNT(*) FROM users 
+            SELECT COUNT(*) FROM users LEFT JOIN blocked_users 
+            ON users.id = blocked_users.blocked_id
             WHERE date_part('year', age(dob)) BETWEEN $1 AND $2
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
             AND sex_pref = ANY($6)
+            AND users.id NOT IN (
+                        SELECT blocked_users.blocked_id 
+                        FROM blocked_users 
+                        WHERE blocked_users.blocked_id = users.id
+                        )
             AND tags @> $7
             """)
 
