@@ -108,6 +108,10 @@ def users_filter(page_number):
 			'validator': None
 		},
 	}
+
+	# Get location from db - if it doesn't exist - use ip location
+	# req_data["ip_location"]  # TODO: deal with ip location
+
 	req_data.setdefault("filter", {})
 	req_data["filter"].setdefault("age", {})
 	req_data["filter"].setdefault("rating", {})
