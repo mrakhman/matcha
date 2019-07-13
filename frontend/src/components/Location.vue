@@ -3,12 +3,13 @@
         <h3>Tell us your location</h3>
         <p>We will be able to show you closest users</p>
         <p class="text-info" id="demo">{{geo_info}}</p>
+        <p v-if="no_permissions" class="text-warning">Allow location in your browser so that we can find you</p>
 <!--        <b-button class="mb-3" size="lg" variant="success"-->
 <!--                  v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"-->
 <!--                  v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"-->
 <!--        >Save my location</b-button>-->
         <!--        <pre class="text-danger">Update location, {{watchID}}</pre>-->
-        <b-button class="mb-3" v-on:click="getLocation" variant="outline-primary">Find me</b-button>
+        <b-button class="mb-3" v-on:click="handler('getLocation', 'handlePermission')" variant="outline-primary">Find me</b-button>
         <h4 class="mt-2">Search your location</h4>
         <p class="text-danger m-2" v-if="error_request">Nothing found for your search</p>
         <b-row>
@@ -54,9 +55,6 @@
                 >Save my location</b-button>
             </b-col>
             <b-col id="empty_column">
-                <b-button size="lg" variant="success"
-                          v-on:click="ipLocation"
-                >IP location</b-button>
             </b-col>
         </b-row>
         <hr>
@@ -79,7 +77,6 @@
 				},
 				watchID: null,
 
-
 				address: null,
 				// search_lat: 48.896652,
 				// search_lon: 2.318356,
@@ -87,9 +84,17 @@
 				search_lon: null,
 				empty_address: null,
 				error_request: null,
+				no_permissions: null,
+
+                // ip_lat: null,
+                // ip_lon: null,
 			}
 		},
 		methods: {
+			handler() {
+				this.getLocation();
+				this.handlePermission();
+			},
 			errorCallback(error) {
 				switch (error.code) {
 					case error.TIMEOUT:
@@ -109,7 +114,16 @@
 				this.lon = position.coords.longitude;
 				this.geo_info = "Coordinates are updated";
 			},
+			handlePermission() {
+				this.no_permissions = null;
+				navigator.permissions.query({name:'geolocation'})
+                    .then((response) => {
+					if (response.state === 'denied')
+						this.no_permissions = true;
+				});
+			},
 			getLocation() {
+				// this.handlePermission();
 				if(navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
 					this.search_lat = null;
@@ -181,8 +195,8 @@
 						{
 							let lat_long = response.data.cityLatLong;
 							lat_long = lat_long.split(",");
-							this.lat = lat_long[0];
-							this.lon = lat_long[1];
+							this.ip_lat = lat_long[0];
+							this.ip_lon = lat_long[1];
 						}
 					})
 					.catch(error => {
@@ -190,13 +204,17 @@
 						console.log(error)
 					})
 			},
+
 			watchLocation() {
 				if(navigator.geolocation) {
 					this.watchID = navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
 				}
 				// this.saveLocation();
-			}
-		},
+			},
+
+
+
+	},
 		created() {
 			this.getLocation();
 		},

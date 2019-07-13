@@ -60,28 +60,30 @@ export default {
         Search,
         Location
     },
-    data() {
-        return {
-            current_page: 1,
-            per_page: 0,
-            total_users: 0,
-            users: [],
+	data: function () {
+		return {
+			current_page: 1,
+			per_page: 0,
+			total_users: 0,
+			users: [],
 
-            filter: {
-                age: { min: 0, max: 99},
-                rating: { min: 0, max: 10},
-                distance: { min: 0, max: 100},
-                tags: []
-            },
-            sort_form: {
-                order_by: 'desc',
-                sort_by: 'my_tags'
-            },
-            i_date: '',
-            lat: null,
-            lon: null
-        }
-    },
+			filter: {
+				age: {min: 0, max: 99},
+				rating: {min: 0, max: 10},
+				distance: {min: 0, max: 100},
+				tags: []
+			},
+			sort_form: {
+				order_by: 'desc',
+				sort_by: 'my_tags'
+			},
+			i_date: '',
+			ip_location: {
+				ip_lat: null,
+				ip_lon: null
+			}
+		}
+	},
 
     methods: {
         updateFilters(sort, filter) {
@@ -93,7 +95,8 @@ export default {
         getUsers() {
             axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
                 filter: this.filter,
-                sort: this.sort_form
+                sort: this.sort_form,
+                ip_location: this.ip_location
             }, {withCredentials: true})
                 .then(response => {
                     this.users = response.data["users"];
@@ -106,114 +109,25 @@ export default {
                 .catch(error => console.log(error));
         },
 
-
-
-
-
-        errorCallback(error) {
-            switch (error.code) {
-                case error.TIMEOUT:
-                    this.geo_info = "Request timed out";
-                    navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    this.geo_info = "The position of the device could not be determined";
-                    break;
-                case error.PERMISSION_DENIED:
-                    this.geo_info = "No permission to use geolocation";
-                    break;
-            }
-        },
-        successCallback(position) {
-            this.lat = position.coords.latitude;
-            this.lon = position.coords.longitude;
-            this.geo_info = "Coordinates are updated";
-        },
-        getLocation() {
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
-                this.search_lat = null;
-                this.search_lon = null;
-            }
-            else {
-                this.geo_info = "Geolocation is not supported."
-            }
-        },
-        getLocationByAddress() {
-            this.empty_address = null;
-            this.error_request = null;
-            if(this.address) {
-                const googleMapsClient = require('@google/maps').createClient({
-                    key: 'AIzaSyDxxEhAC0zLdWys3h-ry5jBzbcQObyrDOY',
-                    Promise: Promise
-                });
-
-                googleMapsClient.geocode({address: this.address})
-                        .asPromise()
-                        .then((response) => {
-                            // TODO: console
-                            console.log(response.json);
-
-                            if (response.json.status === "ZERO_RESULTS" ||
-                                    response.json.status === "REQUEST_DENIED" ||
-                                    response.json.status === "ERROR") {
-                                this.error_request = true;
-                            }
-                            if (response.json.status === "OK") {
-                                this.search_lat = response.json.results[0].geometry.location.lat;
-                                this.search_lon = response.json.results[0].geometry.location.lng;
-                            }
-
-                        })
-                        .catch((err) => {
-                            // TODO: console
-                            console.log(err);
-                        });
-            }
-            else {
-                this.empty_address = true
-            }
-        },
-        saveLocation(lat, lon) {
-            axios.post(this.$root.API_URL + '/users/location', {
-                latitude: lat,
-                longitude: lon
-            }, {withCredentials: true})
-                    .then(response => {
-                        if(response.status === 200)
-                        {
-                            this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
-                            console.log("Saved to db!");
-                        }
-                        // TODO: console
-                        console.log(response)
-                    })
-                    .catch(error => {
-                        this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
-                        // TODO: console
-                        console.log(error)
-                    })
-        },
         ipLocation() {
-            axios.get('https://europe-west1-matcha-246115.cloudfunctions.net/geolocation')
-                    .then(response => {
-                        if(response.status === 200)
-                        {
-                            let lat_long = response.data.cityLatLong;
-                            lat_long = lat_long.split(",");
-                            this.lat = lat_long[0];
-                            this.lon = lat_long[1];
-                        }
-                    })
-                    .catch(error => {
-                        // TODO: console
-                        console.log(error)
-                    })
-        }
+            return axios.get('https://europe-west1-matcha-246115.cloudfunctions.net/geolocation')
+                .then(response => {
+                    if(response.status === 200) {
+                        let lat_long = response.data.cityLatLong;
+                        lat_long = lat_long.split(",");
+                        this.ip_location.ip_lat = lat_long[0];
+                        this.ip_location.ip_lon = lat_long[1];
+                    }
+                })
+                .catch(error => {
+                    // TODO: console
+                    console.log(error)
+                })
+        },
     },
 
     created() {
-        this.getUsers();
+        this.ipLocation().then(this.getUsers);
     }
 }
 </script>
