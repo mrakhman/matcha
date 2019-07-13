@@ -262,10 +262,10 @@ class User(Model):
         args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset]
         if order_by_field == 'my_tags':
             order_by_field = 'count_intersect($10, tags)'
-            order_by = reversed_order[order_by]
+            # order_by = reversed_order[order_by]
             args.append(my_tags)
         elif order_by_field == 'tags':
-            order_by_field = 'count_intersect($7, tags)'
+            order_by_field = 'COALESCE(array_length(tags, 1), 0)'
         elif order_by_field == 'age':
             order_by_field = 'dob'
             order_by = reversed_order[order_by]
