@@ -11,7 +11,7 @@ LOCAL_URL = "http://localhost:8080"
 
 
 def send_email(to_email, subject, message):
-    msg = Message(subject=subject, sender="matcha@coffeebreak42.cf", recipients=[to_email])
+    msg = Message(subject=subject, sender="matcha@matchaaa.tk", recipients=[to_email])
     msg.body = message
     mail.send(msg)
     return True

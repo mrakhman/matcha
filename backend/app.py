@@ -44,7 +44,7 @@ def app_factory(name):
         MAIL_PORT=465,
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=True,
-        MAIL_USERNAME='matcha@coffeebreak42.cf',
+        MAIL_USERNAME='matcha@matchaaa.tk',
         MAIL_PASSWORD='matcha',
 
         # for token

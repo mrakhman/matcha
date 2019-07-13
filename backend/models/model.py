@@ -110,10 +110,3 @@ class Model:
             return None
         obj = cls.from_db_row(result)
         return obj
-
-    # @classmethod
-    # def send_email(cls, to_email: str, subject: str, message: str):
-    #     msg = Message(subject=subject, sender="matcha@coffeebreak42.cf", recipients=[to_email])
-    #     msg.body = message
-    #     mail.send(msg)
-    #     return True
