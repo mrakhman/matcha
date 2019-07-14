@@ -193,11 +193,11 @@
 						.catch(error => console.log(error));
 				}
 			},
-			sentBlockRequest() {
-				axios.get(this.$root.API_URL + '/users/block/' + this.id, {
+			sendBlockRequest() {
+				axios.post(this.$root.API_URL + '/users/block/' + this.id, {}, {
 					withCredentials: true
 				})
-					.then(response => {
+					.then(() => {
 						this.user.is_blocked = true;
 					})
 					// TODO: console
@@ -208,20 +208,20 @@
 			reportFake() {
 				let popup = confirm("This account will be reported as fake and will not appear in your search anymore");
 				if (popup === true) {
-					this.sentBlockRequest();
+					this.sendBlockRequest();
 				}
 			},
 			blockUser() {
 				let popup = confirm("This account will be blocked. It will not appear in your search anymore, and will not generate any notifications");
 				if (popup === true) {
-					this.sentBlockRequest();
+					this.sendBlockRequest();
 				}
 			},
 			undoBlock() {
-				axios.delete(this.$root.API_URL + '/users/unblock/' + this.id, {
+				axios.delete(this.$root.API_URL + '/users/block/' + this.id, {
 					withCredentials: true
 				})
-					.then(response => {
+					.then(() => {
 						this.user.is_blocked = false;
 					})
 					// TODO: console
