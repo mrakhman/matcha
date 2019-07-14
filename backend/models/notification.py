@@ -57,14 +57,14 @@ class Notification(Model):
 
     _views = {
         'public': {
-            'fields': [
+            'fields': {
                 'id',
                 'user_id',
                 'is_read',
                 'text',
                 'created_at',
                 'type'
-            ]
+            }
         }
     }
 

@@ -28,10 +28,10 @@ class Tag(Model):
 
     _views = {
         'public': {
-            'fields': [
+            'fields': {
                 'user_id',
                 'tags'
-            ]
+            }
         }
     }
 

@@ -54,13 +54,13 @@ class History(Model):
 
 	_views = {
 		'public': {
-			'fields': [
+			'fields': {
 				'id',
 				'user_id',
 				'profile_id',
 				'created_at',
 				'username'
-			]
+			}
 		}
 	}
 

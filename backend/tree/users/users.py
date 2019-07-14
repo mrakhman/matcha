@@ -145,6 +145,8 @@ def users_filter(page_number):
 		'age_max': int(req_data['filter']['age']['max']),
 		'rating_min': int(req_data['filter']['rating']['min']),
 		'rating_max': int(req_data['filter']['rating']['max']),
+		'dist_min': int(req_data['filter']['distance']['min']),
+		'dist_max': int(req_data['filter']['distance']['max']),
 		'selected_tags': req_data['filter']['tags'],
 		'my_tags': g.current_user.tags,
 		'order_by_field': req_data['sort']['sort_by'],

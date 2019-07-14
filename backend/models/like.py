@@ -43,12 +43,12 @@ class Like(Model):
 
     _views = {
         'public': {
-            'fields': [
+            'fields': {
                 'f_party',
                 's_party',
                 'f2s',
                 's2f'
-            ]
+            }
         }
     }
 

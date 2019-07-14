@@ -49,15 +49,21 @@ class UserQueries(Queries):
                         WHERE blocked_users.blocker_id = $10
                         )
             AND tags @> $7
+			AND dist.distance BETWEEN $11 AND $12
             AND users.id != $10
---             AND 
             ORDER BY {order_by_field} {order_by} {nulls_behavior}
             LIMIT $8 OFFSET $9
             """)
 
         self.count = self.query("""
-            SELECT COUNT(*) FROM users LEFT JOIN blocked_users 
-            ON users.id = blocked_users.blocked_id
+            SELECT COUNT(*) FROM users
+            LEFT JOIN (
+                SELECT calculate_distance(u1.latitude, u1.longitude, u2.latitude, u2.longitude, 'K') as distance,
+                 u1.id as user1_id,
+                 u2.id as user2_id
+                FROM users u1
+                CROSS JOIN users u2
+            ) dist on user1_id = $8 AND user2_id = users.id
             WHERE date_part('year', age(dob)) BETWEEN $1 AND $2
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
@@ -69,6 +75,7 @@ class UserQueries(Queries):
                         ) 
             AND users.id != $8
             AND tags @> $7
+            AND dist.distance BETWEEN $9 AND $10
             """)
 
         self.block_user = self.query("INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
@@ -296,12 +303,13 @@ class User(Model):
             self, *,
             age_min, age_max, rating_min, rating_max,
             gender, sex_pref, my_tags, selected_tags, order_by_field, order_by,
-            limit, offset):
+            limit, offset, dist_min, dist_max):
         nulls_behavior = ""
         reversed_order = {'ASC': 'DESC', 'DESC': 'ASC'}
-        args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset, self.id]
+        args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset, self.id,
+                dist_min, dist_max]
         if order_by_field == 'my_tags':
-            order_by_field = 'count_intersect($11, tags)'
+            order_by_field = 'count_intersect($13, tags)'
             # order_by = reversed_order[order_by]
             args.append(my_tags)
         elif order_by_field == 'tags':
@@ -321,8 +329,10 @@ class User(Model):
         obj = self.from_db_row(result)
         return obj
 
-    def count_filtered(self, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, **_):
-        result = self.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, self.id)
+    def count_filtered(self, *, age_min, age_max, rating_min, rating_max, gender, sex_pref,
+                       selected_tags, dist_min, dist_max, **_):
+        result = self.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref,
+                                    selected_tags, self.id, dist_min, dist_max)
         if not result:
             return 0
         return result[0][0]

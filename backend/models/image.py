@@ -35,11 +35,11 @@ class Image(Model):
 
     _views = {
         'public': {
-            'fields': [
+            'fields': {
                 'id',
                 'user_id',
                 'image_src'
-            ]
+            }
         }
     }
 
