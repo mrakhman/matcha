@@ -16,9 +16,29 @@ class UserQueries(Queries):
         self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2")
         self.save_new_email = self.query("INSERT INTO change_email (user_id, new_email) "
                                          "VALUES ($1, $2) RETURNING id")
-        self.filter = lambda order_by, order_by_field: self.query(f"""
-            SELECT * FROM users LEFT JOIN blocked_users 
-            ON users.id = blocked_users.blocked_id
+        self.filter = lambda order_by, order_by_field, nulls_behavior="": self.query(f"""
+            SELECT 
+                users.id,
+                users.first_name,
+                users.last_name,
+                users.email,
+                users.bio_text,
+                users.gender,
+                users.sex_pref,
+                users.tags,
+                users.profile_image,
+                users.username,
+                users.rating,
+                users.last_connection,
+                dist.distance
+             FROM users
+            LEFT JOIN (
+                SELECT calculate_distance(u1.latitude, u1.longitude, u2.latitude, u2.longitude, 'K') as distance,
+                 u1.id as user1_id,
+                 u2.id as user2_id
+                FROM users u1
+                CROSS JOIN users u2
+            ) dist on user1_id = $10 AND user2_id = users.id
             WHERE date_part('year', age(dob)) BETWEEN $1 AND $2 
             AND rating BETWEEN $3 AND $4
             AND gender = ANY($5)
@@ -26,10 +46,12 @@ class UserQueries(Queries):
             AND users.id NOT IN (
                         SELECT blocked_users.blocked_id 
                         FROM blocked_users 
-                        WHERE blocked_users.blocked_id = users.id
+                        WHERE blocked_users.blocker_id = $10
                         )
             AND tags @> $7
-            ORDER BY {order_by_field} {order_by}
+            AND users.id != $10
+--             AND 
+            ORDER BY {order_by_field} {order_by} {nulls_behavior}
             LIMIT $8 OFFSET $9
             """)
 
@@ -43,8 +65,9 @@ class UserQueries(Queries):
             AND users.id NOT IN (
                         SELECT blocked_users.blocked_id 
                         FROM blocked_users 
-                        WHERE blocked_users.blocked_id = users.id
-                        )
+                        WHERE blocked_users.blocker_id = $8
+                        ) 
+            AND users.id != $8
             AND tags @> $7
             """)
 
@@ -160,11 +183,17 @@ class User(Model):
             'type': float,  # why it doesn't complain on data type?
             'validator': None
         },
+        'distance': {
+            'required': False,
+            'default': None,
+            'type': float,  # why it doesn't complain on data type?
+            'validator': None
+        },
     }
 
     _views = {
         'personal': {
-            'fields': [
+            'fields': {
                 'id',
                 'first_name',
                 'last_name',
@@ -182,10 +211,10 @@ class User(Model):
                 'online',
                 'latitude',
                 'longitude'
-            ]
+            }
         },
         'public': {
-            'fields': [
+            'fields': {
                 'id',
                 'first_name',
                 'last_name',
@@ -198,10 +227,8 @@ class User(Model):
                 'username',
                 'rating',
                 'last_connection',
-                'online',
-                'latitude',
-                'longitude'
-            ]
+                'online'
+            }
         }
     }
 
@@ -265,16 +292,16 @@ class User(Model):
     def get_by_id(cls, user_id: int):
         return cls._get_by_unique_field('id', user_id)
 
-    @classmethod
     def get_filtered(
-            cls, *,
+            self, *,
             age_min, age_max, rating_min, rating_max,
             gender, sex_pref, my_tags, selected_tags, order_by_field, order_by,
             limit, offset):
+        nulls_behavior = ""
         reversed_order = {'ASC': 'DESC', 'DESC': 'ASC'}
-        args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset]
+        args = [age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, limit, offset, self.id]
         if order_by_field == 'my_tags':
-            order_by_field = 'count_intersect($10, tags)'
+            order_by_field = 'count_intersect($11, tags)'
             # order_by = reversed_order[order_by]
             args.append(my_tags)
         elif order_by_field == 'tags':
@@ -282,18 +309,20 @@ class User(Model):
         elif order_by_field == 'age':
             order_by_field = 'dob'
             order_by = reversed_order[order_by]
+        elif order_by_field == 'distance':
+            order_by_field = "13"
+            nulls_behavior = "NULLS LAST"
         print(f"order_by: {order_by}, order_by_field: {order_by_field}")
-        result = cls.queries.filter(order_by, order_by_field)(
+        result = self.queries.filter(order_by, order_by_field, nulls_behavior)(
             *args
         )
         if not result:
             return None
-        obj = cls.from_db_row(result)
+        obj = self.from_db_row(result)
         return obj
 
-    @classmethod
-    def count_filtered(cls, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, **kwargs):
-        result = cls.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags)
+    def count_filtered(self, *, age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, **_):
+        result = self.queries.count(age_min, age_max, rating_min, rating_max, gender, sex_pref, selected_tags, self.id)
         if not result:
             return 0
         return result[0][0]

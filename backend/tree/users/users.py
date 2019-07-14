@@ -1,5 +1,6 @@
 import datetime
 import http
+import math
 
 from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
 
@@ -72,20 +73,20 @@ def user_filter_default():
 @authorised_only
 def users_filter(page_number):
 	"""
-    :param page_number: page number
-    :request -> {
-        "filter": {
-            "age": {"min": 0, "max": 99},
-            "rating": {"min": 0, "max": 10},
-            "distance": {"min": 0, "max": 100}
-        },
-        "sort": {
-            "order_by": "asc" (def) | "desc",
-            "sort_by": "id" (def) | "age", "rating", "distance"
-        }
-    }
-    :return:
-    """
+	:param page_number: page number
+	:request -> {
+		"filter": {
+			"age": {"min": 0, "max": 99},
+			"rating": {"min": 0, "max": 10},
+			"distance": {"min": 0, "max": 100}
+		},
+		"sort": {
+			"order_by": "asc" (def) | "desc",
+			"sort_by": "id" (def) | "age", "rating", "distance"
+		}
+	}
+	:return:
+	"""
 	PER_PAGE = 5
 	count_users = 0
 	if page_number < 0:
@@ -138,7 +139,7 @@ def users_filter(page_number):
 		abort(http.HTTPStatus.BAD_REQUEST)
 	# Here we are with all data valid
 
-	search_users = []
+	search_users: [User] = []
 	payload = {
 		'age_min': int(req_data['filter']['age']['min']),
 		'age_max': int(req_data['filter']['age']['max']),
@@ -156,41 +157,52 @@ def users_filter(page_number):
 		payload['gender'] = (g.current_user.gender,)
 		payload['sex_pref'] = ('homo', 'bi')
 
-		result = User.get_filtered(**payload)
+		result = g.current_user.get_filtered(**payload)
 		if result:
 			search_users = result
-			count_users = User.count_filtered(**payload)
+			count_users = g.current_user.count_filtered(**payload)
 		payload['gender'] = (g.current_user.opposite_gender,)
 		payload['sex_pref'] = ('hetero', 'bi')
 
-		result = User.get_filtered(**payload)
+		result = g.current_user.get_filtered(**payload)
 		if result:
 			search_users += result
-			count_users += User.count_filtered(**payload)
+			count_users += g.current_user.count_filtered(**payload)
+
+		def get_sort_key(u: User):
+			if req_data["sort"]["sort_by"] == 'tags':
+				return len(getattr(u, req_data["sort"]["sort_by"]))
+			elif req_data["sort"]["sort_by"] == 'my_tags':
+				return -len(set(u.tags) & set(g.current_user.tags))
+			value = getattr(u, req_data["sort"]["sort_by"])
+			if value is None:
+				if req_data["sort"]["sort_by"] == 'distance':
+					return (math.inf, -math.inf)[req_data["sort"]["order_by"] == 'DESC']
+				return 0
+			return value
+
 		search_users.sort(
-			key=lambda u:
-			len(getattr(u, req_data["sort"]["sort_by"])) if req_data["sort"]["sort_by"] == 'tags'
-			else getattr(u, req_data["sort"]["sort_by"]) if req_data["sort"]["sort_by"] != 'my_tags'
-			else -len(set(u.tags) & set(g.current_user.tags)),
-			reverse=req_data["sort"]["order_by"] == 'desc'
+			key=get_sort_key,
+			reverse=req_data["sort"]["order_by"] == 'DESC'
 		)
 
 	elif g.current_user.sex_pref == 'homo':
 		payload['gender'] = (g.current_user.gender,)
 		payload['sex_pref'] = ('homo', 'bi')
 
-		result = User.get_filtered(**payload)
+		result = g.current_user.get_filtered(**payload)
 		if result:
 			search_users = result
-			count_users = User.count_filtered(**payload)
+			count_users = g.current_user.count_filtered(**payload)
 	else:
 		payload['gender'] = (g.current_user.opposite_gender,)
 		payload['sex_pref'] = ('hetero', 'bi')
 
-		result = User.get_filtered(**payload)
+		result = g.current_user.get_filtered(**payload)
 		if result:
 			search_users = result
-			count_users = User.count_filtered(**payload)
+			count_users = g.current_user.count_filtered(**payload)
+	search_users = [u.get_view(with_attr={"distance"}) for u in search_users]
 	return jsonify(users=search_users, total_users=count_users, per_page=PER_PAGE)
 
 
@@ -278,13 +290,6 @@ def get_all():
 	user_rows = User.queries.get_all()
 	result = User.from_db_row(user_rows)
 	return jsonify(users=result)
-
-
-@users.route('/create', methods=['GET'])
-def create_many():
-	u = User.from_db(1)
-	u.create()
-	return jsonify({"ok": True})
 
 
 @users.route('/edit_profile', methods=['POST'])
@@ -607,7 +612,7 @@ def reset_password(token):
 	abort(http.HTTPStatus.UNAUTHORIZED)
 
 
-@users.route('/block/<int:blocked_id>', methods=['GET'])
+@users.route('/block/<int:blocked_id>', methods=['POST'])
 def block_user(blocked_id):
 	current_user = User.get_by_id(session['user_id'])
 	if not current_user:
@@ -617,7 +622,7 @@ def block_user(blocked_id):
 	return jsonify({"ok": True})
 
 
-@users.route('/unblock/<int:blocked_id>', methods=['DELETE'])
+@users.route('/block/<int:blocked_id>', methods=['DELETE'])
 def unblock_user(blocked_id):
 	current_user = User.get_by_id(session['user_id'])
 	if not current_user:

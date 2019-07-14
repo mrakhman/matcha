@@ -4,9 +4,6 @@ import postgresql.types
 
 from db import db
 
-from flask_mail import Message
-from mail import mail
-
 
 class Queries:
     @staticmethod
@@ -80,12 +77,14 @@ class Model:
             return False
         return True
 
-    def get_view(self, view="public") -> dict:
+    def get_view(self, view="public", with_attr=None) -> dict:
+        if with_attr is None:
+            with_attr = set()
         dict_obj = {}
         if view not in self._views:
             return dict_obj
 
-        for f in self._views[view]['fields']:
+        for f in self._views[view]['fields'] | with_attr:
             dict_obj[f] = getattr(self, f)
         return dict_obj
 
