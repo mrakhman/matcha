@@ -30,8 +30,7 @@
 						{
 							this.status = true;
 							this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Your email is changed', duration: 3000});
-							// TODO: console
-							console.log(response)
+							// console.log(response)
 						}
 					})
 					.catch(error => {

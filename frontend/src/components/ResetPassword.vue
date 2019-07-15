@@ -46,8 +46,7 @@
 						if(response.status === 200)
 						{
 							this.status = true;
-							// TODO: console
-							console.log(response)
+							// console.log(response)
 						}
 					})
 					.catch(error => {
@@ -108,8 +107,7 @@
 							this.password = null;
 							this.repeat_password = null;
 						}
-						// TODO: console
-						console.log(response)
+						// console.log(response)
 					})
 					.catch(error => {
 						// TODO: console

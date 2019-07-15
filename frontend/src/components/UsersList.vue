@@ -102,7 +102,7 @@ export default {
                     this.users = response.data["users"];
                     this.total_users = response.data["total_users"];
                     this.per_page = response.data["per_page"];
-                    console.log(response);
+                    // console.log(response);
                 })
                 // TODO: console
                 // eslint-disable-next-line

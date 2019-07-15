@@ -49,38 +49,23 @@
             }
         },
         methods: {
-            // setSessionData() {
-            //     axios.get(this.$root.API_URL + '/auth/whoami', {withCredentials: true})
-            //         .then(response => {
-            //             return console.log(response);
-            //         })
-            //
-            //         // .then(response => console.log(response.data))
-            //         // TODO: console
-            //         // eslint-disable-next-line
-            //         .catch(error => console.log(error));
-            // },
-
             login() {
                 // Show alert on empty input
                 if (!this.form.username || !this.form.password)
                     return this.input_error = true;
 
                 // If no error on front - Axios requests
-
                 axios.post(this.$root.API_URL + '/auth/login', {
                     username: this.form.username,
                     password: this.form.password
                 }, {withCredentials: true})
-                    .then(response => {
-                        // TODO: console
-                        console.log(response);
+                    .then(() => {
+                        // console.log(response);
 
                         // Nested Axios request - whoami data
                         axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
                             .then(response => {
-                                // TODO: console
-                                console.log(response);
+                                // console.log(response);
                                 localStorage.setItem('user_id', response.data.user.id);
                                 localStorage.setItem('user', JSON.stringify(response.data.user));
                                 this.$router.push('/my_profile');
@@ -108,7 +93,6 @@
                         // this.$root.auth = response.data.data /* [2:20:56] https://www.youtube.com/watch?v=L5oaI-C8Dhc&t=2494s */
                 })
                     .catch(error => {
-                        // TODO: console
                         if (error.response.status === 401) {
                             this.unauthorized = true;
                         }
@@ -118,7 +102,6 @@
                         if (error.response.status === 403) {
                             this.forbidden = true;
                         }
-                        // alert('Couldn\'t login')
                 });
             },
 

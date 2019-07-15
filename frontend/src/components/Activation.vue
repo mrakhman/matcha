@@ -44,8 +44,7 @@
 						{
 							this.status = true;
 							this.$notify({group: 'foo', type: 'success', title: 'Activated!', text: 'Your account is activated, you can now login', duration: -1});
-							// TODO: console
-							console.log(response)
+							// console.log(response)
 						}
 					})
 					.catch(error => {
@@ -66,8 +65,7 @@
 							this.email = null;
 							this.email_sent = true;
 						}
-						// TODO: console
-						console.log(response)
+						// console.log(response)
 					})
 					.catch(error => {
 						if (error.response.status === 404) {

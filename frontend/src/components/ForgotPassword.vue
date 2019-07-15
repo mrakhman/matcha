@@ -40,8 +40,7 @@ import axios from 'axios';
                             this.email = null;
                             this.email_sent = true;
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 404) {

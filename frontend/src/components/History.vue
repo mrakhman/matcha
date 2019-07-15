@@ -52,7 +52,7 @@
 				axios.get(this.$root.API_URL + '/history/get', {withCredentials: true})
 					.then(response => {
 						this.history = response.data["history"];
-						console.log(response);
+						// console.log(response);
 					})
 					// TODO: console
 					// eslint-disable-next-line
@@ -60,10 +60,10 @@
 			},
 			deleteHistory() {
 				axios.delete(this.$root.API_URL + '/history/delete', {withCredentials: true})
-					.then(response => {
+					.then(() => {
 						this.getHistory();
 						this.$router.go();
-						console.log(response);
+						// console.log(response);
 					})
 					// TODO: console
 					// eslint-disable-next-line

@@ -226,7 +226,6 @@
             }
         },
         created() {
-            // this.getLocation(); // TODO: silently update user location / ask for permission to get location
         },
     }
 </script>

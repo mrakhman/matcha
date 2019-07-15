@@ -22,8 +22,8 @@
 
 
                     <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
-                    <b-nav-item v-bind:to="'/notifications'">Notifs</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
+                    <b-nav-item v-bind:to="'/notifications'">Notifications</b-nav-item>
                     <b-nav-item v-bind:to="'/history'">History</b-nav-item>
 <!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
 
@@ -47,6 +47,12 @@
                                 <b-badge variant="warning" v-else>0</b-badge>
                                 <img alt="Notifications" src="../../img/bell.png" width="30">
                             </template>
+                            <b-dropdown-item-button href="#"
+                                                    v-if="notifs"
+                                                    v-on:click="markAllRead"
+                            >Mark all read</b-dropdown-item-button>
+                            <b-dropdown-text v-else>No notifications</b-dropdown-text>
+                            <b-dropdown-divider></b-dropdown-divider>
                             <div v-for="notif in notifs" v-bind:key="notif.id">
                                 <b-dropdown-item v-bind:to="'/notifications'">{{notif.text}}</b-dropdown-item>
                             </div>
@@ -97,7 +103,7 @@
                 axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifs = response.data["notifications"];
-                        console.log(response);
+                        // console.log(response);
                     })
                     // TODO: console
                     // eslint-disable-next-line
@@ -111,6 +117,17 @@
                     // TODO: console
                     // eslint-disable-next-line
                     .catch(error => console.log(error));
+            },
+            markAllRead() {
+                axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
+                    .then(response => {
+                        // this.getNotifications();
+                        this.$router.go();
+                        // console.log(response);
+                    })
+                    // TODO: console
+                    // eslint-disable-next-line
+			        .catch(error => console.log(error));
             }
         },
         created() {

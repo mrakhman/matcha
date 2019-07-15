@@ -20,9 +20,7 @@
             logout() {
                 axios.post(this.$root.API_URL + '/auth/logout', {}, {withCredentials: true})
                     .then(response => {
-                        // TODO: console
-                        // this.$emit('del_session');
-                        console.log(response);
+                        // console.log(response);
                         if (response.statusText === 'OK')
                         {
                             // Auth.loggedIn = false;
@@ -32,13 +30,8 @@
                             this.$router.push('/login');
                             this.$router.go(); // Need it because we stopped $emit action to App data.session
                         }
-
-
-                        // eslint-disable-next-line
                     })
                     .catch(error => {
-                        // TODO: console
-                        // eslint-disable-next-line
                         alert('Couldn`t logout')
                     });
 

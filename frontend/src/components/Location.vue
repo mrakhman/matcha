@@ -145,8 +145,7 @@
 					googleMapsClient.geocode({address: this.address})
 						.asPromise()
 						.then((response) => {
-							// TODO: console
-							console.log(response.json);
+							// console.log(response.json);
 
 							if (response.json.status === "ZERO_RESULTS" ||
 								response.json.status === "REQUEST_DENIED" ||
@@ -177,10 +176,8 @@
 						if(response.status === 200)
 						{
 							this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
-							console.log("Saved to db!");
 						}
-						// TODO: console
-						console.log(response)
+						// console.log(response)
 					})
 					.catch(error => {
 						this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});

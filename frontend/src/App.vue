@@ -2,33 +2,16 @@
   <div id="app">
 <!--    <AppHeader v-bind:session="session" v-on:del_session="deleteSession"/>-->
     <AppHeader/>
-
     <router-view></router-view><!-- Main routing enter point -->
       <notifications group="foo"/>
-
-<!--    <div class="main">-->
-<!--      <Register/>-->
-<!--      <br><hr>-->
-<!--      <MyProfile/>-->
-<!--    </div>-->
-
-
     <Footer/>
-
-
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/Hello World.vue'
 
-// import Todos from "./components/Todos";
-// import AddTodo from "./components/AddTodo";
-import axios from 'axios';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import Register from "./components/Register";
-// import MyProfile from "./components/MyProfile";
 // import './assets/_custom.scss'
 
 export default {
@@ -36,8 +19,6 @@ export default {
   components: {
     AppHeader: Header,
     Footer
-    // Register
-    // MyProfile
   },
     data() {
       return {
@@ -59,8 +40,6 @@ export default {
       //       .then(response => this.session = response.data)
       //
       //       // .then(response => console.log(response.data))
-      //       // TODO: console
-      //       // eslint-disable-next-line
       //       .catch(error => console.log(error));
       // }
 }

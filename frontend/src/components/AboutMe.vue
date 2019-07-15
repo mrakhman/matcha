@@ -1,6 +1,6 @@
 <template>
     <div>
-        <pre>{{user_details}}</pre>
+<!--        <pre>{{user_details}}</pre>-->
         <b-container class="bv-example-row"><b-row><b-col xl="9">
             <h4>Profile main image</h4>
             <b-row id="profile_image_2">
@@ -153,8 +153,7 @@
                             this.edit_success_alert = true;
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: -1})
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 400) {

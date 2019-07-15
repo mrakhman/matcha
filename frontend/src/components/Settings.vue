@@ -80,12 +80,6 @@
                     <b-button type="submit" variant="primary">Save</b-button>
                 </b-card>
             </b-form>
-
-            <!-- TODO: rm -->
-            <pre class="mt-3 mb-0">{{ form_edit }}</pre>
-
-
-
         </b-col></b-row></b-container>
     </div>
 </template>
@@ -137,8 +131,7 @@
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Name settings are saved', duration: 1000});
                             this.alerts.names_saved = true;
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 409) {
@@ -183,8 +176,7 @@
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email and press activation link!', duration: -1});
                             this.alerts.email_saved = true;
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
@@ -247,8 +239,7 @@
                         {
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Password changed!', duration: -1});
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 401) {

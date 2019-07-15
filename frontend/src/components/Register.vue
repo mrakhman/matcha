@@ -187,8 +187,7 @@ import axios from 'axios';
                             this.form.repeat_password = null;
 
                         }
-                        // TODO: console
-                        console.log(response)
+                        // console.log(response)
                 })
                     .catch(error => {
                         if (error.response.status === 409) {
