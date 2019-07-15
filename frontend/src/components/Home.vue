@@ -5,7 +5,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import Location from './Location';
     export default {
         name: "Home.vue",

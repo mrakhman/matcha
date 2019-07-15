@@ -33,7 +33,7 @@
                 </b-col>
             </b-row>
         </div>
-        <pre>{{notifications}}</pre>
+<!--        <pre>{{notifications}}</pre>-->
     </div>
 </template>
 
@@ -64,7 +64,7 @@
                     .then(response => {
                         this.notifications = response.data["notifications"];
                         this.notifications2 = this.notifications;
-                        console.log(response);
+                        // console.log(response);
                     })
                     // TODO: console
                     // eslint-disable-next-line
@@ -75,7 +75,7 @@
                     .then(response => {
                         this.getNotifications();
                         this.$router.go();
-                        console.log(response);
+                        // console.log(response);
                     })
                     // TODO: console
                     // eslint-disable-next-line

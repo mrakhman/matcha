@@ -48,8 +48,8 @@ export default [
     { path: '/search/', component: UsersList, beforeEnter: ifAuthenticated}, // kuku
     { path: '/search/:page_n', component: UsersList, beforeEnter: ifAuthenticated}, // kuku
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated},
-    { path: '/', component: Home},
-    { path: '/home', component: Home},
+    { path: '/', component: Home, beforeEnter: ifAuthenticated},
+    { path: '/home', component: Home, beforeEnter: ifAuthenticated},
     { path: '/chat', component: Chat, beforeEnter: ifAuthenticated},
     { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
     { path: '/activation/:token', component: Activation, beforeEnter: ifNotAuthenticated},
