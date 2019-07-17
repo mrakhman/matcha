@@ -4,38 +4,37 @@
         <p v-if="messages.length === 0">No messages yet</p>
         <div class="messages" v-chat-scroll="{always: false, smooth: true}">
             <div v-for="message in messages" :key="message.id">
-                <span class="text-info">[{{ message.sender_name }}]: </span>
+                <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
+                <span v-else class="text-info">[{{ message.sender_name }}]: </span>
                 <span>{{ message.text }}</span>
                 <span class="text-secondary time">{{ message.time }}</span>
             </div>
         </div>
-        <div class="card-action">
-<!--            <CreateMessage v-bind:username="username"/>-->
-        </div>
-        <b-container fluid>
-            <b-row><b-col xl="5">
-                <form v-on:submit.prevent="createMessage">
-                    <b-form-textarea
-                            id="textarea"
-                            v-model="new_message.text"
-                            placeholder="Enter message..."
-                            rows="2"
-                            max-rows="6"
-                    ></b-form-textarea>
-                    <p class="text-danger" v-if="error_text">{{ error_text }}</p>
-                    <b-button type="submit" variant="outline-primary">Send</b-button>
-                </form>
-            </b-col></b-row>
-        </b-container>
+        <b-row><b-col xl="5">
+            <form v-on:submit.prevent="addMessage(new_message.text)">
+                <b-form-textarea
+                    class="mt-3 mb-3"
+                    id="textarea"
+                    v-model="new_message.text"
+                    placeholder="Enter message..."
+                    rows="2"
+                    max-rows="6"
+                ></b-form-textarea>
+                <p class="text-danger" v-if="error_text">{{ error_text }}</p>
+                <b-button type="submit" variant="outline-primary">Send</b-button>
+            </form>
+        </b-col></b-row>
+        <ChatList/>
     </div>
 </template>
 
 <script>
-    // import CreateMessage from './CreateMessage';
+    import ChatList from './ChatList';
     import axios from 'axios';
     export default {
         name: "Chat.vue",
         components: {
+            ChatList
         },
         props: ['username'],
         data () {
@@ -46,13 +45,13 @@
                     {user_id: 3, username: 'Artemka', profile_image: require('../../img/computer.png')},
                 ],
                 messages: [
-                    {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
-                    {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
-                    {id: null, sender_id: 1, sender_name: 'username', time: '3h57m', text: 'blabla'},
+                    {id: null, sender_id: 1, sender_name: 'Masha', time: '3h57m', text: 'blabla'},
+                    {id: null, sender_id: 2, sender_name: 'Dasha', time: '3h57m', text: 'blabla'},
+                    {id: null, sender_id: 2, sender_name: 'Kasha', time: '3h57m', text: 'blabla'},
                 ],
                 new_message: {sender_id: null, chat_id: null, text: null},
                 error_text: null,
-                // mess: [],
+                user: this.$root.$data.user,
             }
         },
         created() {
@@ -67,6 +66,10 @@
                 })
         },
         methods: {
+            addMessage(text) {
+                this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, time: 'now', text: text});
+                this.new_message.text = null;
+            },
             createMessage() {
                 if(this.new_message.text) {
                     axios.post(this.$root.API_URL + '/chat/send_msg', {
@@ -119,5 +122,8 @@
     .messages {
         max-height: 300px;
         overflow: auto;
+    }
+    .my_message {
+        float: right;
     }
 </style>
