@@ -24,17 +24,14 @@
                 <b-button type="submit" variant="outline-primary">Send</b-button>
             </form>
         </b-col></b-row>
-        <ChatList/>
     </div>
 </template>
 
 <script>
-    import ChatList from './ChatList';
     import axios from 'axios';
     export default {
         name: "Chat.vue",
         components: {
-            ChatList
         },
         props: ['username'],
         data () {
@@ -67,8 +64,13 @@
         },
         methods: {
             addMessage(text) {
-                this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, time: 'now', text: text});
-                this.new_message.text = null;
+                if(this.new_message.text) {
+                    this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, time: 'now', text: text});
+                    this.new_message.text = null;
+                    this.error_text = null;
+                }
+                else
+                    this.error_text = "No message";
             },
             createMessage() {
                 if(this.new_message.text) {
