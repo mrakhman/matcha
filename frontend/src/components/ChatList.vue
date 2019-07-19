@@ -5,7 +5,8 @@
             <b-row><b-col xl="6">
                 <b-row class="message_block p-2 mb-3" v-for="user in users_list" :key="user.id" align-v="center">
                     <b-col>
-                        <b-img v-bind="image_style" :src="user.profile_image" rounded="circle" alt="Circle image"></b-img>
+                        <b-img v-if="user.profile_image" v-bind="image_style" :src="user.profile_image" rounded="circle" alt="Circle image"></b-img>
+                        <b-img v-else v-bind="no_image" rounded="circle" alt="Circle image"></b-img>
                     </b-col>
                     <b-col>
                         <h4>{{user.username}}</h4>
@@ -34,12 +35,25 @@
                     {id: 1, username: 'koko', profile_image: "https://images.dog.ceo/breeds/samoyed/n02111889_5786.jpg"},
                     {id: 2, username: 'losos', profile_image: "http://localhost:5000/images/20442157-329a-46df-8214-420d476b7b0c.png"},
                 ],
-                image_style: {width: 75, height: 75, class: 'm1'}
+                image_style: {width: 75, height: 75, class: 'm1'},
+                no_image: {blank: true, blankColor: '#777', width: 75, height: 75, class: 'm1'}
             }
         },
         methods: {
-
-        }
+            getChatList() {
+                axios.get(this.$root.API_URL + '/messages/chats', {withCredentials: true})
+                .then(response => {
+                    this.users_list = response.data.chats;
+                    // console.log(response.data);
+                })
+                    // TODO: console
+                    // eslint-disable-next-line
+		            .catch(error => console.log(error));
+            }
+        },
+        created() {
+            this.getChatList();
+       }
     }
 </script>
 
