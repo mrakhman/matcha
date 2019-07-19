@@ -8,7 +8,7 @@ from werkzeug.exceptions import HTTPException, abort
 
 from db import db
 from models.user import User
-from tree import auth, images, notifications, users, tags, likes, history
+from tree import auth, images, notifications, users, tags, likes, history, messages
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
 # from signature import signature
@@ -61,6 +61,7 @@ def app_factory(name):
     flask_app.register_blueprint(tags, url_prefix="/tags")
     flask_app.register_blueprint(likes, url_prefix="/likes")
     flask_app.register_blueprint(history, url_prefix="/history")
+    flask_app.register_blueprint(messages, url_prefix="/messages")
 
     CORS(flask_app, supports_credentials=True)
     return flask_app

@@ -181,19 +181,19 @@ class User(Model):
         'latitude': {
             'required': False,
             'default': None,
-            'type': float,  # why it doesn't complain on data type?
+            'type': float,
             'validator': None
         },
         'longitude': {
             'required': False,
             'default': None,
-            'type': float,  # why it doesn't complain on data type?
+            'type': float,
             'validator': None
         },
         'distance': {
             'required': False,
             'default': None,
-            'type': float,  # why it doesn't complain on data type?
+            'type': float,
             'validator': None
         },
     }

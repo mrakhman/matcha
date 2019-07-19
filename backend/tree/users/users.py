@@ -24,7 +24,7 @@ users = blueprints.Blueprint("users", __name__)
 @users.route('/<int:user_id>', methods=['GET'])
 @authorised_only
 def get_user_by_id(user_id):
-	current_app.logger.info(f"Getting user #{user_id}")
+	# current_app.logger.info(f"Getting user #{user_id}")
 	user = User.get_by_id(user_id)
 	if user:
 		payload = user.get_view("public")
