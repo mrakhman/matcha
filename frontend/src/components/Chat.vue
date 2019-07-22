@@ -50,7 +50,7 @@
                     // {id: null, sender_id: 2, sender_name: 'Dasha', time: '3h57m', text: 'blabla'},
                     // {id: null, sender_id: 2, sender_name: 'Kasha', time: '3h57m', text: 'blabla'},
                 ],
-                new_message: {sender_id: null, chat_id: null, text: null},
+                new_message: {sender_id: null, text: null},
                 error_text: null,
                 user: this.$root.$data.user,
             }
@@ -62,7 +62,7 @@
 
                     var moment = require('moment');
                     this.messages.forEach(function (message) {
-                        message.created_at =  moment.tz(message.created_at, "Europe/Paris").format('LLL');
+                        message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
                     });
                     // console.log(response.data.messages);
                 })
@@ -73,7 +73,7 @@
             addMessage(text) { // also time
                 // if(this.new_message.text) {
                                                     // TODO: FROM HERE!!!!!!!!!!
-                    this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, created_at: Date.now(), text: text});
+                    this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, created_at: 'time', text: text});
                     // this.new_message.text = null;
                     // this.error_text = null;
                 // }

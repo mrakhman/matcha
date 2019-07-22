@@ -39,9 +39,13 @@
 						}
 					},
 					{key: 'created_at', label: 'Date',
-						formatter: value => {
-							return value.slice(0, 10) + ' at ' + value.slice(11, 16)
-						}
+						// formatter: value => {
+							// var moment = require('moment');
+							// value = moment.tz(value, "Europe/Paris").format('LLL');
+							// this.last_online_timezone = moment.tz(this.user.last_connection, "Europe/Paris").format('LLL');
+							// return value
+							// return value.slice(0, 10) + ' at ' + value.slice(11, 16)
+						// }
 					}
 				],
 				history: [],
@@ -52,6 +56,11 @@
 				axios.get(this.$root.API_URL + '/history/get', {withCredentials: true})
 					.then(response => {
 						this.history = response.data["history"];
+
+						var moment = require('moment');
+						this.history.forEach(function (message) {
+							message.created_at = moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
+						});
 						// console.log(response);
 					})
 					// TODO: console
