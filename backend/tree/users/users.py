@@ -125,7 +125,7 @@ def users_filter(page_number):
 	filter_validation["max"]["default"] = 10
 	check_fields(req_data["filter"]["rating"], filter_validation)
 	# Distance
-	filter_validation["max"]["default"] = 100
+	filter_validation["max"]["default"] = 10000
 	check_fields(req_data["filter"]["distance"], filter_validation)
 
 	# Sort

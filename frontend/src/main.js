@@ -7,9 +7,11 @@ import Notifications from 'vue-notification'
 import VueChatScroll from 'vue-chat-scroll'
 import Moment from 'moment-timezone'
 // import {Auth} from './auth'
+import VueNativeSock from 'vue-native-websocket'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
@@ -17,6 +19,7 @@ Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
 Vue.use(Moment);
+Vue.use(VueNativeSock, 'ws://localhost:9090', { format: 'json' });
 
 const router = new VueRouter({
   routes: Routes,

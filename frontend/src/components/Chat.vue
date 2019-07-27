@@ -94,6 +94,7 @@
                         })
                         .catch(error => {
                             // TODO: console
+                            this.error_text = "Two users are blocked or not connected, you can't chat";
                             console.log(error)
                         });
                     this.new_message.text = null;

@@ -8,7 +8,7 @@
                 <b-row class="mb-3">
                     <b-col xl="5">
                         <b-row>
-                            <h4><b>Age</b></h4>
+                            <h4><b>Age:</b></h4>
                             <b-col xl="2">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.age.min"></b-form-input>
                             </b-col>
@@ -52,7 +52,7 @@
                 <b-row class="mb-3">
                     <b-col xl="5">
                         <b-row>
-                            <h4><b>Fame rating</b></h4>
+                            <h4><b>Fame rating:</b></h4>
                             <b-col xl="2">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.rating.min"></b-form-input>
                             </b-col>
@@ -96,36 +96,9 @@
                 <b-row>
                     <b-col xl="6">
                         <b-row>
-                            <h4><b>Distance</b></h4>
-                            <b-col xl="2">
-                                <b-form-input size="sm" type="number" disabled v-model="filter.distance.min"></b-form-input>
-                            </b-col>
-                            <h4>&ndash;</h4>
-                            <b-col xl="2">
-                                <b-form-input size="sm" type="number" disabled v-model="filter.distance.max"></b-form-input>
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                </b-row>
-
-                <b-row>
-                    <b-col xl="8">
-                        <b-row>
-                            <label for="distance_min">From</label>
+                            <h4><b>Max distance (km):</b></h4>
                             <b-col xl="4">
-                                <b-form-input id="distance_min" type="range"
-                                              v-model="filter.distance.min"
-                                              v-bind:min="sort_options[3].min"
-                                              v-bind:max="Math.min(sort_options[3].max, filter.distance.max)"
-                                ></b-form-input>
-                            </b-col>
-                            <label for="distance_max">To</label>
-                            <b-col xl="4">
-                                <b-form-input id="distance_max" type="range"
-                                              v-model="filter.distance.max"
-                                              v-bind:max="sort_options[3].max"
-                                              v-bind:min="Math.max(sort_options[3].min, filter.distance.min)"
-                                ></b-form-input>
+                                <b-form-input type="number" v-model="filter.distance.max"></b-form-input>
                             </b-col>
                         </b-row>
                     </b-col>
@@ -193,7 +166,7 @@
                     { value: 'my_tags', text: 'My tags matches'},
                     { value: 'age', text: 'Age', min: 0, max: 99},
                     { value: 'rating', text: 'Fame rating', min: 0, max: 10},
-                    { value: 'distance', text: 'Distance', min: 0, max: 100},
+                    { value: 'distance', text: 'Distance', min: 0, max: 10000},
                     { value: 'tags', text: 'Tags'}
                 ],
                 tag_options: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
@@ -218,7 +191,13 @@
             }
         },
         methods: {
+            validateDistance() {
+                if(this.filter.distance.max < 0)
+                    this.filter.distance.max = 0
+            },
+
             sendSortFilter() {
+                this.validateDistance();
                 var sort = this.sort_form;
                 var filter = this.filter;
                 // console.log(sort, filter);
