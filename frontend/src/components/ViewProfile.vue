@@ -144,6 +144,9 @@
 				})
 					.then(response => {
 						this.user = response.data.user;
+
+						var moment = require('moment');
+						this.last_online_timezone =  moment.utc(this.user.last_connection).tz("Europe/Paris").format('LLL');
 					})
 					// TODO: console
 					// eslint-disable-next-line
@@ -229,13 +232,14 @@
 					.catch(error => console.log(error));
 			},
 			editTimezone() {
-				var moment = require('moment');
-				this.last_online_timezone = moment.tz(this.user.last_connection, "Europe/Paris").format('LLL');
+				// var moment = require('moment');
+				// this.last_online_timezone = moment.tz(this.user.last_connection, "Europe/Paris").format('LLL');
+				// this.last_online_timezone =  moment(this.user.last_connection).tz("Europe/Paris").format('LLL');
+
 			}
 		},
 		created() {
 			this.getUser();
-			this.editTimezone();
 		}
 	}
 </script>

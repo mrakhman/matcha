@@ -49,9 +49,9 @@
                     'type',
                     'text',
                     {key: 'created_at', label: 'Date',
-                        formatter: value => {
-                            return value.slice(0, 10) + ' at ' + value.slice(11, 16)
-                        }
+                        // formatter: value => {
+                        //     return value.slice(0, 10) + ' at ' + value.slice(11, 16)
+                        // }
                     }
                 ],
                 notifications: [],
@@ -63,6 +63,13 @@
                 axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
+
+                        var moment = require('moment');
+                        this.notifications.forEach(function (message) {
+                            message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
+
+                        });
+
                         this.notifications2 = this.notifications;
                         // console.log(response);
                     })
