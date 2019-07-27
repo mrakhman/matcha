@@ -4,19 +4,35 @@ import toredis
 import tornado.web
 import tornado.websocket
 import tornado.ioloop
+from http.cookies import SimpleCookie
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-REDIS_URL = "localhost"
+REDIS_URL = "redis"
+API_URL = "http://localhost:5000"
 
 
 class MessagesHandler(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
         super(MessagesHandler, self).__init__(*args, **kwargs)
+        cookies: SimpleCookie = args[1].cookies
+        print(cookies)
+        http_client = AsyncHTTPClient()
+        try:
+            headers = {'Cookie': "; ".join([f"{c.key}={c.value}" for c in cookies.values()])}
+            request = HTTPRequest(API_URL + "/users/me", headers=headers)
+            http_client.fetch(request, callback=self.init_chat)
+        except Exception as e:
+            print(e)
+        http_client.close()
         self.user_id = 12
         self.sender_name = "Q"  # @TODO
         self.companion_id = None
         self.channel = None
         self.client = toredis.Client()
         self.client.connect(callback=lambda: print(f"Connected to Redis"))  # @TODO
+
+    def init_chat(self, response):
+        print(response)
 
     def check_origin(self, origin):
         return True
@@ -51,6 +67,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
         self.write_message(str(msg[2]))
 
     def on_close(self):
+        print("Closing connection")
         try:
             self.client.unsubscribe(self.channel)
         except AttributeError:
