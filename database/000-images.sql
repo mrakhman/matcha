@@ -3,9 +3,7 @@ create table images
 	id serial not null
 		constraint photos_pkey
 			primary key,
-	user_id integer
-		constraint images_users_id_fk
-			references users,
+	user_id integer,
 	image_src varchar(128)
 );
 

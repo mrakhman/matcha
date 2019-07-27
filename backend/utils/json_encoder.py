@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from flask.json import JSONEncoder
 
@@ -13,4 +14,6 @@ class CustomJSONEncoder(JSONEncoder):
             return obj.isoformat()
         if isinstance(obj, Model):
             return obj.get_view()
+        if isinstance(obj, Decimal):
+            return float(obj)
         return JSONEncoder.default(self, obj)
