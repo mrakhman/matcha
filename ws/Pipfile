@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 toredis = {editable = true,git = "https://github.com/axuall/toredis.git",ref = "master"}
 tornado = "==5"
+requests = "*"
 
 [requires]
 python_version = "3.7"

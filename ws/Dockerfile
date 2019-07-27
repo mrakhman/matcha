@@ -19,7 +19,6 @@ COPY Pipfile* /app/
 RUN pipenv install --deploy --system
 
 COPY . .
-RUN chmod u+x app.py
 
 EXPOSE 8888
 ENTRYPOINT ["python3", "/app/app.py"]
