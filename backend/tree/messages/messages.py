@@ -1,12 +1,6 @@
-import datetime
-import http
+from flask import blueprints, jsonify, request, g
 
-from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
-
-from models.user import User
-from models.notification import Notification
 from models.message import Message
-
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
@@ -50,5 +44,6 @@ def get_my_chats():
 @authorised_only
 def get_chat_messages(user_id):
 	chat_messages = Message.get_chat_messages(g.current_user.id, user_id)
-	return jsonify(messages=chat_messages)
+	msgs = list(map(lambda msg: msg.get_view('chat'), chat_messages))
+	return jsonify(messages=msgs)
 

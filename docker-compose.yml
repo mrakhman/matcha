@@ -6,5 +6,10 @@ services:
     - "8888:8888"
     links:
     - redis
+    - backend
   redis:
     image: redis
+  backend:
+    build: backend
+    ports:
+      - "5000:5000"
