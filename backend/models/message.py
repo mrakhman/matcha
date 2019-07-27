@@ -28,9 +28,6 @@ class MessageQueries(Queries):
             "ON messages.sender_id = users.id "
             "WHERE messages.sender_id IN($1, $2) AND messages.receiver_id IN($1, $2)"
             "ORDER BY created_at DESC")
-    # self.get_by_id = self.query("SELECT * FROM notifications WHERE id = $1", one=True)
-    # self.update_field = lambda field: self.query(f"UPDATE notifications SET {field} = $1 WHERE id = $2")
-    # self.mark_all_read = self.query("UPDATE notifications SET is_read = true WHERE user_id = $1")
 
 
 class Message(Model):
@@ -118,13 +115,6 @@ class Message(Model):
 
     queries = MessageQueries()
 
-    # @property
-    # def created_at(self):
-    #     if not getattr(self, 'created_at'):
-    #         return None
-    #     created_at = datetime.fromtimestamp(self.created_at)
-    #     return created_at
-
     @classmethod
     def get_user_chats(cls, user_id):
         result = cls.queries.get_user_chats(user_id)
@@ -143,7 +133,4 @@ class Message(Model):
 
     def create(self):
         self.queries.create(self.sender_id, self.receiver_id, self.text)
-    # self.queries.create(getattr(self, 'user_id'), getattr(self, 'text'))
 
-# def _update_field(self, field, value):
-#     self.queries.update_field(field)(value, self.id)
