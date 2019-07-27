@@ -36,22 +36,29 @@
 			<!--        Hey, look at bootstrap margin + padding!!!!! -->
 			<!--        <h3 class="title"> Details: </h3>-->
 			<!--        <h3 class="ml-auto"> Details: </h3>-->
-			<b-row><b-col cols="10">
-				<div class="details"> <b> Rating: </b> {{user.rating}} / 10 </div>
-				<div class="details"> <b> Name: </b> {{user.first_name}} {{user.last_name}}</div>
-				<div class="details"> <b> Gender: </b> {{user.gender}}</div>
-				<div class="details"> <b> Age: </b> {{user.age}}</div>
-				<div class="details" v-if="sexualPref(user.sex_pref, user.gender)"> <b> I date: </b> {{i_date}} </div>
-				<div class="details"><b-col><b-row>
-					<b> About me: </b><b-col cols="11">{{user.bio_text}}</b-col>
-				</b-row></b-col></div>
-				<div class="details">
-					<p class="one_line"><b> My tags: </b></p>
-					<ul class="tags" v-for="tag in user.tags">
-						<li> #{{tag}} </li>
-					</ul>
-				</div>
-			</b-col></b-row>
+			<b-row>
+				<b-col cols="7">
+					<div class="details"> <b> Rating: </b> {{user.rating}} / 10 </div>
+					<div class="details"> <b> Name: </b> {{user.first_name}} {{user.last_name}}</div>
+					<div class="details"> <b> Gender: </b> {{user.gender}}</div>
+					<div class="details"> <b> Age: </b> {{user.age}}</div>
+					<div class="details" v-if="sexualPref(user.sex_pref, user.gender)"> <b> I date: </b> {{i_date}} </div>
+					<div class="details"><b-col><b-row>
+						<b> About me: </b><b-col cols="11">{{user.bio_text}}</b-col>
+					</b-row></b-col></div>
+					<div class="details">
+						<p class="one_line"><b> My tags: </b></p>
+						<ul class="tags" v-for="tag in user.tags">
+							<li> #{{tag}} </li>
+						</ul>
+					</div>
+				</b-col>
+				<b-col class="mt-5" v-if="users_can_chat">
+					<router-link v-bind:to="'/chat/' + id">
+						<b-button variant="success" size="lg" class="mt-5">Go to chat!</b-button>
+					</router-link>
+				</b-col>
+			</b-row>
 			<b-row>
 				<b-col><div class="details">
 					<p class="text-danger" v-if="no_photo">Please, upload profile image before liking another user</p>
@@ -87,6 +94,7 @@
 		name: "CheckProfile.vue",
 		data() {
 			return {
+				users_can_chat: null,
 				user_not_exist: null,
 				no_photo: null,
 				is_blocked: null,
@@ -166,6 +174,7 @@
 					})
 						.then(response => {
 							this.user.has_like = true;
+							this.usersCanChat();
 							// console.log(response);
 						})
 						// TODO: console
@@ -189,6 +198,7 @@
 					})
 						.then(response => {
 							this.user.has_like = false;
+							this.usersCanChat();
 							// console.log(response);
 						})
 						// TODO: console
@@ -202,6 +212,7 @@
 				})
 					.then(() => {
 						this.user.is_blocked = true;
+						this.usersCanChat();
 					})
 					// TODO: console
 					// eslint-disable-next-line
@@ -226,20 +237,31 @@
 				})
 					.then(() => {
 						this.user.is_blocked = false;
+						this.usersCanChat();
 					})
 					// TODO: console
 					// eslint-disable-next-line
 					.catch(error => console.log(error));
 			},
-			editTimezone() {
-				// var moment = require('moment');
-				// this.last_online_timezone = moment.tz(this.user.last_connection, "Europe/Paris").format('LLL');
-				// this.last_online_timezone =  moment(this.user.last_connection).tz("Europe/Paris").format('LLL');
-
+			usersCanChat() {
+				axios.get(this.$root.API_URL + '/messages/allowed/' + this.id, {
+					withCredentials: true
+				})
+				.then(response => {
+					if (response.status === 200 && response.data.ok === true)
+						this.users_can_chat = true;
+					else if (response.status === 200 && response.data.ok === false)
+						this.users_can_chat = false;
+				})
+				.catch(error => {
+					// TODO: console
+					console.log(error)
+				});
 			}
 		},
 		created() {
 			this.getUser();
+			this.usersCanChat();
 		}
 	}
 </script>
