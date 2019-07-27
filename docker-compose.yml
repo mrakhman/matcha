@@ -1,0 +1,15 @@
+version: '3'
+services:
+  ws:
+    build: ws
+    ports:
+    - "8888:8888"
+    links:
+    - redis
+    - backend
+  redis:
+    image: redis
+  backend:
+    build: backend
+    ports:
+      - "5000:5000"

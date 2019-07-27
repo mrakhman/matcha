@@ -7,7 +7,7 @@ create table notifications
 		constraint notifications_users_id_fk
 			references users
 				on delete restrict,
-	is_read boolean default false not null,
+	read boolean default false not null,
 	text text not null,
 	created_at timestamp default now() not null
 );
