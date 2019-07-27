@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from typing import Optional, Awaitable
 
 import toredis
@@ -5,7 +6,7 @@ import tornado.web
 import tornado.websocket
 import tornado.ioloop
 
-REDIS_URL = "localhost"
+REDIS_HOST = "redis"
 
 
 class MessagesHandler(tornado.websocket.WebSocketHandler):
@@ -16,7 +17,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
         self.companion_id = None
         self.channel = None
         self.client = toredis.Client()
-        self.client.connect(callback=lambda: print(f"Connected to Redis"))  # @TODO
+        self.client.connect(host=REDIS_HOST, callback=lambda: print(f"Connected to Redis"))  # @TODO
 
     def check_origin(self, origin):
         return True
