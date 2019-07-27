@@ -7,7 +7,7 @@ import tornado.ioloop
 from http.cookies import SimpleCookie
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-REDIS_URL = "redis"
+REDIS_HOST = "redis"
 API_URL = "http://localhost:5000"
 
 
@@ -29,7 +29,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
         self.companion_id = None
         self.channel = None
         self.client = toredis.Client()
-        self.client.connect(callback=lambda: print(f"Connected to Redis"))  # @TODO
+        self.client.connect(host=REDIS_HOST, callback=lambda: print(f"Connected to Redis"))  # @TODO
 
     def init_chat(self, response):
         print(response)
