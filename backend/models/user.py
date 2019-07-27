@@ -30,6 +30,7 @@ class UserQueries(Queries):
                 users.username,
                 users.rating,
                 users.last_connection,
+                users.dob,
                 dist.distance
              FROM users
             LEFT JOIN (
