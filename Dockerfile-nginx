@@ -1,10 +1,3 @@
-FROM certbot/dns-cloudflare
-WORKDIR /workdir
-COPY nginx/.cloudflare.ini cloudflare.ini
-RUN mkdir certs && \
-	certbot certonly --register-unsafely-without-email --cert-path ./certs --dns-cloudflare --dns-cloudflare-credentials cloudflare.ini --agree-tos -d matchaaa.tk
-RUN ls -la ./certs
-
 FROM node AS builder
 WORKDIR /app_src
 COPY frontend /app_src
@@ -14,5 +7,6 @@ RUN npm i && \
 FROM nginx
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/mime.types /etc/nginx/mime.types
 COPY --from=builder /app_src/dist /app
-COPY --from=0 /etc/letsencrypt /etc/letsencrypt
+COPY nginx/certificates /etc/letsencrypt
