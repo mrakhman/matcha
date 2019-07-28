@@ -12,6 +12,8 @@ notifications = blueprints.Blueprint("notifications", __name__)
 @authorised_only
 def get_my_notifications():
     my_notifications = Notification.get_user_notifications(g.current_user.id)
+    if not my_notifications:
+        my_notifications = []
     return jsonify(notifications=my_notifications)
 
 
