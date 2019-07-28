@@ -19,7 +19,7 @@ Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
 Vue.use(Moment);
-Vue.use(VueNativeSock, 'ws://localhost:9090', { format: 'json' });
+Vue.use(VueNativeSock, 'ws://redis:8888', { format: 'json' });
 
 const router = new VueRouter({
   routes: Routes,
