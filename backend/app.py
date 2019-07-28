@@ -11,6 +11,7 @@ from models.user import User
 from tree import auth, images, notifications, users, tags, likes, history, messages
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
+from redis import redis_client
 # from signature import signature
 
 APP_NAME = "matcha"
@@ -36,6 +37,9 @@ def app_factory(name):
     flask_app.config.from_object('config.DevelopmentConfig')
     flask_app.json_encoder = CustomJSONEncoder
     db.init_app(flask_app)
+
+    # Redis here
+    redis_client.init_app(flask_app)
 
     # # Mail here
     flask_app.config.update(dict(

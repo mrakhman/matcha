@@ -7,6 +7,7 @@ from models.message import Message
 from models.user import User
 from utils.form_validator import check_fields
 from utils.security import authorised_only
+from redis import redis_client
 
 messages = blueprints.Blueprint("messages", __name__)
 
@@ -48,6 +49,11 @@ def create_message():
 			and (not User.user_is_blocked(sender_id, receiver_id) and not User.user_is_blocked(receiver_id, sender_id)):
 		message = Message.from_dict({"sender_id": sender_id, "receiver_id": receiver_id, "text": req_data["text"]})
 		message.create()
+
+		# Redis here
+		red = redis_client.StrictRedis(host='redis', port=8888, db=0)
+		red.publish('messages' + '_' + str(sender_id) + '_' + str(receiver_id), req_data["text"])
+
 		return jsonify(ok=True)
 	abort(http.HTTPStatus.UNAUTHORIZED)
 
