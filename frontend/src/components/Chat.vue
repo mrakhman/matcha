@@ -13,7 +13,7 @@
 <!--                    </b-col>-->
 
 <!--                </b-row>-->
-                <span v-else class="text-info">[{{ message.username }}]: </span>
+                <span v-else class="text-info">[{{ chat_users[message.sender_id].username }}]: </span>
                 <span>{{ message.text }}</span>
                 <span class="text-secondary time">{{ message.created_at }}</span>
             </div>
@@ -37,6 +37,8 @@
 
 <script>
     import axios from 'axios';
+    import {Socket} from "../socket";
+    const moment = require('moment');
     export default {
         name: "Chat.vue",
         components: {
@@ -53,14 +55,15 @@
                 new_message: {sender_id: null, text: null},
                 error_text: null,
                 user: this.$root.$data.user,
+                chat_users: [],
             }
         },
         methods: {
             loadMessages() {axios.get(this.$root.API_URL + '/messages/' + this.id, {withCredentials: true})
                 .then(response => {
                     this.messages = response.data.messages;
+                    this.chat_users = response.data.users;
 
-                    var moment = require('moment');
                     this.messages.forEach(function (message) {
                         message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
                     });
@@ -103,10 +106,24 @@
                 else {
                     this.error_text = "A message must be entered first";
                 }
+            },
+            newSocketMsg(data) {
+                const payload = JSON.parse(data.data);
+                if (payload.type === "message") {
+                    payload.data.created_at =  moment.utc(payload.data.created_at).tz("Europe/Paris").format('LLL');
+                    this.messages.push(payload.data)
+                }
             }
         },
         created() {
 			this.loadMessages();
+            Socket.registerHandler(this.newSocketMsg);
+        },
+        mounted() {
+            setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 5000);
+        },
+        beforeDestroy() {
+            this.$socket.sendObj({"action": "close_chat"});
         }
     }
 </script>

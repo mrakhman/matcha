@@ -11,6 +11,7 @@ import VueNativeSock from 'vue-native-websocket'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import {Socket} from './socket'
 
 
 Vue.use(BootstrapVue);
@@ -19,7 +20,7 @@ Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
 Vue.use(Moment);
-Vue.use(VueNativeSock, 'ws://redis:8888', { format: 'json' });
+Vue.use(VueNativeSock, 'wss://matchaaa.tk/ws', { format: 'json' });
 
 const router = new VueRouter({
   routes: Routes,
@@ -49,7 +50,7 @@ const router = new VueRouter({
 const userId = localStorage.getItem('user_id');
 const userData = localStorage.getItem('user');
 
-new Vue({
+let vue = new Vue({
   router: router,
   data: {
     user_id: userId ? userId : null,
@@ -57,9 +58,10 @@ new Vue({
     // API_URL: "http://ivart:5000",
     // API_URL: "https://api.matchaaa.tk",
     API_URL: "https://matchaaa.tk/api",
-    LOCAL_URL: "https://matchaaa.tk"
+    // LOCAL_URL: "https://matchaaa.tk"
     // API_URL: " http://127.0.0.1:5000"
     // Auth: Auth,
   },
   render: h => h(App)
 }).$mount('#app');
+vue.$options.sockets.onmessage = Socket.socketHandler;

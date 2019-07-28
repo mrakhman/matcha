@@ -73,6 +73,7 @@
 <script>
     import axios from 'axios'
     import Logout from "./Logout";
+    import {Socket} from "../socket";
     // import Notifications from "./Notifications";
     // import MyProfile from "./MyProfile";
 
@@ -128,12 +129,20 @@
                     // TODO: console
                     // eslint-disable-next-line
 			        .catch(error => console.log(error));
+            },
+            newSocketMsg(data) {
+                const payload = JSON.parse(data.data);
+                if (payload.type === "notification") {
+                    this.notifs.push(payload.data)
+                }
             }
         },
         created() {
             this.getNotifications();
             this.getUserFirstName();
+            Socket.registerHandler(this.newSocketMsg)
         }
+
 
         // computed: {
         //     sessionUser() {
