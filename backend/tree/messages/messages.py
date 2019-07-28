@@ -1,13 +1,14 @@
+import datetime
 import http
 
-from flask import blueprints, jsonify, abort, request, g
+from flask import blueprints, jsonify, abort, request, g, json
 
 from models.like import Like
 from models.message import Message
 from models.user import User
+from my_redis import redis_client
 from utils.form_validator import check_fields
 from utils.security import authorised_only
-from redis import redis_client
 
 messages = blueprints.Blueprint("messages", __name__)
 
@@ -51,8 +52,12 @@ def create_message():
 		message.create()
 
 		# Redis here
-		red = redis_client.StrictRedis(host='redis', port=8888, db=0)
-		red.publish('messages' + '_' + str(sender_id) + '_' + str(receiver_id), req_data["text"])
+		created_at = datetime.datetime.utcnow()
+		users = [sender_id, receiver_id]
+		users.sort()
+		redis_payload = message.get_view('chat')
+		redis_payload['created_at'] = created_at
+		redis_client.publish(f"chat_{users[0]}_{users[1]}_messages", json.dumps(redis_payload))
 
 		return jsonify(ok=True)
 	abort(http.HTTPStatus.UNAUTHORIZED)
@@ -68,6 +73,10 @@ def get_my_chats():
 @messages.route('/<int:user_id>', methods=['GET'])
 @authorised_only
 def get_chat_messages(user_id):
+	companion = User.get_by_id(user_id)
+	if not companion:
+		abort(http.HTTPStatus.NOT_FOUND)
 	chat_messages = Message.get_chat_messages(g.current_user.id, user_id)
 	msgs = list(map(lambda msg: msg.get_view('chat'), chat_messages))
-	return jsonify(messages=msgs)
+	chat_users = {g.current_user.id: g.current_user, companion.id: companion}
+	return jsonify(messages=msgs, users=chat_users)

@@ -23,9 +23,8 @@ class MessageQueries(Queries):
                                          "AND users.id != $1")
 
         self.get_chat_messages = self.query(
-            "SELECT messages.id, messages.sender_id, users.username, messages.created_at, messages.text "
-            "FROM messages INNER JOIN users "
-            "ON messages.sender_id = users.id "
+            "SELECT messages.id, messages.sender_id, messages.created_at, messages.text "
+            "FROM messages "
             "WHERE messages.sender_id IN($1, $2) AND messages.receiver_id IN($1, $2)"
             "ORDER BY created_at DESC")
 
@@ -105,8 +104,7 @@ class Message(Model):
                 'sender_id',
                 'receiver_id',
                 'text',
-                'created_at',
-                'username'
+                'created_at'
             }
         }
     }
@@ -132,5 +130,6 @@ class Message(Model):
         return obj
 
     def create(self):
-        self.queries.create(self.sender_id, self.receiver_id, self.text)
+        result = self.queries.create(self.sender_id, self.receiver_id, self.text)
+        self.id = result[0][0]
 

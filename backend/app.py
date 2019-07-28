@@ -11,7 +11,7 @@ from models.user import User
 from tree import auth, images, notifications, users, tags, likes, history, messages
 from utils.json_encoder import CustomJSONEncoder
 from mail import mail
-from redis import redis_client
+from my_redis import redis_client
 # from signature import signature
 
 APP_NAME = "matcha"

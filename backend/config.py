@@ -20,6 +20,7 @@ class DevelopmentConfig(Config):
     SECRET_KEY = "HelloWorld!"
     PSQL_DATABASE_URI = os.getenv('DB_URI')
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+    REDIS_URL = os.getenv("REDIS_URL")
 
 
 class TestingConfig(Config):

@@ -1,6 +1,8 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime
 
+from flask import json
 
+from my_redis import redis_client
 from .model import Model, Queries
 from .user import User
 
@@ -88,7 +90,11 @@ class Notification(Model):
         return obj
 
     def create(self):
-        self.queries.create(self.user_id, self.text, self.type)
+        result = self.queries.create(self.user_id, self.text, self.type)
+        self.id = result[0][0]
+        redis_payload = self.get_view()
+        redis_client.publish(f"notifications_{self.user_id}", json.dumps(redis_payload))
+
         # self.queries.create(getattr(self, 'user_id'), getattr(self, 'text'))
 
     def _update_field(self, field, value):
