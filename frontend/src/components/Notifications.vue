@@ -18,7 +18,7 @@
         <div class="table">
             <b-row>
                 <b-col xl="6">
-                    <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Mark ALL notifications as read</a>
+                    <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Delete all notifications</a>
                     <a class="ml-4" v-else>No unread notifications</a>
                     <b-table striped bordered :items="notifications" :fields="fields">
                         <template slot="N" slot-scope="data">

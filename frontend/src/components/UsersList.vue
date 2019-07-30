@@ -6,7 +6,7 @@
                 :filter="filter"
                 :sort_form="sort_form"
         />
-        <pre class="mt-3 mb-0">total: {{ total_users }}, per_page: {{ per_page }}</pre>
+<!--        <pre class="mt-3 mb-0">total: {{ total_users }}, per_page: {{ per_page }}</pre>-->
         <h3> Users List </h3>
         <b-row v-if="users.length > 0">
             <div id="users_list"
