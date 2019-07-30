@@ -38,6 +38,7 @@
     import axios from 'axios';
     import {Socket} from "../socket";
     const moment = require('moment');
+    import EventBus from '../event-bus';
 
     export default {
         name: "Notifications.vue",
@@ -73,7 +74,8 @@
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
                     .then(response => {
                         this.getNotifications();
-                        this.$router.go();
+                        EventBus.$emit('markRead');
+                        // this.$router.go();
                         // console.log(response);
                     })
                     // TODO: console
@@ -101,6 +103,11 @@
         created() {
             this.getNotifications();
             Socket.registerHandler(this.newSocketMsg)
+        },
+        mounted() {
+            EventBus.$on('markRead2', () => {
+                this.getNotifications();
+            });
         }
     }
 </script>

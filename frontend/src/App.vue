@@ -12,13 +12,15 @@
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+// import Notifications from "./components/Notifications";
 // import './assets/_custom.scss'
 
 export default {
   name: 'app',
   components: {
-    AppHeader: Header,
-    Footer
+      AppHeader: Header,
+      Footer,
+      // NotifComponent: Notifications
   },
     data() {
       return {

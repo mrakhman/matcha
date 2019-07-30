@@ -56,6 +56,7 @@
     import axios from 'axios'
     import Logout from "./Logout";
     import {Socket} from "../socket";
+    import EventBus from '../event-bus';
 
     export default {
         name: "Header.vue",
@@ -93,10 +94,9 @@
             },
             markAllRead() {
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
-                    .then(response => {
-                        // this.getNotifications();
-                        this.$router.go();
-                        // console.log(response);
+                    .then(() => {
+                        this.getNotifications();
+                        EventBus.$emit('markRead2');
                     })
                     // TODO: console
                     // eslint-disable-next-line
@@ -113,6 +113,11 @@
             this.getNotifications();
             this.getUserFirstName();
             Socket.registerHandler(this.newSocketMsg)
+        },
+        mounted() {
+            EventBus.$on('markRead', () => {
+                this.getNotifications();
+            });
         }
     }
 </script>
