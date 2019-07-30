@@ -8,29 +8,11 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav v-if="user_id">
-<!--                    <b-nav-item-dropdown text="My profile" left>-->
-<!--                        <b-dropdown-item v-bind:to="'/my_profile/about_me'">About me</b-dropdown-item>-->
-<!--                        <b-dropdown-item v-bind:to="'/my_profile/settings'">Settings</b-dropdown-item>-->
-<!--                    </b-nav-item-dropdown>-->
-<!--                    <b-nav-item href="#">My user</b-nav-item>-->
-
-
-<!--                    <b-nav-item v-if="session.user_id" to="/my_profile">My profile</b-nav-item>-->
-<!--                    What should I put inside ???????? -->
                     <b-nav-item v-bind:to="'/my_profile'">My profile</b-nav-item>
-<!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
-
-
                     <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifications</b-nav-item>
                     <b-nav-item v-bind:to="'/history'">History</b-nav-item>
-<!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
-
-
-<!--                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
-<!--                    <b-nav-item> AUTH (now it's {{ user_id }})</b-nav-item>-->
-
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -74,8 +56,6 @@
     import axios from 'axios'
     import Logout from "./Logout";
     import {Socket} from "../socket";
-    // import Notifications from "./Notifications";
-    // import MyProfile from "./MyProfile";
 
     export default {
         name: "Header.vue",
@@ -88,16 +68,8 @@
                 user: this.$root.$data.user,
                 user_id: this.$root.$data.user_id,
 
-                notifs: [
-                    // { id: 4, type: 'message', text: 'you received a new message' },
-                    // { id: 3, type: 'like', text: 'XX liked you' },
-                    // { id: 2, type: 'view', text: 'ZZ checked your profile' },
-                    // { id: 1, type: 'message', text: 'Carney replied' }
-                ]
+                notifs: []
             }
-        },
-        props: {
-            // session: Object
         },
         methods: {
             getNotifications() {
@@ -142,14 +114,6 @@
             this.getUserFirstName();
             Socket.registerHandler(this.newSocketMsg)
         }
-
-
-        // computed: {
-        //     sessionUser() {
-        //         return this.session.user_id;
-        //
-        //     }
-        // }
     }
 </script>
 
@@ -185,7 +149,6 @@
     }
 
     .header_flex_start {
-        /*margin-bottom: 10px;*/
         width: 100%;
         text-align: left;
         display: flex;
@@ -194,9 +157,7 @@
     }
 
     .header_flex_end {
-        /*text-align: left;*/
         display: flex;
-        /*flex-direction: row;*/
         justify-content: flex-end;
     }
 

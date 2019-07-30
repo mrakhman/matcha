@@ -41,17 +41,11 @@
     const moment = require('moment');
     export default {
         name: "Chat.vue",
-        components: {
-        },
         props: ['username'],
         data () {
             return {
                 id: this.$route.params.id,
-                messages: [
-                    // {id: null, sender_id: 1, sender_name: 'Masha', time: '3h57m', text: 'blabla'},
-                    // {id: null, sender_id: 2, sender_name: 'Dasha', time: '3h57m', text: 'blabla'},
-                    // {id: null, sender_id: 2, sender_name: 'Kasha', time: '3h57m', text: 'blabla'},
-                ],
+                messages: [],
                 new_message: {sender_id: null, text: null},
                 error_text: null,
                 user: this.$root.$data.user,
@@ -71,7 +65,7 @@
                 })
                 // TODO: console
                 // eslint-disable-next-line
-		            .catch(error => console.log(error));
+		        //     .catch(error => console.log(error));
             },
             createMessage() {
                 if(this.new_message.text) {
@@ -79,14 +73,13 @@
                         text: this.new_message.text,
                         receiver_id: this.id
                     }, {withCredentials: true})
-                        .then(response => {
-                            // TODO: console
+                        .then(() => {
                             // console.log(response)
                         })
                         .catch(error => {
                             // TODO: console
                             this.error_text = "Two users are blocked or not connected, you can't chat";
-                            console.log(error)
+                            // console.log(error)
                         });
                     this.new_message.text = null;
                     this.error_text = null;
@@ -108,7 +101,7 @@
             Socket.registerHandler(this.newSocketMsg);
         },
         mounted() {
-            setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 5000);
+            setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 4000);
         },
         beforeDestroy() {
             this.$socket.sendObj({"action": "close_chat"});
@@ -138,8 +131,5 @@
     .messages {
         max-height: 300px;
         overflow: auto;
-    }
-    .my_message {
-        float: right;
     }
 </style>

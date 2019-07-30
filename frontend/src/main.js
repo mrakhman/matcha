@@ -27,26 +27,6 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-// const ifAuthenticated = (to, from, next) => {
-//   if (document.cookie)
-//   {
-//     next();
-//     return
-//   }
-//   next('/login')
-// };
-//
-// const ifNotAuthenticated = (to, from, next) => {
-//   if (!document.cookie)
-//   {
-//     next();
-//     return
-//   }
-//   next('/')
-// };
-//
-// const isAuth = this.session;
-
 const userId = localStorage.getItem('user_id');
 const userData = localStorage.getItem('user');
 
@@ -55,7 +35,6 @@ let vue = new Vue({
   data: {
     user_id: userId ? userId : null,
     user: userData ? JSON.parse(userData) : {},
-    // API_URL: "http://ivart:5000",
     // API_URL: "https://api.matchaaa.tk",
     API_URL: "https://matchaaa.tk/api", // TODO: keep this one
     // API_URL: " http://localhost:5000"

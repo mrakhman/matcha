@@ -2,7 +2,6 @@
     <div class="main">
         <h3 class="title"> Notifications </h3>
         <div class="ml-4">
-<!--            <b-badge variant="light">9 <span class="sr-only"></span></b-badge>-->
             <b-button class="notif_button" variant="" v-on:click="notifications = notifications2">
                 All
             </b-button>
@@ -18,7 +17,6 @@
         </div>
         <div class="table">
             <b-row>
-<!--                <b-col xl="3"></b-col>-->
                 <b-col xl="6">
                     <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Mark ALL notifications as read</a>
                     <a class="ml-4" v-else>No unread notifications</a>
@@ -33,7 +31,6 @@
                 </b-col>
             </b-row>
         </div>
-<!--        <pre>{{notifications}}</pre>-->
     </div>
 </template>
 
@@ -50,11 +47,7 @@
                     'N',
                     'type',
                     'text',
-                    {key: 'created_at', label: 'Date',
-                        // formatter: value => {
-                        //     return value.slice(0, 10) + ' at ' + value.slice(11, 16)
-                        // }
-                    }
+                    {key: 'created_at', label: 'Date'}
                 ],
                 notifications: [],
                 notifications2: [],
@@ -71,11 +64,10 @@
                         });
 
                         this.notifications2 = this.notifications;
-                        // console.log(response);
                     })
                     // TODO: console
                     // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    // .catch(error => console.log(error));
             },
             markAllRead() {
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
@@ -89,7 +81,6 @@
                     .catch(error => console.log(error));
             },
             filterByType(type) {
-                // this.getNotifications();
                 if (this.notifications) {
                     this.notifications = this.notifications2;
                     let notifs = this.notifications;
