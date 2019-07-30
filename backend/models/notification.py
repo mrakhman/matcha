@@ -1,4 +1,5 @@
-from datetime import datetime
+# from datetime import datetime
+import datetime
 
 from flask import json
 
@@ -92,10 +93,12 @@ class Notification(Model):
     def create(self):
         result = self.queries.create(self.user_id, self.text, self.type)
         self.id = result[0][0]
-        redis_payload = self.get_view()
-        redis_client.publish(f"notifications_{self.user_id}", json.dumps(redis_payload))
 
-        # self.queries.create(getattr(self, 'user_id'), getattr(self, 'text'))
+        # Redis here
+        redis_payload = self.get_view()
+        created_at = datetime.datetime.utcnow()
+        redis_payload['created_at'] = created_at
+        redis_client.publish(f"notifications_{self.user_id}", json.dumps(redis_payload))
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)

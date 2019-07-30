@@ -26,7 +26,7 @@ class MessageQueries(Queries):
             "SELECT messages.id, messages.sender_id, messages.created_at, messages.text "
             "FROM messages "
             "WHERE messages.sender_id IN($1, $2) AND messages.receiver_id IN($1, $2)"
-            "ORDER BY created_at DESC")
+            "ORDER BY created_at ASC")
 
 
 class Message(Model):
