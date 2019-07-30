@@ -86,6 +86,7 @@
 
 <script>
     import axios from 'axios';
+    import EventBus from '../event-bus'
 
     export default {
         name: "Settings.vue",
@@ -130,6 +131,7 @@
                         {
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Name settings are saved', duration: 1000});
                             this.alerts.names_saved = true;
+                            EventBus.$emit('firstNameChange', this.form_edit.first_name);
                         }
                         // console.log(response)
                     })

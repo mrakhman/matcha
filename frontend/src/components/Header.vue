@@ -118,6 +118,9 @@
             EventBus.$on('markRead', () => {
                 this.getNotifications();
             });
+            EventBus.$on('firstNameChange', (name) => {
+                this.display_first_name = name;
+            });
         }
     }
 </script>
