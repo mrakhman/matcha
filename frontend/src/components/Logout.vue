@@ -20,8 +20,8 @@
             logout() {
                 axios.post(this.$root.API_URL + '/auth/logout', {}, {withCredentials: true})
                     .then(response => {
-                        // console.log(response);
-                        if (response.statusText === 'OK')
+                        console.log(response);
+                        if (response.status === 200)
                         {
                             // Auth.loggedIn = false;
                             // this.auth.loggedIn = false;
