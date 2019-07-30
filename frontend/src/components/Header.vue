@@ -133,7 +133,7 @@
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "notification") {
-                    this.notifs.push(payload.data)
+                    this.notifs.unshift(payload.data)
                 }
             }
         },

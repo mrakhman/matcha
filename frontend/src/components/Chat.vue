@@ -73,27 +73,15 @@
                 // eslint-disable-next-line
 		            .catch(error => console.log(error));
             },
-            addMessage(text) { // also time
-                // if(this.new_message.text) {
-                                                    // TODO: FROM HERE!!!!!!!!!!
-                    this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, created_at: 'time', text: text});
-                    // this.new_message.text = null;
-                    // this.error_text = null;
-                // }
-                // else
-                    // this.error_text = "No message";
-            },
             createMessage() {
                 if(this.new_message.text) {
                     axios.post(this.$root.API_URL + '/messages/new', {
                         text: this.new_message.text,
                         receiver_id: this.id
-                        // time: Date.now()
                     }, {withCredentials: true})
                         .then(response => {
-                            this.addMessage(this.new_message.text); // TODO: FROM HERE!!!!!!!!!!
                             // TODO: console
-                            console.log(response)
+                            // console.log(response)
                         })
                         .catch(error => {
                             // TODO: console

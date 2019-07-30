@@ -20,7 +20,7 @@
             <b-row>
 <!--                <b-col xl="3"></b-col>-->
                 <b-col xl="6">
-                    <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Mark all as read</a>
+                    <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Mark ALL notifications as read</a>
                     <a class="ml-4" v-else>No unread notifications</a>
                     <b-table striped bordered :items="notifications" :fields="fields">
                         <template slot="N" slot-scope="data">
@@ -39,6 +39,8 @@
 
 <script>
     import axios from 'axios';
+    import {Socket} from "../socket";
+    const moment = require('moment');
 
     export default {
         name: "Notifications.vue",
@@ -64,10 +66,8 @@
                     .then(response => {
                         this.notifications = response.data["notifications"];
 
-                        var moment = require('moment');
                         this.notifications.forEach(function (message) {
                             message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
-
                         });
 
                         this.notifications2 = this.notifications;
@@ -96,11 +96,20 @@
                     notifs = notifs.filter(notif => notif.type === type);
                     this.notifications = notifs;
                 }
+            },
+            newSocketMsg(data) {
+                const payload = JSON.parse(data.data);
+                if (payload.type === "notification") {
+                    var last_notif = payload.data;
+                    last_notif.created_at = moment.utc(last_notif.created_at).tz("Europe/Paris").format('LLL');
+                    this.notifications.unshift(last_notif);
+                    this.notifications2 = this.notifications;
+                }
             }
         },
         created() {
             this.getNotifications();
-
+            Socket.registerHandler(this.newSocketMsg)
         }
     }
 </script>
