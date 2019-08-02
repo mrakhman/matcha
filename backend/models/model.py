@@ -2,7 +2,7 @@ from typing import Callable, Any, Union, List
 
 import postgresql.types
 
-from db import db
+from modules import db
 
 
 class Queries:

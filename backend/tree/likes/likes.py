@@ -1,13 +1,10 @@
-import os
-import uuid
 import http
 
-from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
+from flask import blueprints, jsonify, abort, g
 
 from models.like import Like
-from models.user import User
 from models.notification import Notification
-from utils.form_validator import check_fields
+from models.user import User
 from utils.security import authorised_only
 
 likes = blueprints.Blueprint("likes", __name__)
@@ -16,10 +13,9 @@ likes = blueprints.Blueprint("likes", __name__)
 @likes.route('/<int:user_id>', methods=['POST'])
 @authorised_only
 def create_like(user_id):
-	# current_app.logger.info(f"Here we are, the request is: {user_id}")
 	liked_user = User.get_by_id(user_id)  # Check if user exists
 	has_photo = Like.able_to_like(g.current_user.id)  # Check if user has profile image
-	is_blocked = User.user_is_blocked(g.current_user.id, user_id) # Check if user was blocked
+	is_blocked = User.user_is_blocked(g.current_user.id, user_id)  # Check if user was blocked
 
 	if is_blocked:
 		abort(http.HTTPStatus.FORBIDDEN)
@@ -51,6 +47,7 @@ def remove_like(user_id):
 
 		# If user is not blocked [blocked, blocker]
 		# Notification
+		# TODO: this is notification login, not like
 		if not User.user_is_blocked(g.current_user.id, user_id):
 			text = Notification.notification_text('unlike', g.current_user.id)
 			notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "like"})

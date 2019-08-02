@@ -12,15 +12,16 @@ from .model import Model, Queries
 class MessageQueries(Queries):
     def __init__(self):
         self.create = self.query("INSERT INTO messages (sender_id, receiver_id, text) VALUES ($1, $2, $3) RETURNING id")
-        self.get_user_chats = self.query("SELECT users.id, users.profile_image, users.username "
-                                         "FROM users WHERE users.id IN ("
-                                         "(SELECT messages.sender_id AS chat_users FROM messages "
-                                         "WHERE messages.sender_id = $1 OR messages.receiver_id = $1) "
-                                         "UNION "
-                                         "(SELECT messages.receiver_id AS chat_users FROM messages "
-                                         "WHERE messages.sender_id = $1 OR messages.receiver_id = $1)"
-                                         ") "
-                                         "AND users.id != $1")
+        self.get_user_chats = self.query(
+            "SELECT users.id, users.profile_image, users.username "
+            "FROM users WHERE users.id IN ("
+            "(SELECT messages.sender_id AS chat_users FROM messages "
+            "WHERE messages.sender_id = $1 OR messages.receiver_id = $1) "
+            "UNION "
+            "(SELECT messages.receiver_id AS chat_users FROM messages "
+            "WHERE messages.sender_id = $1 OR messages.receiver_id = $1)"
+            ") "
+            "AND users.id != $1")
 
         self.get_chat_messages = self.query(
             "SELECT messages.id, messages.sender_id, messages.created_at, messages.text "
@@ -132,4 +133,3 @@ class Message(Model):
     def create(self):
         result = self.queries.create(self.sender_id, self.receiver_id, self.text)
         self.id = result[0][0]
-

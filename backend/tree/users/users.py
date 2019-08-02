@@ -1,22 +1,17 @@
-import datetime
 import http
 import math
 
 from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
 
-from models.user import User
+from models.history import History
 from models.image import Image
 from models.like import Like
-from models.history import History
 from models.notification import Notification
-
+from models.user import User
+from modules import serializer
+from utils.emails import send_token_email
 from utils.form_validator import check_fields
 from utils.security import authorised_only
-
-from utils.emails import send_email, send_activation_email, send_passreset_email, generate_activation_token, \
-	confirm_token, send_newemail_email
-
-# import simplejson
 
 users = blueprints.Blueprint("users", __name__)
 
@@ -24,7 +19,6 @@ users = blueprints.Blueprint("users", __name__)
 @users.route('/<int:user_id>', methods=['GET'])
 @authorised_only
 def get_user_by_id(user_id):
-	# current_app.logger.info(f"Getting user #{user_id}")
 	user = User.get_by_id(user_id)
 	if user:
 		payload = user.get_view("public")
@@ -87,7 +81,7 @@ def users_filter(page_number):
 	}
 	:return:
 	"""
-	PER_PAGE = 5
+	per_page = 5
 	count_users = 0
 	if page_number < 0:
 		page_number = 0
@@ -151,8 +145,8 @@ def users_filter(page_number):
 		'my_tags': g.current_user.tags,
 		'order_by_field': req_data['sort']['sort_by'],
 		'order_by': req_data['sort']['order_by'],
-		'limit': PER_PAGE,
-		'offset': PER_PAGE * page_number
+		'limit': per_page,
+		'offset': per_page * page_number
 	}
 
 	if g.current_user.sex_pref == 'bi':
@@ -205,17 +199,7 @@ def users_filter(page_number):
 			search_users = result
 			count_users = g.current_user.count_filtered(**payload)
 	search_users = [u.get_view(with_attr={"distance"}) for u in search_users]
-	return jsonify(users=search_users, total_users=count_users, per_page=PER_PAGE)
-
-
-@users.route('/page/<int:page_number>', methods=['GET'])
-def get_users_page(page_number):
-	if page_number < 0:
-		page_number = 0
-
-	# users = [User.get_by_id(i).get_view("public") for i in range(1 + 10 * page_number, 11 + 10 * page_number)]
-	# return jsonify({"users": users})
-	return get_all()
+	return jsonify(users=search_users, total_users=count_users, per_page=per_page)
 
 
 @users.route('/me', methods=['GET'])
@@ -230,11 +214,6 @@ def get_me():
 
 @users.route('/register', methods=['POST'])
 def create_user():
-	# first_name = request.json.get("first_name")
-	# last_name = request.json.get("last_name")
-	# email = request.json.get("email")
-	# username = request.json.get("username")
-	# password = request.json.get("password")
 	req_data = request.get_json()
 	form_values = {
 		"first_name": {
@@ -281,337 +260,10 @@ def create_user():
 	new_user.create()
 
 	# Send activation email
-	token = generate_activation_token(new_user.email)
-	send_activation_email(new_user.email, token)
+	token = serializer.create_token(req_data['email'], 'activate_user')
+	send_token_email('activate_user', new_user.email, token)
 
 	return jsonify({"ok": True, "user": new_user.get_view("personal")})
-
-
-@users.route('/all', methods=['GET'])
-def get_all():
-	user_rows = User.queries.get_all()
-	result = User.from_db_row(user_rows)
-	return jsonify(users=result)
-
-
-@users.route('/edit_profile', methods=['POST'])
-def add_personal_details():
-	req_data = request.get_json()
-	form_values = {
-		"gender": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"sex_pref": {
-			'required': False,
-			'default': 'bi',
-			'type': str,
-			'validator': None
-		},
-		"bio_text": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"profile_image": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"images": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"tags": {
-			'required': False,
-			'default': None,
-			'type': [],
-			'validator': None
-		},
-		"dob": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		}
-	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
-	check_fields(req_data, form_values)
-	current_user = User.get_by_id(session['user_id'])
-
-	if current_user:
-		#     current_user.update_field('gender', req_data['gender'])
-		if getattr(current_user, 'gender') != req_data['gender']:
-			current_user.gender = req_data['gender']
-		if getattr(current_user, 'sex_pref') != req_data['sex_pref']:
-			current_user.sex_pref = req_data['sex_pref']
-		try:
-			dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
-		except ValueError:
-			abort(http.HTTPStatus.BAD_REQUEST)
-
-		current_user.dob = dob
-
-		if getattr(current_user, 'bio_text') != req_data['bio_text']:
-			current_user.bio_text = req_data['bio_text']
-
-		if getattr(current_user, 'profile_image') != req_data['profile_image']:
-			current_user.profile_image = req_data['profile_image']
-
-		# TODO: Add tag validation
-		current_user.tags = req_data['tags']
-
-		current_user.update()
-
-		return jsonify({"ok": True})
-	return jsonify({"ok": False})  # @TODO: think about error handling
-
-
-@users.route('/edit_names', methods=['POST'])
-def edit_names():
-	req_data = request.get_json()
-	form_values = {
-		"first_name": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"last_name": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"username": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		}
-	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
-	check_fields(req_data, form_values)
-	current_user = User.get_by_id(session['user_id'])
-
-	if current_user:
-		if getattr(current_user, 'first_name') != req_data['first_name'] and len(req_data['first_name']) > 0:
-			current_user.first_name = req_data['first_name']
-		if getattr(current_user, 'last_name') != req_data['last_name'] and len(req_data['last_name']) > 0:
-			current_user.last_name = req_data['last_name']
-		if getattr(current_user, 'username') != req_data['username'] and len(req_data['username']) > 0:
-			if User.get_by_username(req_data['username']):
-				abort(http.HTTPStatus.CONFLICT)  # If another user has this username
-			current_user.username = req_data['username']
-		current_user.update()
-
-		return jsonify({"ok": True})
-	return jsonify({"ok": False})  # @TODO: think about error handling
-
-
-@users.route('/edit_email', methods=['POST'])
-def edit_email():
-	req_data = request.get_json()
-	form_values = {
-		"email": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"password": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': None
-		}
-	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
-	check_fields(req_data, form_values)
-	current_user = User.get_by_id(session['user_id'])
-
-	if current_user and current_user.check_password(req_data["password"]):
-		if getattr(current_user, 'email') != req_data['email']:
-			if User.get_by_email(req_data['email']):
-				abort(http.HTTPStatus.CONFLICT)  # If another user has this email
-
-			User.save_new_email(current_user.id, req_data['email'])
-
-			# Send activation email
-			token = generate_activation_token(req_data['email'])
-			send_newemail_email(req_data['email'], token)
-
-		return jsonify({"ok": True})
-	abort(http.HTTPStatus.UNAUTHORIZED)
-
-
-# return jsonify({"ok": False})  # @TODO: think about error handling
-
-
-@users.route('/new_email/<token>', methods=['GET'])
-def set_new_email(token):
-	email = confirm_token(token)
-	if not email:
-		abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
-
-	current_user = User.get_by_id(session['user_id'])  # If user is offline I can't update his email
-	# current_user = User.get_by_email(email)
-
-	if not current_user:
-		abort(http.HTTPStatus.NOT_FOUND)
-
-	current_user.email = email
-	current_user.update()
-	return jsonify({"ok": True})
-
-
-@users.route('/edit_password', methods=['POST'])
-def edit_password():
-	req_data = request.get_json()
-	form_values = {
-		"old_password": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"new_password": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': None
-		}
-	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
-	check_fields(req_data, form_values)
-	current_user = User.get_by_id(session['user_id'])
-
-	if current_user and current_user.check_password(req_data["old_password"]):
-		# if getattr(current_user, 'password'):  # != hash_from_this ->req_data['new_password']:
-		current_user.set_password(req_data["new_password"])
-		current_user.update()
-
-		return jsonify({"ok": True})
-	abort(http.HTTPStatus.UNAUTHORIZED)
-
-
-# return jsonify({"ok": False})  # @TODO: think about error handling
-
-
-# @users.route('/send_email', methods=['GET'])
-# def send_email_test():
-#     message = "I'm testing you again"
-#     subject = "Matcha - confirm your email"
-#     to_email = "robinbad1312@yandex.ru"
-#     if send_email(to_email, subject, message):
-#         return jsonify({"ok": True})
-#     return jsonify({"ok": False})
-
-
-@users.route('/activate/<token>', methods=['GET'])
-def activate_user(token):
-	email = confirm_token(token)
-	if not email:
-		abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
-
-	current_user = User.get_by_email(email)
-
-	if not current_user:
-		abort(http.HTTPStatus.NOT_FOUND)
-
-	if current_user.activated == True:
-		return jsonify({"Account already activated, you can login": True})
-	else:
-		current_user.activated = True
-		current_user.update()
-		return jsonify({"ok": True})
-
-
-@users.route('/resend_activation', methods=['POST'])
-def resend_activation():
-	req_data = request.get_json()
-	form_values = {
-		"email": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': lambda x: '@' in x[1:-1]
-		}
-	}
-	check_fields(req_data, form_values)
-
-	current_user = User.get_by_email(req_data['email'])
-	if not current_user:
-		abort(http.HTTPStatus.NOT_FOUND)  # If user with this email doesn't exist
-
-	# Send activation email
-	token = generate_activation_token(req_data['email'])
-	send_activation_email(req_data['email'], token)
-	return jsonify({"ok": True})
-
-
-@users.route('/forgot_password', methods=['POST'])
-def forgot_password():
-	req_data = request.get_json()
-	form_values = {
-		"email": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': lambda x: '@' in x[1:-1]
-		}
-	}
-	check_fields(req_data, form_values)
-
-	current_user = User.get_by_email(req_data['email'])
-	if not current_user:
-		abort(http.HTTPStatus.NOT_FOUND)  # If user with this email doesn't exist
-
-	# Send activation email
-	token = generate_activation_token(req_data['email'])
-	send_passreset_email(req_data['email'], token)
-	return jsonify({"ok": True})
-
-
-@users.route('/check_passreset_token/<token>', methods=['GET'])
-def check_passreset_token(token):
-	email = confirm_token(token)
-	if not email:
-		abort(http.HTTPStatus.UNAUTHORIZED)  # The passreset link is invalid or has expired
-	current_user = User.get_by_email(email)
-	if not current_user:
-		abort(http.HTTPStatus.NOT_FOUND)
-	return jsonify({"user_email": email})
-
-
-@users.route('/reset_password/<token>', methods=['POST'])
-def reset_password(token):
-	req_data = request.get_json()
-	form_values = {
-		"password": {
-			'required': True,
-			'default': None,
-			'type': str,
-			'validator': None
-		}
-	}
-	check_fields(req_data, form_values)
-
-	email = confirm_token(token)
-	if not email:
-		abort(http.HTTPStatus.UNAUTHORIZED)
-	current_user = User.get_by_email(email)
-	if current_user:
-		current_user.set_password(req_data["password"])
-		current_user.update()
-		return jsonify({"ok": True})
-	abort(http.HTTPStatus.UNAUTHORIZED)
 
 
 @users.route('/block/<int:blocked_id>', methods=['POST'])
@@ -632,44 +284,3 @@ def unblock_user(blocked_id):
 	blocker_id = current_user.id
 	User.unblock_user(blocked_id, blocker_id)
 	return jsonify({"ok": True})
-
-
-@users.route('/location', methods=['POST'])
-def update_location():
-	req_data = request.get_json()
-	form_values = {
-		"latitude": {
-			'required': False,
-			'default': None,
-			'type': float,
-			'validator': None
-		},
-		"longitude": {
-			'required': False,
-			'default': None,
-			'type': float,
-			'validator': None
-		}
-	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
-	check_fields(req_data, form_values)
-	current_user = User.get_by_id(session['user_id'])
-
-	if current_user:
-		if getattr(current_user, 'latitude') != req_data['latitude']:
-			current_user.latitude = str(req_data['latitude'])
-
-		if getattr(current_user, 'longitude') != req_data['longitude']:
-			current_user.longitude = str(req_data['longitude'])
-
-		current_user.update()
-
-		return jsonify({"ok": True})
-	return jsonify({"ok": False})
-
-# @users.route('/is_blocked/<int:user_id>', methods=['GET'])
-# def is_blocked(user_id):
-#     current_user = User.get_by_id(session['user_id'])
-#     if User.user_is_blocked(user_id, current_user.id):
-#         return jsonify({"is_blocked": True})
-#     return jsonify({"is_blocked": False})

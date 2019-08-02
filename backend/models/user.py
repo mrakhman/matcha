@@ -1,21 +1,24 @@
-import postgresql
-# import pytz
 from datetime import date, timedelta, datetime
 from typing import Optional
-from werkzeug.security import generate_password_hash, check_password_hash
-from .model import Model, Queries
+
+import postgresql
 import postgresql.exceptions
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from .model import Model, Queries
 
 
 class UserQueries(Queries):
     def __init__(self):
-        self.get_all = self.query("SELECT * FROM users")
-        self.create = self.query("INSERT INTO users (username, email, first_name, last_name, password) "
-                                 "VALUES ($1, $2, $3, $4, $5) RETURNING id")
-        self.get_by_unique_field = lambda field: self.query(f"SELECT * FROM users WHERE {field} = $1", one=True)
-        self.update_field = lambda field: self.query(f"UPDATE users SET {field} = $1 WHERE id = $2")
-        self.save_new_email = self.query("INSERT INTO change_email (user_id, new_email) "
-                                         "VALUES ($1, $2) RETURNING id")
+        self.get_all = self.query(
+            "SELECT * FROM users")
+        self.create = self.query(
+            "INSERT INTO users (username, email, first_name, last_name, password) "
+            "VALUES ($1, $2, $3, $4, $5) RETURNING id")
+        self.get_by_unique_field = lambda field: self.query(
+            f"SELECT * FROM users WHERE {field} = $1", one=True)
+        self.update_field = lambda field: self.query(
+            f"UPDATE users SET {field} = $1 WHERE id = $2")
         self.filter = lambda order_by, order_by_field, nulls_behavior="": self.query(f"""
             SELECT 
                 users.id,
@@ -50,7 +53,7 @@ class UserQueries(Queries):
                         WHERE blocked_users.blocker_id = $10
                         )
             AND tags @> $7
-			AND dist.distance BETWEEN $11 AND $12
+            AND dist.distance BETWEEN $11 AND $12
             AND users.id != $10
             ORDER BY {order_by_field} {order_by} {nulls_behavior}
             LIMIT $8 OFFSET $9
@@ -79,11 +82,14 @@ class UserQueries(Queries):
             AND dist.distance BETWEEN $9 AND $10
             """)
 
-        self.block_user = self.query("INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
-        self.unblock_user = self.query("DELETE FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
-        self.user_is_blocked = self.query("SELECT * FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
-
-        self.update_last_connection = self.query("UPDATE users SET last_connection = NOW() WHERE id = $1")
+        self.block_user = self.query(
+            "INSERT INTO blocked_users (blocked_id, blocker_id) VALUES ($1, $2)")
+        self.unblock_user = self.query(
+            "DELETE FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
+        self.user_is_blocked = self.query(
+            "SELECT * FROM blocked_users WHERE blocked_id = $1 AND blocker_id = $2")
+        self.update_last_connection = self.query(
+            "UPDATE users SET last_connection = NOW() WHERE id = $1")
 
 
 class User(Model):
@@ -340,16 +346,14 @@ class User(Model):
 
     def create(self):
         # @TODO: Check smth?
-        self.queries.create(getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
-                            getattr(self, 'last_name'), getattr(self, 'password'))
-        # @TODO: get id from request, set it to the model attribute
+        result = self.queries.create(
+            getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
+            getattr(self, 'last_name'), getattr(self, 'password')
+        )
+        self.id = result[0][0]
 
     def _update_field(self, field, value):
         self.queries.update_field(field)(value, self.id)
-
-    @classmethod
-    def save_new_email(cls, user_id, new_email):
-        cls.queries.save_new_email(user_id, new_email)
 
     @classmethod
     def block_user(cls, blocked_id, blocker_id):

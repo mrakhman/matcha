@@ -1,26 +1,28 @@
 import os
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from flask_dotenv import DotEnv
 
 
 class Config(object):
     DEBUG = False
     TESTING = False
-    PSQL_DATABASE_URI = 'sqlite:///:memory:'
 
+    @classmethod
+    def init_app(cls, app):
+        env = DotEnv()
+        env.init_app(app)
 
-class ProductionConfig(Config):
-    PSQL_DATABASE_URI = 'mysql://user@localhost/foo'
+        env.eval(keys={
+            'DEBUG': bool,
+            'MAIL_PORT': int,
+            'MAIL_USE_TLS': bool,
+            'MAIL_USE_SSL': bool,
+        })
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SECRET_KEY = "HelloWorld!"
-    PSQL_DATABASE_URI = os.getenv('DB_URI')
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
-    REDIS_URL = os.getenv("REDIS_URL")
 
 
 class TestingConfig(Config):
