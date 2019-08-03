@@ -32,7 +32,6 @@ def create_like(user_id):
 			text = Notification.notification_text('like', g.current_user.id)
 			notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "like"})
 			notification.create()
-			# TODO: add like notification on front in real time
 
 		return jsonify(ok=True)
 	abort(http.HTTPStatus.BAD_REQUEST)
@@ -47,12 +46,10 @@ def remove_like(user_id):
 
 		# If user is not blocked [blocked, blocker]
 		# Notification
-		# TODO: this is notification login, not like
 		if not User.user_is_blocked(g.current_user.id, user_id):
 			text = Notification.notification_text('unlike', g.current_user.id)
 			notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "like"})
 			notification.create()
-			# TODO: add unlike notification on front in real time
 
 		return jsonify(ok=True)
 	abort(http.HTTPStatus.BAD_REQUEST)

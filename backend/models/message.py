@@ -1,5 +1,8 @@
 from datetime import datetime
 
+from flask import json
+
+from modules import redis_client
 from .model import Model, Queries
 
 
@@ -133,3 +136,9 @@ class Message(Model):
     def create(self):
         result = self.queries.create(self.sender_id, self.receiver_id, self.text)
         self.id = result[0][0]
+
+        users = [self.sender_id, self.receiver_id]
+        users.sort()
+        redis_payload = self.get_view('chat')
+        redis_payload['created_at'] = datetime.datetime.utcnow()
+        redis_client.publish(f"chat_{users[0]}_{users[1]}_messages", json.dumps(redis_payload))

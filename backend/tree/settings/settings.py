@@ -81,7 +81,11 @@ def update_personal_details():
 	if getattr(current_user, 'profile_image') != req_data['profile_image']:
 		current_user.profile_image = req_data['profile_image']
 
-	# TODO: Add tag validation
+	allowed_tags = {'42', 'eco', 'geek', 'veggie', 'music', 'travel'}
+	for tag in req_data['tags']:
+		if tag not in allowed_tags:
+			abort(http.HTTPStatus.BAD_REQUEST)
+
 	current_user.tags = req_data['tags']
 
 	current_user.update()

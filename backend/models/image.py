@@ -51,7 +51,7 @@ class Image(Model):
     def get_user_images(cls, user_id):
         result = cls.queries.get_user_images(user_id)
         if not result:
-            return None
+            return []
         obj = cls.from_db_row(result)
         return obj
 

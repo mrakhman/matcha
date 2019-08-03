@@ -3,7 +3,7 @@ import os
 import uuid
 
 from flask import blueprints, jsonify, abort, g, request, current_app, url_for, redirect
-from minio import Minio
+from minio.signer import presign_v4
 
 from models.image import Image
 from modules import storage
@@ -25,7 +25,9 @@ def get_image(filename):
 	secret_key = current_app.config.get('MINIO_SECRET_KEY')
 	storage_endpoint = current_app.config.get('STORAGE_ENDPOINT')
 
-	url = Minio(storage_endpoint, access_key, secret_key).presigned_get_object(bucket_name, filename)
+	url = presign_v4('GET', f'{storage_endpoint}/{bucket_name}/{filename}', access_key, secret_key)
+	# with Minio(storage_endpoint, access_key, secret_key) as minio:
+	# 	url = minio.presigned_get_object(bucket_name, filename)
 	return redirect(url)
 
 
@@ -55,6 +57,10 @@ def upload_image():
 		current_user = g.current_user
 
 		if source == 'profile_image':
+			# Delete old from bucket
+			filename = current_user.profile_image.split('/')[-1]
+			storage.connection.remove_object(bucket_name, filename)
+			# Update
 			current_user.profile_image = url_for('images.get_image', filename=filename, _external=True)
 			current_user.update()
 			return jsonify({"ok": True})

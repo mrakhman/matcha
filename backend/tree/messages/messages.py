@@ -1,12 +1,10 @@
-import datetime
 import http
 
-from flask import blueprints, jsonify, abort, request, g, json
+from flask import blueprints, jsonify, abort, request, g
 
 from models.like import Like
 from models.message import Message
 from models.user import User
-from modules import redis_client
 from utils.form_validator import check_fields
 from utils.security import authorised_only
 
@@ -46,20 +44,10 @@ def create_message():
     check_fields(req_data, form_values)
     sender_id = g.current_user.id
     receiver_id = int(req_data["receiver_id"])
-    # Todo: this is user logic, not messages
     if (Like.is_liked(sender_id, receiver_id) and Like.is_liked(receiver_id, sender_id)) \
             and (not User.user_is_blocked(sender_id, receiver_id) and not User.user_is_blocked(receiver_id, sender_id)):
         message = Message.from_dict({"sender_id": sender_id, "receiver_id": receiver_id, "text": req_data["text"]})
         message.create()
-
-        # Redis here
-        created_at = datetime.datetime.utcnow()
-        users = [sender_id, receiver_id]
-        users.sort()
-        # TODO: This is cool, but it should be inside message model
-        redis_payload = message.get_view('chat')
-        redis_payload['created_at'] = created_at
-        redis_client.publish(f"chat_{users[0]}_{users[1]}_messages", json.dumps(redis_payload))
 
         return jsonify(ok=True)
     abort(http.HTTPStatus.UNAUTHORIZED)
