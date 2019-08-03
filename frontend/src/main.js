@@ -55,10 +55,10 @@ let vue = new Vue({
   data: {
     user_id: userId ? userId : null,
     user: userData ? JSON.parse(userData) : {},
-    // API_URL: "http://ivart:5000",
+    API_URL: "http://localhost:5000",
     // API_URL: "https://api.matchaaa.tk",
-    API_URL: "https://matchaaa.tk/api",
-    // LOCAL_URL: "https://matchaaa.tk"
+    // API_URL: "https://matchaaa.tk/api",
+    LOCAL_URL: "https://matchaaa.tk"
     // API_URL: " http://127.0.0.1:5000"
     // Auth: Auth,
   },

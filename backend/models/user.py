@@ -345,7 +345,6 @@ class User(Model):
         return result[0][0]
 
     def create(self):
-        # @TODO: Check smth?
         result = self.queries.create(
             getattr(self, 'username'), getattr(self, 'email'), getattr(self, 'first_name'),
             getattr(self, 'last_name'), getattr(self, 'password')
