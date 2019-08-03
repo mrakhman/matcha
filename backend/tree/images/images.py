@@ -2,9 +2,11 @@ import http
 import os
 import uuid
 
-from flask import blueprints, jsonify, abort, g, request, current_app, send_from_directory, url_for
+from flask import blueprints, jsonify, abort, g, request, current_app, url_for, redirect
+from minio import Minio
 
 from models.image import Image
+from modules import storage
 from utils.security import authorised_only
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -18,7 +20,13 @@ def allowed_file(filename):
 
 @images.route('/<filename>', methods=['GET'])
 def get_image(filename):
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+    bucket_name = current_app.config.get('IMAGES_BUCKET_NAME')
+    access_key = current_app.config.get('MINIO_ACCESS_KEY')
+    secret_key = current_app.config.get('MINIO_SECRET_KEY')
+    storage_endpoint = current_app.config.get('STORAGE_ENDPOINT')
+
+    url = Minio(storage_endpoint, access_key, secret_key).presigned_get_object(bucket_name, filename)
+    return redirect(url)
 
 
 @images.route('/upload', methods=['POST'])
@@ -33,11 +41,13 @@ def upload_image():
         if not file:
             abort(http.HTTPStatus.BAD_REQUEST)
 
-    # print('Hey, source is: ', source)
-
     if allowed_file(file.filename):
+        bucket_name = current_app.config.get('IMAGES_BUCKET_NAME')
         filename = f"{uuid.uuid4()}.{file.filename.rsplit('.', 1)[1].lower()}"
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        file.seek(0, os.SEEK_END)
+        file_length = file.tell()
+        file.seek(0, os.SEEK_SET)
+        storage.connection.put_object(bucket_name, filename, file, file_length, file.mimetype)
         current_user = g.current_user
 
         if source == 'profile_image':
@@ -62,7 +72,6 @@ def get_user_images():
     current_user = g.current_user
     user_images = Image.get_user_images(current_user.id)
     return jsonify(user_images=user_images)
-    # return jsonify({"images": user_images.get_view('public')})
 
 
 @images.route('/<int:image_id>', methods=['DELETE'])
@@ -71,5 +80,8 @@ def delete_image(image_id):
     img = Image.get_by_id(image_id)
     if img and img.user_id == g.current_user.id:
         img.delete()
+        bucket_name = current_app.config.get('IMAGES_BUCKET_NAME')
+        filename = img.image_src.split('/')[-1]
+        storage.connection.remove_object(bucket_name, filename)
         return jsonify(ok=True)
     abort(http.HTTPStatus.NOT_FOUND)

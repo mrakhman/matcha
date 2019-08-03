@@ -30,7 +30,7 @@ class MySerializer:
 		salt = app.config.get('SECURITY_SALT')
 		if not secret_key:
 			raise MySerializerException("Secret key should be defined")
-		self._instance = URLSafeTimedSerializer(secret_key, self._init_args, self._init_kwargs)
+		self._instance = URLSafeTimedSerializer(secret_key, *self._init_args, **self._init_kwargs)
 		if salt:
 			self._instance.salt = salt
 

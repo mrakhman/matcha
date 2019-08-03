@@ -12,7 +12,7 @@ Flask-Cors = "==3.0.7"
 flask-mail = "*"
 flask-redis = "*"
 redis = "*"
-flask-dotenv = "*"
+flask-minio = "*"
 
 [requires]
 python_version = "3.7"

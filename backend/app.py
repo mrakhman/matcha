@@ -7,7 +7,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from models.user import User
-from modules import db, redis_client, mail, serializer
+from modules import db, redis_client, mail, serializer, storage
 from tree import auth, images, notifications, users, likes, history, messages, settings, recovery
 from utils.json_encoder import CustomJSONEncoder
 
@@ -31,13 +31,15 @@ default_handler.setFormatter(formatter)
 
 def app_factory(name):
     flask_app = Flask(name)
-    flask_app.config.from_object('config.DevelopmentConfig')  # TODO
+    flask_app.config.from_pyfile('configs.cfg')
+
     flask_app.json_encoder = CustomJSONEncoder
 
     db.init_app(flask_app)
-    redis_client.init_app(flask_app)
     mail.init_app(flask_app)
+    redis_client.init_app(flask_app)
     serializer.init_app(flask_app)
+    storage.init_app(flask_app)
 
     flask_app.register_blueprint(auth, url_prefix="/auth")
     flask_app.register_blueprint(history, url_prefix="/history")

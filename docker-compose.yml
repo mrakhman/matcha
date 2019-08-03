@@ -3,16 +3,31 @@ services:
   ws:
     build: ws
     ports:
-    - "8888:8888"
+      - "8888:8888"
     links:
-    - redis
-    - backend
+      - redis
+      - backend
   redis:
     image: redis
+    ports:
+      - "6379:6379"
+  minio:
+    image: minio/minio
+    volumes:
+      - data:/data
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: NcTdUZXFEXre8zByRfMLkK9AUBHejp
+      MINIO_SECRET_KEY: Zt4DBSu5ZaMfoupn2Zc8uOWWle5QwC
+      #MINIO_DOMAIN: "matchaaa.tk/minio"
+    command: server /data
   backend:
     build: backend
     ports:
       - "5000:5000"
+    links:
+      - minio
   nginx:
     build:
       context: .
@@ -23,3 +38,7 @@ services:
     links:
       - ws
       - backend
+      - minio
+
+volumes:
+  data:

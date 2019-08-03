@@ -1,10 +1,12 @@
 from flask_mail import Mail
+from flask_minio import Minio
 from flask_redis import FlaskRedis
 
 from flask_postgres import Postgres
-from serializer import MySerializer
+from utils.token_serializer import MySerializer
 
 db = Postgres()
-redis_client = FlaskRedis()
 mail = Mail()
+redis_client = FlaskRedis()
 serializer = MySerializer()
+storage = Minio()
