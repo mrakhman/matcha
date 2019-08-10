@@ -132,7 +132,6 @@
         <hr>
 
         <b-form v-on:submit.prevent="sendSortFilter">
-<!--            <b-container>-->
                 <h4><b>Sort by</b></h4>
                 <b-row>
                     <b-col xl="3">
@@ -145,18 +144,13 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
-<!--            </b-container>-->
             <b-button type="submit" variant="primary">Sort</b-button>
         </b-form>
-<!--        <pre class="mt-3 mb-0">{{ sort_form }}</pre>-->
-<!--        <pre class="mt-3 mb-0">{{ filter }}</pre>-->
         <hr>
     </div>
 </template>
 
 <script>
-    // import axios from 'axios';
-
     export default {
         name: "Search.vue",
         props: ['sort_form','filter', 'tags'],
@@ -170,24 +164,6 @@
                     { value: 'tags', text: 'Tags'}
                 ],
                 tag_options: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
-                // tags: [
-                //     {tag_id: 1, tag: '42'},
-                //     {tag_id: 2, tag: 'eco'},
-                //     {tag_id: 3, tag: 'geek'},
-                //     {tag_id: 4, tag: 'veggie'},
-                //     {tag_id: 5, tag: 'music'},
-                //     {tag_id: 6, tag: 'travel'}
-                // ],
-                // sort_form: {
-                //     order_by: 'asc',
-                //     sort_by: 'id'
-                // },
-                // filter: {
-                //     age: { min: 0, max: 99},
-                //     rating: { min: 0, max: 10},
-                //     distance: { min: 0, max: 100},
-                //     // tags: []
-                // }
             }
         },
         methods: {
@@ -198,9 +174,8 @@
 
             sendSortFilter() {
                 this.validateDistance();
-                var sort = this.sort_form;
-                var filter = this.filter;
-                // console.log(sort, filter);
+                let sort = this.sort_form;
+                let filter = this.filter;
                 this.$emit('sendSortFilter', sort, filter)
             }
         },

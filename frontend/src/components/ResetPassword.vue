@@ -25,9 +25,9 @@
 </template>
 
 <script>
-	import axios from 'axios'
+    import axios from 'axios'
 
-	export default {
+    export default {
 		name: "ResetPassword.vue",
 		data () {
 			return {
@@ -46,17 +46,14 @@
 						if(response.status === 200)
 						{
 							this.status = true;
-							// console.log(response)
 						}
 					})
-					.catch(error => {
+					.catch(() => {
 						this.status = false;
-						// TODO: console
-						console.log(error)
 					})
 			},
 			validateFields() {
-				var has_error = 0;
+				let has_error = 0;
 
 				// Show alert on empty input
 				if (!this.password || !this.repeat_password)
@@ -87,9 +84,8 @@
 				//     has_error = 1;
 				// }
 
-				if (has_error === 1)
-					return true;
-				return false;
+				return has_error === 1;
+
 			},
 			resetPassword() {
 				this.reset_success = false;
@@ -107,12 +103,8 @@
 							this.password = null;
 							this.repeat_password = null;
 						}
-						// console.log(response)
 					})
-					.catch(error => {
-						// TODO: console
-						console.log(error);
-					})
+					.catch(() => {})
 			}
 		},
 		created() {

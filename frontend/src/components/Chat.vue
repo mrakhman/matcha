@@ -5,14 +5,8 @@
         <!--    Something for smooth chat scroll    -->
         <div class="messages" v-chat-scroll="{always: false, smooth: true}">
             <div v-for="message in messages" :key="message.id">
-<!--                <b-row>-->
-                    <b-col v-if="message.sender_id === user.id" xl="2"></b-col>
-<!--                    <b-col>-->
-                        <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
-
-<!--                    </b-col>-->
-
-<!--                </b-row>-->
+                <b-col v-if="message.sender_id === user.id" xl="2"></b-col>
+                <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
                 <span v-else class="text-info">[{{ chat_users[message.sender_id].username }}]: </span>
                 <span>{{ message.text }}</span>
                 <span class="text-secondary time">{{ message.created_at }}</span>
@@ -38,6 +32,7 @@
 <script>
     import axios from 'axios';
     import {Socket} from "../socket";
+
     const moment = require('moment');
     export default {
         name: "Chat.vue",
@@ -47,11 +42,7 @@
         data () {
             return {
                 id: this.$route.params.id,
-                messages: [
-                    // {id: null, sender_id: 1, sender_name: 'Masha', time: '3h57m', text: 'blabla'},
-                    // {id: null, sender_id: 2, sender_name: 'Dasha', time: '3h57m', text: 'blabla'},
-                    // {id: null, sender_id: 2, sender_name: 'Kasha', time: '3h57m', text: 'blabla'},
-                ],
+                messages: [],
                 new_message: {sender_id: null, text: null},
                 error_text: null,
                 user: this.$root.$data.user,
@@ -67,38 +58,16 @@
                     this.messages.forEach(function (message) {
                         message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
                     });
-                    // console.log(response.data.messages);
                 })
-                // TODO: console
-                // eslint-disable-next-line
-		            .catch(error => console.log(error));
-            },
-            addMessage(text) { // also time
-                // if(this.new_message.text) {
-                                                    // TODO: FROM HERE!!!!!!!!!!
-                    this.messages.push({id: null, sender_id: this.user.id, sender_name: this.user.username, created_at: 'time', text: text});
-                    // this.new_message.text = null;
-                    // this.error_text = null;
-                // }
-                // else
-                    // this.error_text = "No message";
             },
             createMessage() {
                 if(this.new_message.text) {
                     axios.post(this.$root.API_URL + '/messages/new', {
                         text: this.new_message.text,
                         receiver_id: this.id
-                        // time: Date.now()
                     }, {withCredentials: true})
-                        .then(response => {
-                            this.addMessage(this.new_message.text); // TODO: FROM HERE!!!!!!!!!!
-                            // TODO: console
-                            console.log(response)
-                        })
-                        .catch(error => {
-                            // TODO: console
+                        .catch(() => {
                             this.error_text = "Two users are blocked or not connected, you can't chat";
-                            console.log(error)
                         });
                     this.new_message.text = null;
                     this.error_text = null;
@@ -120,7 +89,7 @@
             Socket.registerHandler(this.newSocketMsg);
         },
         mounted() {
-            setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 5000);
+            setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 4000);
         },
         beforeDestroy() {
             this.$socket.sendObj({"action": "close_chat"});

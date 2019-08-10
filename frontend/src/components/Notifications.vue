@@ -2,7 +2,6 @@
     <div class="main">
         <h3 class="title"> Notifications </h3>
         <div class="ml-4">
-<!--            <b-badge variant="light">9 <span class="sr-only"></span></b-badge>-->
             <b-button class="notif_button" variant="" v-on:click="notifications = notifications2">
                 All
             </b-button>
@@ -18,7 +17,6 @@
         </div>
         <div class="table">
             <b-row>
-<!--                <b-col xl="3"></b-col>-->
                 <b-col xl="6">
                     <a class="ml-4" v-if="notifications" href="#" v-on:click="markAllRead">Mark all as read</a>
                     <a class="ml-4" v-else>No unread notifications</a>
@@ -33,12 +31,15 @@
                 </b-col>
             </b-row>
         </div>
-<!--        <pre>{{notifications}}</pre>-->
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    import {Socket} from "../socket";
+    import EventBus from '../event-bus';
+
+    const moment = require('moment');
 
     export default {
         name: "Notifications.vue",
@@ -48,11 +49,7 @@
                     'N',
                     'type',
                     'text',
-                    {key: 'created_at', label: 'Date',
-                        // formatter: value => {
-                        //     return value.slice(0, 10) + ' at ' + value.slice(11, 16)
-                        // }
-                    }
+                    {key: 'created_at', label: 'Date'}
                 ],
                 notifications: [],
                 notifications2: [],
@@ -64,43 +61,46 @@
                     .then(response => {
                         this.notifications = response.data["notifications"];
 
-                        var moment = require('moment');
                         this.notifications.forEach(function (message) {
                             message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
-
                         });
 
                         this.notifications2 = this.notifications;
-                        // console.log(response);
                     })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
             },
             markAllRead() {
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
-                    .then(response => {
+                    .then(() => {
                         this.getNotifications();
-                        this.$router.go();
-                        // console.log(response);
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                        EventBus.$emit('markRead');
+                    }).catch(() => {});
             },
             filterByType(type) {
-                // this.getNotifications();
                 if (this.notifications) {
                     this.notifications = this.notifications2;
-                    let notifs = this.notifications;
-                    notifs = notifs.filter(notif => notif.type === type);
-                    this.notifications = notifs;
+                    let notifications = this.notifications;
+                    notifications = notifications.filter(notif => notif.type === type);
+                    this.notifications = notifications;
+                }
+            },
+            newSocketMsg(data) {
+                const payload = JSON.parse(data.data);
+                if (payload.type === "notification") {
+                    let last_notif = payload.data;
+                    last_notif.created_at = moment.utc(last_notif.created_at).tz("Europe/Paris").format('LLL');
+                    this.notifications.unshift(last_notif);
+                    this.notifications2 = this.notifications;
                 }
             }
         },
         created() {
             this.getNotifications();
-
+            Socket.registerHandler(this.newSocketMsg)
+        },
+        mounted() {
+            EventBus.$on('markRead2', () => {
+                this.getNotifications();
+            });
         }
     }
 </script>

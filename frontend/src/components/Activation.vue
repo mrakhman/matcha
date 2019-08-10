@@ -23,9 +23,9 @@
 </template>
 
 <script>
-	import axios from 'axios'
+    import axios from 'axios'
 
-	export default {
+    export default {
 		name: "Activation.vue",
 		data () {
 			return {
@@ -44,13 +44,10 @@
 						{
 							this.status = true;
 							this.$notify({group: 'foo', type: 'success', title: 'Activated!', text: 'Your account is activated, you can now login', duration: -1});
-							// console.log(response)
 						}
 					})
-					.catch(error => {
+					.catch(() => {
 						this.status = false;
-						// TODO: console
-						console.log(error)
 					})
 			},
 			resendActivation() {
@@ -65,14 +62,11 @@
 							this.email = null;
 							this.email_sent = true;
 						}
-						// console.log(response)
 					})
 					.catch(error => {
 						if (error.response.status === 404) {
 							this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: 3000});
 						}
-						// TODO: console
-						console.log(error)
 					})
 			}
 		},

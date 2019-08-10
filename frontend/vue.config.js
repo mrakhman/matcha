@@ -15,9 +15,9 @@ module.exports = {
                     'b-card-img-lazy': ['src', 'blank-src'],
                     'b-carousel-slide': 'img-src',
                     'b-embed': 'src'
-                }
+                };
 
                 return options
             })
     }
-}
+};

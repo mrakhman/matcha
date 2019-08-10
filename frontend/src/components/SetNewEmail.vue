@@ -11,9 +11,9 @@
 </template>
 
 <script>
-	import axios from 'axios'
+    import axios from 'axios'
 
-	export default {
+    export default {
 		name: "SetNewEmail.vue",
 		data () {
 			return {
@@ -30,13 +30,10 @@
 						{
 							this.status = true;
 							this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Your email is changed', duration: 3000});
-							// console.log(response)
 						}
 					})
-					.catch(error => {
+					.catch(() => {
 						this.status = false;
-						// TODO: console
-						console.log(error)
 					})
 			}
 		},

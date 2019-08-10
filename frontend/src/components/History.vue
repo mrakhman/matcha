@@ -24,28 +24,23 @@
 </template>
 
 <script>
-	import axios from 'axios';
+    import axios from 'axios';
 
-	export default {
+    export default {
 		name: "History.vue",
 		data() {
 			return {
 				fields: [
 					'N',
 					'username',
-					{key: 'profile_id', label: 'Profile',
+					{
+						key: 'profile_id', label: 'Profile',
 						formatter: value => {
 							return '/users/' + value
 						}
 					},
-					{key: 'created_at', label: 'Date',
-						// formatter: value => {
-							// var moment = require('moment');
-							// value = moment.tz(value, "Europe/Paris").format('LLL');
-							// this.last_online_timezone = moment.tz(this.user.last_connection, "Europe/Paris").format('LLL');
-							// return value
-							// return value.slice(0, 10) + ' at ' + value.slice(11, 16)
-						// }
+					{
+						key: 'created_at', label: 'Date',
 					}
 				],
 				history: [],
@@ -57,26 +52,18 @@
 					.then(response => {
 						this.history = response.data["history"];
 
-						var moment = require('moment');
+						let moment = require('moment');
 						this.history.forEach(function (message) {
 							message.created_at = moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
 						});
-						// console.log(response);
-					})
-					// TODO: console
-					// eslint-disable-next-line
-					.catch(error => console.log(error));
+					}).catch(() => {});
 			},
 			deleteHistory() {
 				axios.delete(this.$root.API_URL + '/history/delete', {withCredentials: true})
 					.then(() => {
 						this.getHistory();
-						this.$router.go();
-						// console.log(response);
-					})
-					// TODO: console
-					// eslint-disable-next-line
-					.catch(error => console.log(error));
+						this.$router.go(0);
+					}).catch(() => {});
 			}
 		},
 		created() {

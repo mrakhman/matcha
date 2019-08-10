@@ -6,14 +6,6 @@
             <b-row><b-col xl="9">
                 <b-form v-on:submit.prevent="submitRegister">
 
-                    <!--                <ul v-if="errors.length">-->
-                    <!--                    <li v-for="error in errors">{{ error }}</li>-->
-                    <!--                </ul>-->
-
-                    <!--                    <b-alert show v-if="errors.empty_input" variant="danger" dismissible>Empty input</b-alert>-->
-                    <!--                    <b-alert show v-if="errors.password_repeat" variant="danger" dismissible>2 passwords</b-alert>-->
-
-
                     <b-alert v-model="errors.empty_input" variant="danger" dismissible>Empty input field</b-alert>
                     <b-alert v-model="errors.password_repeat" variant="danger" dismissible>2 passwords didn't match</b-alert>
                     <b-alert v-model="errors.spaces" variant="danger" dismissible>Don't use spaces</b-alert>
@@ -21,8 +13,6 @@
                     <b-alert v-model="errors.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, symbol, number</b-alert>
                     <b-alert v-model="errors.user_exists" variant="danger" dismissible>User already exists, email and username must be unique</b-alert>
                     <b-alert v-model="register_success_alert" variant="success" dismissible>User created! Check your email to activate account</b-alert>
-
-
 
                     <b-form-group
                             id="1"
@@ -77,7 +67,7 @@
 
 <script>
 
-import axios from 'axios';
+    import axios from 'axios';
 
     export default {
         name: "Register.vue",
@@ -100,13 +90,12 @@ import axios from 'axios';
                     user_exists: false
                 },
                 register_success_alert: false
-                // errors: []
 
             }
         },
         methods: {
             validateRegister() {
-                var has_error = 0;
+                let has_error = 0;
                 this.errors.empty_input = false;
                 this.errors.password_repeat = false;
                 this.errors.invalid_symbols = false;
@@ -137,7 +126,7 @@ import axios from 'axios';
                 }
 
                 // Show alert on unwanted characters
-                var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
+                const reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form.first_name.match(reg1) || this.form.last_name.match(reg1) || this.form.email.match(reg1) || this.form.username.match(reg1))
                 {
                     this.errors.invalid_symbols = true;
@@ -153,12 +142,7 @@ import axios from 'axios';
                 //     has_error = 1;
                 // }
 
-                if (has_error === 1)
-                    return true;
-                return false;
-
-                // else
-                //     return alert((JSON.stringify(this.form)))
+                return has_error === 1;
             },
 
             submitRegister() {
@@ -187,19 +171,14 @@ import axios from 'axios';
                             this.form.repeat_password = null;
 
                         }
-                        // console.log(response)
                 })
                     .catch(error => {
                         if (error.response.status === 409) {
                             this.errors.user_exists = true;
                             this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'User already exists, email and username must be unique', duration: -1});
                         }
-                        // TODO: console
-                        console.log(error)
                 })
             },
-
-
         }
     }
 

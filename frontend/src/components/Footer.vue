@@ -16,7 +16,6 @@
     footer {
         flex-shrink: 0;
         background-color: dimgrey;
-        /*background-color: #396;*/
         color: white;
         text-align: center;
     }

@@ -33,9 +33,6 @@
 					</b-row>
 				</b-col>
 			</b-row>
-			<!--        Hey, look at bootstrap margin + padding!!!!! -->
-			<!--        <h3 class="title"> Details: </h3>-->
-			<!--        <h3 class="ml-auto"> Details: </h3>-->
 			<b-row>
 				<b-col cols="7">
 					<div class="details"> <b> Rating: </b> {{user.rating}} / 10 </div>
@@ -48,7 +45,7 @@
 					</b-row></b-col></div>
 					<div class="details">
 						<p class="one_line"><b> My tags: </b></p>
-						<ul class="tags" v-for="tag in user.tags">
+						<ul class="tags" v-for="tag in user.tags" :key="tag">
 							<li> #{{tag}} </li>
 						</ul>
 					</div>
@@ -66,8 +63,8 @@
 					<p class="one_line">Do you like me?</p>
 					<!--                <div v-on:click="user.has_like = !user.has_like">-->
 					<div v-on:click="changeLikeState">
-						<img v-if="user.has_like" src="../../img/heart_red.png" width="40">
-						<img v-else src="../../img/heart_white.png" width="40">
+						<img v-if="user.has_like" src="../assets/heart_red.png" width="40" alt="liked">
+						<img v-else src="../assets/heart_white.png" width="40" alt="not liked">
 					</div>
 					<div class="mt-3" id="am_i_liked">
 						<small class="likes_me" v-if="user.likes_me"> P.S. <b>{{user.first_name}} {{user.last_name}}</b> likes you :) </small>
@@ -103,18 +100,7 @@
 				id: this.$route.params.id,
 				last_online_timezone: null,
 				user: {
-					// is_blocked: null,
-					// has_like: null,
 					images: [{id: null, src: null}],
-					// first_name: '',
-					// last_name: '',
-					// username: '',
-					// gender: '',
-					// age: '',
-					// sex_pref: '',
-					// bio_text: 'hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka hello, my name is kakashka ',
-					// tags: ['hoho', 'haha', 'hihi'],
-					// profile_image: '',
 				},
 			}
 		},
@@ -153,32 +139,25 @@
 					.then(response => {
 						this.user = response.data.user;
 
-						var moment = require('moment');
+						const moment = require('moment');
 						this.last_online_timezone =  moment.utc(this.user.last_connection).tz("Europe/Paris").format('LLL');
 					})
-					// TODO: console
-					// eslint-disable-next-line
 					.catch(error => {
 						if (error.response.status === 404) {
 							this.user_not_exist = true;
 						}
-						console.log(error)
 					});
 			},
 			changeLikeState() {
-				// this.user.has_like = !this.user.has_like
 				// Add like
 				if (this.user.has_like === false) {
 					axios.post(this.$root.API_URL + '/likes/' + this.id, {}, {
 						withCredentials: true
 					})
-						.then(response => {
+						.then(() => {
 							this.user.has_like = true;
 							this.usersCanChat();
-							// console.log(response);
 						})
-						// TODO: console
-						// eslint-disable-next-line
 						.catch(error => {
 							if (error.response.status === 403) {
 								this.is_blocked = true;
@@ -188,7 +167,6 @@
 								this.no_photo = true;
 								this.$notify({group: 'foo', type: 'error', title: 'Upload profile image', text: 'You cannot connect with another user without profile image', duration: 3000});
 							}
-							console.log(error);
 						});
 				}
 				// Remove like
@@ -196,14 +174,10 @@
 					axios.delete(this.$root.API_URL + '/likes/' + this.id, {
 						withCredentials: true
 					})
-						.then(response => {
+						.then(() => {
 							this.user.has_like = false;
 							this.usersCanChat();
-							// console.log(response);
-						})
-						// TODO: console
-						// eslint-disable-next-line
-						.catch(error => console.log(error));
+						}).catch(() => {});
 				}
 			},
 			sendBlockRequest() {
@@ -213,11 +187,7 @@
 					.then(() => {
 						this.user.is_blocked = true;
 						this.usersCanChat();
-					})
-					// TODO: console
-					// eslint-disable-next-line
-					.catch(error => console.log(error));
-
+					}).catch(() => {});
 			},
 			reportFake() {
 				let popup = confirm("This account will be reported as fake and will not appear in your search anymore");
@@ -238,10 +208,7 @@
 					.then(() => {
 						this.user.is_blocked = false;
 						this.usersCanChat();
-					})
-					// TODO: console
-					// eslint-disable-next-line
-					.catch(error => console.log(error));
+					}).catch(() => {});
 			},
 			usersCanChat() {
 				axios.get(this.$root.API_URL + '/messages/allowed/' + this.id, {
@@ -252,11 +219,7 @@
 						this.users_can_chat = true;
 					else if (response.status === 200 && response.data.ok === false)
 						this.users_can_chat = false;
-				})
-				.catch(error => {
-					// TODO: console
-					console.log(error)
-				});
+				}).catch(() => {});
 			}
 		},
 		created() {
@@ -267,11 +230,6 @@
 </script>
 
 <style scoped>
-
-	#big_photo {
-		max-height: 200px;
-	}
-
 	#photos {
 		margin: 30px;
 	}
@@ -284,7 +242,6 @@
 		padding: 0 0 0 8px;
 		float: left;
 		list-style-type: none;
-		/*display: flex;*/
 	}
 
 	.details {
@@ -293,7 +250,6 @@
 	}
 
 	.likes_me {
-		/*color: goldenrod;*/
 		color: #eb6562;
 	}
 </style>

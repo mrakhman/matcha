@@ -16,7 +16,6 @@
                  :per-page="per_page"
                  :items="users"
             >
-
                 <b-card v-bind:title="user.first_name + ' ' + user.last_name"
                         v-bind:img-src="user.profile_image"
                         img-alt="profile picture"
@@ -50,11 +49,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-import Search from "./Search";
-import Location from './Location';
+    import axios from 'axios';
+    import Search from "./Search";
+    import Location from './Location';
 
-export default {
+    export default {
     name: "UsersList.vue",
     components: {
         Search,
@@ -102,11 +101,7 @@ export default {
                     this.users = response.data["users"];
                     this.total_users = response.data["total_users"];
                     this.per_page = response.data["per_page"];
-                    // console.log(response);
-                })
-                // TODO: console
-                // eslint-disable-next-line
-                .catch(error => console.log(error));
+                }).catch(() => {});
         },
 
         ipLocation() {
@@ -118,11 +113,7 @@ export default {
                         this.ip_location.ip_lat = lat_long[0];
                         this.ip_location.ip_lon = lat_long[1];
                     }
-                })
-                .catch(error => {
-                    // TODO: console
-                    console.log(error)
-                })
+                }).catch(() => {});
         },
     },
 

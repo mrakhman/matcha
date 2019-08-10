@@ -12,7 +12,6 @@
             />
         </b-tab>
 
-<!--        <b-tab title="Settings" href="#settings" aria-label="Anchor">-->
         <b-tab title="Settings">
             <Settings
                     v-bind:form_edit="form_edit"
@@ -20,7 +19,6 @@
                     v-bind:user_details="user_details"
             />
         </b-tab>
-<!--        <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>-->
     </b-tabs>
 </div>
 </template>
@@ -29,7 +27,6 @@
     import AboutMe from "./AboutMe";
     import Settings from "./Settings";
     import axios from 'axios';
-    // import Moment from 'moment-timezone';
 
     export default {
         name: "MyProfile.vue",
@@ -37,12 +34,12 @@
             AboutMe,
             Settings
         },
-        // props: ['user_id'],
         data() {
             return {
                 last_online_timezone: null,
-                // user_id: this.$props.user_id,
-                user_details: {},
+                user_details: {
+                    last_connection: ''
+                },
 
 
                 form: {
@@ -102,14 +99,11 @@
                     .then(response => {
                         this.user_details = response.data["user"];
                         this.user_details.dob = this.user_details.dob.substring(0, 10);
-                        // return response // IDK why I need it???
                     })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    .catch(() => {});
             },
             editTimezone() {
-                var moment = require('moment');
+                const moment = require('moment');
                 this.last_online_timezone = moment.tz(this.user_details.last_connection, "Europe/Paris").format('LLL');
             }
         },
@@ -142,8 +136,6 @@
         padding-bottom: 20px;
         padding-left: 15px;
     }
-
-    /*v-bind:options="options"*/
 </style>
 
 

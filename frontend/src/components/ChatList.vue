@@ -17,7 +17,6 @@
                         </router-link>
                     </b-col>
                 </b-row>
-
             </b-col></b-row>
         </b-container>
     </div>
@@ -44,11 +43,7 @@
                 axios.get(this.$root.API_URL + '/messages/chats', {withCredentials: true})
                 .then(response => {
                     this.users_list = response.data.chats;
-                    // console.log(response.data);
-                })
-                    // TODO: console
-                    // eslint-disable-next-line
-		            .catch(error => console.log(error));
+                }).catch(() => {});
             }
         },
         created() {

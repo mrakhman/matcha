@@ -1,36 +1,18 @@
 <template>
     <div id="header">
         <b-navbar toggleable="lg" variant="light">
-            <router-link v-bind:to="'/'"><img alt="Matcha logo" src="../../img/heart_red.png" width="30"></router-link>
+            <router-link v-bind:to="'/'"><img alt="Matcha logo" src="../assets/heart_red.png" width="30"></router-link>
             <router-link v-bind:to="'/'"><h1 class="header_text"><a>Matcha</a></h1></router-link>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav v-if="user_id">
-<!--                    <b-nav-item-dropdown text="My profile" left>-->
-<!--                        <b-dropdown-item v-bind:to="'/my_profile/about_me'">About me</b-dropdown-item>-->
-<!--                        <b-dropdown-item v-bind:to="'/my_profile/settings'">Settings</b-dropdown-item>-->
-<!--                    </b-nav-item-dropdown>-->
-<!--                    <b-nav-item href="#">My user</b-nav-item>-->
-
-
-<!--                    <b-nav-item v-if="session.user_id" to="/my_profile">My profile</b-nav-item>-->
-<!--                    What should I put inside ???????? -->
                     <b-nav-item v-bind:to="'/my_profile'">My profile</b-nav-item>
-<!--                    <router-link v-bind:to="'my_profile/' + session.user_id"><b-nav-item>My prof</b-nav-item></router-link>-->
-
-
                     <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifications</b-nav-item>
                     <b-nav-item v-bind:to="'/history'">History</b-nav-item>
-<!--                    <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
-
-
-<!--                    <b-nav-item v-on:click="auth.loggedIn = !auth.loggedIn">Change AUTH (now it's {{ auth.loggedIn }})</b-nav-item>-->
-<!--                    <b-nav-item> AUTH (now it's {{ user_id }})</b-nav-item>-->
-
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -43,24 +25,23 @@
                     <div class="text-center" v-if="user_id">
                         <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret right>
                             <template slot="button-content">
-                                <b-badge variant="warning" v-if="notifs">{{notifs.length}}</b-badge>
+                                <b-badge variant="warning" v-if="notifications">{{notifications.length}}</b-badge>
                                 <b-badge variant="warning" v-else>0</b-badge>
-                                <img alt="Notifications" src="../../img/bell.png" width="30">
+                                <img alt="Notifications" src="../assets/bell.png" width="30">
                             </template>
                             <b-dropdown-item-button href="#"
-                                                    v-if="notifs"
+                                                    v-if="notifications"
                                                     v-on:click="markAllRead"
                             >Mark all read</b-dropdown-item-button>
                             <b-dropdown-text v-else>No notifications</b-dropdown-text>
                             <b-dropdown-divider></b-dropdown-divider>
-                            <div v-for="notif in notifs" v-bind:key="notif.id">
-                                <b-dropdown-item v-bind:to="'/notifications'">{{notif.text}}</b-dropdown-item>
+                            <div v-for="notification in notifications" v-bind:key="notification.id">
+                                <b-dropdown-item v-bind:to="'/notifications'">{{notification.text}}</b-dropdown-item>
                             </div>
                         </b-dropdown>
                     </div>
                     <b-nav-item v-if="user_id">Hello, {{ display_first_name }}!</b-nav-item>
                     <Logout v-if="user_id"/>
-<!--                    v-on:del_session="$emit('del_session')"/>-->
 
                 </b-navbar-nav>
             </b-collapse>
@@ -74,8 +55,7 @@
     import axios from 'axios'
     import Logout from "./Logout";
     import {Socket} from "../socket";
-    // import Notifications from "./Notifications";
-    // import MyProfile from "./MyProfile";
+    import EventBus from '../event-bus';
 
     export default {
         name: "Header.vue",
@@ -88,52 +68,34 @@
                 user: this.$root.$data.user,
                 user_id: this.$root.$data.user_id,
 
-                notifs: [
-                    // { id: 4, type: 'message', text: 'you received a new message' },
-                    // { id: 3, type: 'like', text: 'XX liked you' },
-                    // { id: 2, type: 'view', text: 'ZZ checked your profile' },
-                    // { id: 1, type: 'message', text: 'Carney replied' }
-                ]
+                notifications: []
             }
-        },
-        props: {
-            // session: Object
         },
         methods: {
             getNotifications() {
                 axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
                     .then(response => {
-                        this.notifs = response.data["notifications"];
-                        // console.log(response);
+                        this.notifications = response.data["notifications"];
                     })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    .catch(() => {});
             },
             getUserFirstName() {
                 axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
                     .then(response => {
                         this.display_first_name = response.data.user.first_name;
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    }).catch(() => {});
             },
             markAllRead() {
                 axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
-                    .then(response => {
-                        // this.getNotifications();
-                        this.$router.go();
-                        // console.log(response);
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-			        .catch(error => console.log(error));
+                    .then(() => {
+                        this.getNotifications();
+                        EventBus.$emit('markRead2');
+                    }).catch(() => {});
             },
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "notification") {
-                    this.notifs.push(payload.data)
+                    this.notifications.unshift(payload.data)
                 }
             }
         },
@@ -141,15 +103,15 @@
             this.getNotifications();
             this.getUserFirstName();
             Socket.registerHandler(this.newSocketMsg)
+        },
+        mounted() {
+            EventBus.$on('markRead', () => {
+                this.getNotifications();
+            });
+            EventBus.$on('firstNameChange', (name) => {
+                this.display_first_name = name;
+            });
         }
-
-
-        // computed: {
-        //     sessionUser() {
-        //         return this.session.user_id;
-        //
-        //     }
-        // }
     }
 </script>
 
@@ -185,7 +147,6 @@
     }
 
     .header_flex_start {
-        /*margin-bottom: 10px;*/
         width: 100%;
         text-align: left;
         display: flex;
@@ -194,9 +155,7 @@
     }
 
     .header_flex_end {
-        /*text-align: left;*/
         display: flex;
-        /*flex-direction: row;*/
         justify-content: flex-end;
     }
 

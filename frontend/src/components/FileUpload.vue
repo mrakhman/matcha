@@ -59,9 +59,8 @@
             saveButtonDisabled() {
                 if (this.selected_file === null)
                     return true;
-                if (this.many && this.images.length > this.max)
-                    return true;
-                return false;
+                return !!(this.many && this.images.length > this.max);
+
             },
             savePhoto() {
                 if (this.errorText != null)
@@ -88,19 +87,11 @@
                                 this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: -1});
                             }
                         })
-                        .catch(error => {
+                        .catch(() => {
                             this.$notify({group: 'foo', type: 'error', title: 'Fail', text: 'There is an error', duration: -1});
-
-                            // if (error.response.status === 409) {
-                            //     this.errors.user_exists = true;
-                            // }
-                            // TODO: console
-                            // eslint-disable-next-line no-console
-                            console.log(error)
                         }).finally(() => {
                             this.selected_file = null;
                             this.imageURL = null;
-
                     })
                 }
             }

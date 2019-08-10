@@ -1,6 +1,5 @@
 <template>
     <div>
-<!--        <pre>{{user_details}}</pre>-->
         <b-container class="bv-example-row"><b-row><b-col xl="9">
             <h4>Profile main image</h4>
             <b-row id="profile_image_2">
@@ -90,7 +89,6 @@
                 <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
                     <b-form-input v-model="user_details.dob" type="date"></b-form-input>
                     <small class="text-danger" v-if="!user_details.dob">Add date of birth to appear in users' search </small>
-<!--                    <div class="mt-3">Birthday: <strong>{{ user_details.dob }}</strong></div>-->
                 </b-form-group>
 
                 <b-button type="submit" variant="primary">Save</b-button>
@@ -125,7 +123,6 @@
                     gender: [
                         { value: 'female', text: 'Female'},
                         { value: 'male', text: 'Male'},
-                        // { value: 'not mention', text: 'Not mentioned'}
                     ],
                     sex_pref: ['hetero', 'homo', 'bi'],
                     tags: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
@@ -153,14 +150,11 @@
                             this.edit_success_alert = true;
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: -1})
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 400) {
                             this.edit_error_alert = true;
                         }
-                        // TODO: console
-                        console.log(error)
                     })
 
             },
@@ -170,7 +164,7 @@
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    var del_img_id = this.$refs['big_photo'].id;
+                    let del_img_id = this.$refs['big_photo'].id;
 
                     axios.delete(this.$root.API_URL + '/images/' + del_img_id,
                         {
@@ -184,12 +178,7 @@
                                 this.$refs['big_photo'].id = this.images[0].id;
                                 this.$refs['big_photo'].src = this.images[0].src;
                             }
-                        })
-                        // TODO: console
-                        // eslint-disable-next-line
-                        .catch(error => {
-                            console.log(error)
-                        })
+                        }).catch(() => {})
                 }
             },
             updateImageList() {
@@ -199,11 +188,7 @@
                 })
                     .then(response => {
                         this.images = response.data.user.images;
-                        // console.log(response.data.user);
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    }).catch(() => {});
             }
         },
         created() {
@@ -214,12 +199,7 @@
 </script>
 
 <style scoped>
-    #profile_image {
-        padding: 10px;
-    }
-
     .profile_img {
         margin-right: 5px;
     }
-
 </style>
