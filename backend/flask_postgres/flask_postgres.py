@@ -15,14 +15,15 @@ class Postgres(object):
         sql_files.sort()
         print("Initializing DB:")
         with self.connect() as connection:
-            for filename in sql_files:
-                print(f"\t{filename[:-4].split('/')[-1]}")
-                try:
-                    with open(filename, 'r') as file:
-                        sql = file.read()
-                        connection.execute(sql)
-                except FileNotFoundError:
-                    pass
+            with connection.xact():
+                for filename in sql_files:
+                    print(f"\t{filename[:-4].split('/')[-1]}")
+                    try:
+                        with open(filename, 'r') as file:
+                            sql = file.read()
+                            connection.execute(sql)
+                    except FileNotFoundError:
+                        pass
         print("====== done ======")
 
     def init_app(self, app: Flask):
