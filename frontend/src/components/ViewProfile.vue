@@ -211,7 +211,7 @@
 					}).catch(() => {});
 			},
 			usersCanChat() {
-				axios.get(this.$root.API_URL + '/messages/allowed/' + this.id, {
+				axios.get(this.$root.API_URL + '/messages/'+ this.id + '/allowed', {
 					withCredentials: true
 				})
 				.then(response => {

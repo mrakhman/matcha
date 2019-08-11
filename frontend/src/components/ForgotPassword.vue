@@ -30,7 +30,7 @@
         methods: {
             forgotPassword() {
                 this.email_sent = false;
-                axios.post(this.$root.API_URL + '/users/forgot_password', {
+                axios.post(this.$root.API_URL + '/recovery/password', {
                     email: this.email,
                 }, {withCredentials: true})
                     .then(response => {

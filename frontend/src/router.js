@@ -56,7 +56,7 @@ export default [
     { path: '/notifications', component: Notifications, beforeEnter: ifAuthenticated},
     { path: '/activation/:token', component: Activation, beforeEnter: ifNotAuthenticated},
     { path: '/reset_password/:token', component: ResetPassword, beforeEnter: ifNotAuthenticated},
-    { path: '/new_email/:token', component: SetNewEmail},
+    { path: '/activate_email/:token', component: SetNewEmail},
     { path: '/history', component: History, beforeEnter: ifAuthenticated},
     { path: '*', component: NotFound},
 
