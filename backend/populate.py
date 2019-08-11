@@ -2,9 +2,10 @@
 import random
 from datetime import date, timedelta, datetime
 
+import requests
+
 from app import app
 from models.user import User
-import requests
 
 
 class RandomUser:
