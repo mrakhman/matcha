@@ -1,7 +1,7 @@
 import http
 
 import itsdangerous
-from flask import blueprints, request, abort, jsonify
+from flask import abort, blueprints, jsonify, request
 
 from models.user import User
 from modules import serializer
@@ -73,6 +73,8 @@ def reset_password(token):
 		current_user = User.get_by_email(email)
 		if not current_user:
 			abort(http.HTTPStatus.UNAUTHORIZED)
+		if not current_user.check_password_strength(req_data["password"]):
+			abort(http.HTTPStatus.BAD_REQUEST)
 		current_user.set_password(req_data["password"])
 		current_user.update()
 		return jsonify({"ok": True})

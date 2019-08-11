@@ -1,7 +1,7 @@
 import http
 import math
 
-from flask import blueprints, jsonify, abort, current_app, session, request, g, redirect, url_for
+from flask import abort, blueprints, current_app, g, jsonify, redirect, request, session, url_for
 
 from models.history import History
 from models.image import Image
@@ -244,7 +244,7 @@ def create_user():
 			'validator': None
 		}
 	}
-	current_app.logger.info(f"Here we are, the request is: {req_data}")
+	current_app.logger.debug(f"Here we are, the request is: {req_data}")
 	check_fields(req_data, form_values)
 
 	if User.get_by_email(req_data['email']):
@@ -253,6 +253,8 @@ def create_user():
 		abort(http.HTTPStatus.CONFLICT)  # If another user has this username
 
 	new_user = User.from_dict(req_data)
+	if not new_user.check_password_strength(req_data["password"]):
+		abort(http.HTTPStatus.BAD_REQUEST)
 	new_user.set_password(req_data["password"])
 	new_user.create()
 

@@ -2,7 +2,7 @@ import datetime
 import http
 
 import itsdangerous
-from flask import blueprints, request, current_app, abort, jsonify, g
+from flask import abort, blueprints, current_app, g, jsonify, request
 
 from models.user import User
 from modules import serializer
@@ -188,6 +188,8 @@ def edit_password():
 	current_user = g.current_user
 
 	if current_user.check_password(req_data["old_password"]):
+		if not current_user.check_password_strength(req_data["password"]):
+			abort(http.HTTPStatus.BAD_REQUEST)
 		current_user.set_password(req_data["new_password"])
 		current_user.update()
 
