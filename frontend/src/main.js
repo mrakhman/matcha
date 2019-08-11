@@ -6,7 +6,7 @@ import Routes from './router'
 import Notifications from 'vue-notification'
 import VueChatScroll from 'vue-chat-scroll'
 import Moment from 'moment-timezone'
-// import {Auth} from './auth'
+
 import VueNativeSock from 'vue-native-websocket'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -27,26 +27,6 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-// const ifAuthenticated = (to, from, next) => {
-//   if (document.cookie)
-//   {
-//     next();
-//     return
-//   }
-//   next('/login')
-// };
-//
-// const ifNotAuthenticated = (to, from, next) => {
-//   if (!document.cookie)
-//   {
-//     next();
-//     return
-//   }
-//   next('/')
-// };
-//
-// const isAuth = this.session;
-
 const userId = localStorage.getItem('user_id');
 const userData = localStorage.getItem('user');
 
@@ -55,12 +35,8 @@ let vue = new Vue({
   data: {
     user_id: userId ? userId : null,
     user: userData ? JSON.parse(userData) : {},
-    // API_URL: "http://localhost:5000",
-    // API_URL: "https://api.matchaaa.tk",
     API_URL: "https://matchaaa.tk/api",
     LOCAL_URL: "https://matchaaa.tk"
-    // API_URL: " http://127.0.0.1:5000"
-    // Auth: Auth,
   },
   render: h => h(App)
 }).$mount('#app');
