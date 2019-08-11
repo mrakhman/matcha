@@ -8,7 +8,7 @@
         />
         <pre class="mt-3 mb-0">total: {{ total_users }}, per_page: {{ per_page }}</pre>
         <h3> Users List </h3>
-        <b-row v-if="users.length > 0">
+        <b-row v-if="!loading && users.length > 0">
             <div id="users_list"
                  v-for="user in users"
                  :key="user.id"
@@ -33,6 +33,9 @@
                 </b-card>
             </div>
         </b-row>
+        <div v-else-if="loading">
+            <img src="@/assets/loader.gif" class="search-loader" alt="loading" />
+        </div>
         <div v-else class="mb-3"> No users matched your search :( </div>
         <div>
             <b-pagination
@@ -80,7 +83,8 @@
 			ip_location: {
 				ip_lat: null,
 				ip_lon: null
-			}
+			},
+            loading: true
 		}
 	},
 
@@ -92,6 +96,7 @@
             this.getUsers();
         },
         getUsers() {
+            this.loading = true;
             axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
                 filter: this.filter,
                 sort: this.sort_form,
@@ -101,6 +106,7 @@
                     this.users = response.data["users"];
                     this.total_users = response.data["total_users"];
                     this.per_page = response.data["per_page"];
+                    this.loading = false;
                 }).catch(() => {});
         },
 
@@ -128,4 +134,8 @@
         margin: 10px;
     }
 
+    .search-loader {
+        margin: 20px;
+        max-width: 350px;
+    }
 </style>
