@@ -120,7 +120,7 @@
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/users/edit_names', {
+                axios.post(this.$root.API_URL + '/settings/name', {
                     first_name: this.form_edit.first_name,
                     last_name: this.form_edit.last_name,
                     username: this.form_edit.username,
@@ -163,7 +163,7 @@
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/users/edit_email', {
+                axios.post(this.$root.API_URL + '/settings/email', {
                     email: this.form_edit.email,
                     password: this.form_edit.email_password
                 }, {withCredentials: true})
@@ -223,7 +223,7 @@
                 //     return this.alerts.weak_password = true;
                 // }
 
-                axios.post(this.$root.API_URL + '/users/edit_password', {
+                axios.post(this.$root.API_URL + '/settings/password', {
                     old_password: this.form_edit.old_password,
                     new_password: this.form_edit.new_password
                 }, {withCredentials: true})

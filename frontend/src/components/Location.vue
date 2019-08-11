@@ -156,7 +156,7 @@
 				}
 			},
 			saveLocation(lat, lon) {
-				axios.post(this.$root.API_URL + '/users/location', {
+				axios.post(this.$root.API_URL + '/settings/location', {
 					latitude: lat,
 					longitude: lon
 				}, {withCredentials: true})

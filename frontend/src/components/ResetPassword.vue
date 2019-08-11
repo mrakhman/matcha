@@ -41,7 +41,7 @@
 		methods: {
 			getResetToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/users/check_passreset_token/' + this.token, {withCredentials: true})
+				axios.get(this.$root.API_URL + '/recovery/reset_password/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{

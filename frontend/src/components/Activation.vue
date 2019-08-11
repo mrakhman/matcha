@@ -38,7 +38,7 @@
 		methods: {
 			getToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/users/activate/' + this.token, {withCredentials: true})
+				axios.get(this.$root.API_URL + '/settings/activate_user/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
@@ -52,7 +52,7 @@
 			},
 			resendActivation() {
 				this.email_sent = false;
-				axios.post(this.$root.API_URL + '/users/resend_activation', {
+				axios.post(this.$root.API_URL + '/recovery/resend_activation', {
 					email: this.email,
 				}, {withCredentials: true})
 					.then(response => {

@@ -136,7 +136,7 @@
             submitAboutMe() {
                 this.edit_success_alert = null;
                 this.edit_error_alert = null;
-                axios.post(this.$root.API_URL + '/users/edit_profile', {
+                axios.post(this.$root.API_URL + '/settings/profile', {
                     gender: this.user_details.gender,
                     sex_pref: this.user_details.sex_pref,
                     bio_text: this.user_details.bio_text,

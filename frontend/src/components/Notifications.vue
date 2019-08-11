@@ -69,7 +69,7 @@
                     })
             },
             markAllRead() {
-                axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
+                axios.post(this.$root.API_URL + '/notifications/all_read', {}, {withCredentials: true})
                     .then(() => {
                         this.getNotifications();
                         EventBus.$emit('markRead');

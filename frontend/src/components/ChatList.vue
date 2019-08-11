@@ -40,7 +40,7 @@
         },
         methods: {
             getChatList() {
-                axios.get(this.$root.API_URL + '/messages/chats', {withCredentials: true})
+                axios.get(this.$root.API_URL + '/messages', {withCredentials: true})
                 .then(response => {
                     this.users_list = response.data.chats;
                 }).catch(() => {});

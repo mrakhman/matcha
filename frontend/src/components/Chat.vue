@@ -62,7 +62,7 @@
             },
             createMessage() {
                 if(this.new_message.text) {
-                    axios.post(this.$root.API_URL + '/messages/new', {
+                    axios.post(this.$root.API_URL + '/messages', {
                         text: this.new_message.text,
                         receiver_id: this.id
                     }, {withCredentials: true})
