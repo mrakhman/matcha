@@ -182,23 +182,10 @@
 						}
 					})
 					.catch(() => {})
-			},
-
-			watchLocation() {
-				if(navigator.geolocation) {
-					this.watchID = navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
-				}
-				// this.saveLocation();
-			},
-
-
-
+			}
 	},
 		created() {
 			this.getLocation();
-		},
-		beforeUpdate() {
-			// this.watchLocation(); // TODO: figure our when to update me !!!!!
 		}
 	}
 </script>

@@ -214,14 +214,13 @@
                     return this.alerts.spaces = true;
                 }
 
-                // TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // // Show alert on weak password
-                // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-                // if (!this.form_edit.new_password.match(reg2))
-                // {
-                //     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
-                //     return this.alerts.weak_password = true;
-                // }
+                // Show alert on weak password
+                const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+                if (!this.form_edit.new_password.match(reg2))
+                {
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
+                    return this.alerts.weak_password = true;
+                }
 
                 axios.post(this.$root.API_URL + '/settings/password', {
                     old_password: this.form_edit.old_password,

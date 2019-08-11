@@ -133,14 +133,13 @@
                     has_error = 1;
                 }
 
-                // TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // // Show alert on weak password
-                // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-                // if (!this.form.password.match(reg2))
-                // {
-                //     this.errors.weak_password = true;
-                //     has_error = 1;
-                // }
+                // Show alert on weak password
+                const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+                if (!this.form.password.match(reg2))
+                {
+                    this.errors.weak_password = true;
+                    has_error = 1;
+                }
 
                 return has_error === 1;
             },
