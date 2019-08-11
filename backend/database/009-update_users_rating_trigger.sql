@@ -12,4 +12,3 @@ END;
 $$;
 
 alter function update_users_rating_trigger() owner to matcha;
-

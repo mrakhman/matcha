@@ -1,4 +1,4 @@
-create table likes
+create table if not exists likes
 (
 	f_party integer not null
 		constraint likes_users_f_id_fk
@@ -16,8 +16,11 @@ comment on table likes is 'f_party should be lower than s_party';
 
 alter table likes owner to matcha;
 
-create trigger trg_rating
-	after insert or update
-	on likes
-	execute procedure update_users_rating_trigger();
-
+do $$ begin
+	create trigger trg_rating
+		after insert or update
+		on likes
+		execute procedure update_users_rating_trigger();
+	exception
+  	when others then null;
+end $$;

@@ -1,4 +1,4 @@
-create table images
+create table if not exists images
 (
 	id serial not null
 		constraint photos_pkey
@@ -10,4 +10,3 @@ create table images
 );
 
 alter table images owner to matcha;
-

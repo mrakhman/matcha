@@ -1,4 +1,4 @@
-create table blocked_users
+create table if not exists blocked_users
 (
 	blocked_id integer not null,
 	blocker_id integer not null,
@@ -7,4 +7,3 @@ create table blocked_users
 );
 
 alter table blocked_users owner to matcha;
-

@@ -1,4 +1,4 @@
-create table messages
+create table if not exists messages
 (
 	id serial not null
 		constraint messages_pkey
@@ -10,4 +10,3 @@ create table messages
 );
 
 alter table messages owner to matcha;
-

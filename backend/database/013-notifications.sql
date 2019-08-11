@@ -1,4 +1,4 @@
-create table notifications
+create table if not exists notifications
 (
 	id serial not null
 		constraint notifications_pk
@@ -15,6 +15,5 @@ create table notifications
 
 alter table notifications owner to matcha;
 
-create unique index notifications_id_uindex
+create unique index if not exists notifications_id_uindex
 	on notifications (id);
-

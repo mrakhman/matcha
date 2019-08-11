@@ -32,4 +32,3 @@ DECLARE
 $$;
 
 alter function calculate_distance(double precision, double precision, double precision, double precision, varchar) owner to matcha;
-

@@ -9,4 +9,3 @@ SELECT COUNT(*) FROM (
 $$;
 
 alter function count_intersect(anyarray, anyarray) owner to matcha;
-

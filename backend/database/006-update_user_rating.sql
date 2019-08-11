@@ -38,4 +38,3 @@ DECLARE basic_rating int;
 $$;
 
 alter procedure update_user_rating(integer) owner to matcha;
-

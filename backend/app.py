@@ -41,6 +41,12 @@ def app_factory(name):
     serializer.init_app(flask_app)
     storage.init_app(flask_app)
 
+    # Create a bucket if not already created
+    with flask_app.app_context():
+        if not storage.connection.bucket_exists(flask_app.config['IMAGES_BUCKET_NAME']):
+            flask_app.logger.info(f"Creating images bucket: {flask_app.config['IMAGES_BUCKET_NAME']}")
+            storage.connection.make_bucket(flask_app.config['IMAGES_BUCKET_NAME'])
+
     flask_app.register_blueprint(auth, url_prefix="/auth")
     flask_app.register_blueprint(history, url_prefix="/history")
     flask_app.register_blueprint(images, url_prefix="/images")
@@ -86,6 +92,11 @@ def root_handler():
 @app.route('/teapot')
 def teapot():
     abort(418)
+
+
+@app.route('/health')
+def health():
+    return "OK"
 
 
 if __name__ == '__main__':

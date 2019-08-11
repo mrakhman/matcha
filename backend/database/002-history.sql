@@ -1,4 +1,4 @@
-create table history
+create table if not exists history
 (
 	id serial not null
 		constraint history_pkey
@@ -9,4 +9,3 @@ create table history
 );
 
 alter table history owner to matcha;
-

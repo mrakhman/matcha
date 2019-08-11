@@ -12,4 +12,3 @@ DECLARE user_id int;
 $$;
 
 alter procedure update_users_rating() owner to matcha;
-

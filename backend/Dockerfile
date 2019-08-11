@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apk update \
 	&& apk upgrade --no-cache \
-	&& apk add --no-cache git \
+	&& apk add --no-cache git curl \
 	&& pip install --no-cache-dir pipenv \
 	&& mkdir /app
 
@@ -20,5 +20,6 @@ RUN pipenv install --deploy --system
 
 COPY . .
 
+HEALTHCHECK --interval=10s --timeout=3s CMD curl --fail http://localhost:5000/health || exit 1
 EXPOSE 5000
 ENTRYPOINT ["python3", "/app/app.py"]
