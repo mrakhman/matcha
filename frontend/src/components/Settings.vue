@@ -70,7 +70,7 @@
 
                     <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
                         <b-form-input required v-model="form_edit.new_password" type="password" v-bind:disabled="form_edit.old_password.length === 0"></b-form-input>
-                        <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
+                        <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, number and no symbols</b-form-text>
                     </b-form-group>
 
                     <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
@@ -219,7 +219,7 @@
                 const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
                 if (!this.form_edit.new_password.match(reg2))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, number and no symbols', duration: -1});
                     return this.alerts.weak_password = true;
                 }
 

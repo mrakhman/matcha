@@ -78,7 +78,7 @@
 				const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 				if (!this.password.match(reg2))
 				{
-					this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
+					this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, number and no symbols', duration: -1});
 					has_error = 1;
 				}
 

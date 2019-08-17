@@ -48,11 +48,12 @@ let vue = new Vue({
       if (err.response.status === 401) {
         localStorage.removeItem('user');
         localStorage.removeItem('user_id');
-        if (router.currentRoute.path !== '/login') {
+        if (router.currentRoute.path !== '/login' && router.currentRoute.path !== '/register') {
           router.push('/login');
           router.go(0);
         }
       }
+      throw err;
     })
   },
   render: h => h(App)
