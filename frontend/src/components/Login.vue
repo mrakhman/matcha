@@ -28,13 +28,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    // import {Auth} from "../auth";
+
     export default {
         name: "Login.vue",
         data () {
             return {
-                // auth: this.$root.$data.Auth,
                 form: {
                     username: '',
                     password: ''
@@ -44,8 +42,6 @@
                 unauthorized: false,
                 bad_request: false,
                 forbidden: false,
-
-                errors: [] // Can be deleted
             }
         },
         methods: {
@@ -55,42 +51,19 @@
                     return this.input_error = true;
 
                 // If no error on front - Axios requests
-                axios.post(this.$root.API_URL + '/auth/login', {
+                this.$root.axios.post('/auth/login', {
                     username: this.form.username,
                     password: this.form.password
                 }, {withCredentials: true})
                     .then(() => {
-                        // console.log(response);
-
                         // Nested Axios request - whoami data
-                        axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                        this.$root.axios.get('/users/me', {withCredentials: true})
                             .then(response => {
-                                // console.log(response);
                                 localStorage.setItem('user_id', response.data.user.id);
                                 localStorage.setItem('user', JSON.stringify(response.data.user));
                                 this.$router.push('/my_profile');
-                                this.$router.go();
-                            })
-                            // TODO: console
-                            // eslint-disable-next-line
-                            .catch(error => {
-                                console.log(error);
-
-                            });
-
-
-                        // eslint-disable-next-line
-                        // this.login_success = true;
-
-                        // Auth.login();
-                        // Auth.loggedIn = true;
-                        // this.auth.loggedIn = true;
-
-                        // this.$router.push('/my_profile');
-                        // this.$router.go();  // Заглушка - reload после перехода на /my_profile, так как сложно здесь использовать $emit и передавать факт логина в App.vue
-
-                        // localStorage.setItem('auth', JSON.stringify(response.data.data));
-                        // this.$root.auth = response.data.data /* [2:20:56] https://www.youtube.com/watch?v=L5oaI-C8Dhc&t=2494s */
+                                this.$router.go(0);
+                            }).catch(() => {});
                 })
                     .catch(error => {
                         if (error.response.status === 401) {
@@ -104,9 +77,6 @@
                         }
                 });
             },
-
-
-
         }
     }
 </script>

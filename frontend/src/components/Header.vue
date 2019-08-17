@@ -1,7 +1,7 @@
 <template>
     <div id="header">
         <b-navbar toggleable="lg" variant="light">
-            <router-link v-bind:to="'/'"><img alt="Matcha logo" src="../../img/heart_red.png" width="30"></router-link>
+            <router-link v-bind:to="'/'"><img alt="Matcha logo" src="../assets/heart_red.png" width="30"></router-link>
             <router-link v-bind:to="'/'"><h1 class="header_text"><a>Matcha</a></h1></router-link>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -25,24 +25,23 @@
                     <div class="text-center" v-if="user_id">
                         <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret right>
                             <template slot="button-content">
-                                <b-badge variant="warning" v-if="notifs">{{notifs.length}}</b-badge>
+                                <b-badge variant="warning" v-if="notifications">{{notifications.length}}</b-badge>
                                 <b-badge variant="warning" v-else>0</b-badge>
-                                <img alt="Notifications" src="../../img/bell.png" width="30">
+                                <img alt="Notifications" src="../assets/bell.png" width="30">
                             </template>
                             <b-dropdown-item-button href="#"
-                                                    v-if="notifs"
+                                                    v-if="notifications"
                                                     v-on:click="markAllRead"
                             >Mark all read</b-dropdown-item-button>
                             <b-dropdown-text v-else>No notifications</b-dropdown-text>
                             <b-dropdown-divider></b-dropdown-divider>
-                            <div v-for="notif in notifs" v-bind:key="notif.id">
-                                <b-dropdown-item v-bind:to="'/notifications'">{{notif.text}}</b-dropdown-item>
+                            <div v-for="notification in notifications" v-bind:key="notification.id">
+                                <b-dropdown-item v-bind:to="'/notifications'">{{notification.text}}</b-dropdown-item>
                             </div>
                         </b-dropdown>
                     </div>
                     <b-nav-item v-if="user_id">Hello, {{ display_first_name }}!</b-nav-item>
                     <Logout v-if="user_id"/>
-<!--                    v-on:del_session="$emit('del_session')"/>-->
 
                 </b-navbar-nav>
             </b-collapse>
@@ -53,7 +52,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import Logout from "./Logout";
     import {Socket} from "../socket";
     import EventBus from '../event-bus';
@@ -69,43 +67,34 @@
                 user: this.$root.$data.user,
                 user_id: this.$root.$data.user_id,
 
-                notifs: []
+                notifications: []
             }
         },
         methods: {
             getNotifications() {
-                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
-                        this.notifs = response.data["notifications"];
-                        // console.log(response);
+                        this.notifications = response.data["notifications"];
                     })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    .catch(() => {});
             },
             getUserFirstName() {
-                axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                this.$root.axios.get('/users/me', {withCredentials: true})
                     .then(response => {
                         this.display_first_name = response.data.user.first_name;
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    }).catch(() => {});
             },
             markAllRead() {
-                axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
+                this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
                     .then(() => {
                         this.getNotifications();
                         EventBus.$emit('markRead2');
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-			        .catch(error => console.log(error));
+                    }).catch(() => {});
             },
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "notification") {
-                    this.notifs.unshift(payload.data)
+                    this.notifications.unshift(payload.data)
                 }
             }
         },

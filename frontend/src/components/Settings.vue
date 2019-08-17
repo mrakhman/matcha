@@ -69,12 +69,12 @@
                     </b-form-group>
 
                     <b-form-group id="7" label-cols-sm="2" label-cols-lg="2" label="New password" label-for="input-horizontal" required>
-                        <b-form-input required v-model="form_edit.new_password" type="password" v-bind:disabled="form_edit.old_password.length > 0 ? false : true"></b-form-input>
+                        <b-form-input required v-model="form_edit.new_password" type="password" v-bind:disabled="form_edit.old_password.length === 0"></b-form-input>
                         <b-form-text>Password must be at least 8 chars long, include uppercase, lowercase, symbol, number</b-form-text>
                     </b-form-group>
 
                     <b-form-group id="8" label-cols-sm="2" label-cols-lg="2" label="Repeat password" label-for="input-horizontal" required>
-                        <b-form-input required v-model="form_edit.repeat_password" type="password" v-bind:disabled="form_edit.old_password.length > 0 ? false : true"></b-form-input>
+                        <b-form-input required v-model="form_edit.repeat_password" type="password" v-bind:disabled="form_edit.old_password.length === 0"></b-form-input>
                         <b-form-text>Repeat your new password</b-form-text>
                     </b-form-group>
                     <b-button type="submit" variant="primary">Save</b-button>
@@ -85,7 +85,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import EventBus from '../event-bus'
 
     export default {
@@ -114,14 +113,14 @@
                 }
 
                 // Show alert on unwanted characters
-                var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
+                const reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.username.match(reg1))
                 {
                     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Names must only include [a-z + A-Z] [0-9] and @', duration: -1});
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/users/edit_names', {
+                this.$root.axios.post('/settings/name', {
                     first_name: this.form_edit.first_name,
                     last_name: this.form_edit.last_name,
                     username: this.form_edit.username,
@@ -139,9 +138,6 @@
                         if (error.response.status === 409) {
                             this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this username', duration: -1});
                         }
-                        // TODO: console
-                        if (error.response.status !== 401 && error.response.status !== 409)
-                            console.log(error)
                     })
             },
 
@@ -161,14 +157,14 @@
                 }
 
                 // Show alert on unwanted characters
-                var reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
+                const reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form_edit.email.match(reg1))
                 {
                     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Email must only include [a-z + A-Z] [0-9] and @', duration: -1});
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/users/edit_email', {
+                this.$root.axios.post('/settings/email', {
                     email: this.form_edit.email,
                     password: this.form_edit.email_password
                 }, {withCredentials: true})
@@ -178,7 +174,6 @@
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email and press activation link!', duration: -1});
                             this.alerts.email_saved = true;
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
@@ -188,9 +183,6 @@
                         if (error.response.status === 409) {
                             this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this email', duration: -1});
                         }
-                        // TODO: console
-                        if (error.response.status !== 401 && error.response.status !== 409)
-                            console.log(error)
                     })
             },
 
@@ -223,16 +215,15 @@
                     return this.alerts.spaces = true;
                 }
 
-                // TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // // Show alert on weak password
-                // var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-                // if (!this.form_edit.new_password.match(reg2))
-                // {
-                //     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
-                //     return this.alerts.weak_password = true;
-                // }
+                // Show alert on weak password
+                const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+                if (!this.form_edit.new_password.match(reg2))
+                {
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
+                    return this.alerts.weak_password = true;
+                }
 
-                axios.post(this.$root.API_URL + '/users/edit_password', {
+                this.$root.axios.post('/settings/password', {
                     old_password: this.form_edit.old_password,
                     new_password: this.form_edit.new_password
                 }, {withCredentials: true})
@@ -241,15 +232,11 @@
                         {
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Password changed!', duration: -1});
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
                             this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: -1});
                         }
-                        // TODO: console
-                        if (error.response.status !== 401)
-                            console.log(error)
                     })
             },
 

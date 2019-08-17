@@ -3,7 +3,7 @@ import datetime
 
 from flask import json
 
-from my_redis import redis_client
+from modules import redis_client
 from .model import Model, Queries
 from .user import User
 
@@ -75,13 +75,6 @@ class Notification(Model):
 
     queries = NotificationQueries()
 
-    # @property
-    # def created_at(self):
-    #     if not getattr(self, 'created_at'):
-    #         return None
-    #     created_at = datetime.fromtimestamp(self.created_at)
-    #     return created_at
-
     @classmethod
     def get_user_notifications(cls, user_id):
         result = cls.queries.get_user_notifications(user_id)
@@ -107,22 +100,18 @@ class Notification(Model):
     def notification_text(notif_type, sender_id):
         sender_user = User.get_by_id(sender_id)
         sender_username = sender_user.username
+        text: str = "unknown_notification"
         if notif_type == 'like':
             text = sender_username + " liked your profile"
-            return text
-        if notif_type == 'unlike':
+        elif notif_type == 'unlike':
             text = sender_username + " unliked your profile"
-            return text
-        if notif_type == 'view':
+        elif notif_type == 'view':
             text = sender_username + " viewed your profile"
-            return text
-        if notif_type == 'message':
+        elif notif_type == 'message':
             text = sender_username + " sent you a message"
-            return text
+        return text
 
     @classmethod
     def mark_all_read(cls, user_id):
         cls.queries.mark_all_read(user_id)
         return True
-
-

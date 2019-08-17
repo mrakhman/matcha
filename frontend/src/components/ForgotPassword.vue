@@ -17,8 +17,6 @@
 
 <script>
 
-import axios from 'axios';
-
     export default {
         name: "ForgotPassword.vue",
         data() {
@@ -30,7 +28,7 @@ import axios from 'axios';
         methods: {
             forgotPassword() {
                 this.email_sent = false;
-                axios.post(this.$root.API_URL + '/users/forgot_password', {
+                this.$root.axios.post('/recovery/password', {
                     email: this.email,
                 }, {withCredentials: true})
                     .then(response => {
@@ -40,14 +38,11 @@ import axios from 'axios';
                             this.email = null;
                             this.email_sent = true;
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 404) {
                             this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: -1});
                         }
-                        // TODO: console
-                        console.log(error)
                     })
             }
         }

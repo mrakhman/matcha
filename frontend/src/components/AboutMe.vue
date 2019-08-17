@@ -1,6 +1,5 @@
 <template>
     <div>
-<!--        <pre>{{user_details}}</pre>-->
         <b-container class="bv-example-row"><b-row><b-col xl="9">
             <h4>Profile main image</h4>
             <b-row id="profile_image_2">
@@ -90,7 +89,6 @@
                 <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
                     <b-form-input v-model="user_details.dob" type="date"></b-form-input>
                     <small class="text-danger" v-if="!user_details.dob">Add date of birth to appear in users' search </small>
-<!--                    <div class="mt-3">Birthday: <strong>{{ user_details.dob }}</strong></div>-->
                 </b-form-group>
 
                 <b-button type="submit" variant="primary">Save</b-button>
@@ -106,7 +104,6 @@
 
 <script>
     import FileUpload from './FileUpload';
-    import axios from 'axios';
 
     export default {
         name: "AboutMe.vue",
@@ -125,7 +122,6 @@
                     gender: [
                         { value: 'female', text: 'Female'},
                         { value: 'male', text: 'Male'},
-                        // { value: 'not mention', text: 'Not mentioned'}
                     ],
                     sex_pref: ['hetero', 'homo', 'bi'],
                     tags: ['42', 'eco', 'geek', 'veggie', 'music', 'travel'],
@@ -139,7 +135,7 @@
             submitAboutMe() {
                 this.edit_success_alert = null;
                 this.edit_error_alert = null;
-                axios.post(this.$root.API_URL + '/users/edit_profile', {
+                this.$root.axios.post('/settings/profile', {
                     gender: this.user_details.gender,
                     sex_pref: this.user_details.sex_pref,
                     bio_text: this.user_details.bio_text,
@@ -153,14 +149,11 @@
                             this.edit_success_alert = true;
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: -1})
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 400) {
                             this.edit_error_alert = true;
                         }
-                        // TODO: console
-                        console.log(error)
                     })
 
             },
@@ -170,9 +163,9 @@
             },
             deleteImage() {
                 if (confirm("Delete image?")) {
-                    var del_img_id = this.$refs['big_photo'].id;
+                    let del_img_id = this.$refs['big_photo'].id;
 
-                    axios.delete(this.$root.API_URL + '/images/' + del_img_id,
+                    this.$root.axios.delete('/images/' + del_img_id,
                         {
                             withCredentials: true
                         })
@@ -184,26 +177,17 @@
                                 this.$refs['big_photo'].id = this.images[0].id;
                                 this.$refs['big_photo'].src = this.images[0].src;
                             }
-                        })
-                        // TODO: console
-                        // eslint-disable-next-line
-                        .catch(error => {
-                            console.log(error)
-                        })
+                        }).catch(() => {})
                 }
             },
             updateImageList() {
-                axios.get(this.$root.API_URL + '/users/' + this.$root.$data.user_id, {
+                this.$root.axios.get('/users/' + this.$root.$data.user_id, {
                     params: {with_images: true},
                     withCredentials: true
                 })
                     .then(response => {
                         this.images = response.data.user.images;
-                        // console.log(response.data.user);
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    }).catch(() => {});
             }
         },
         created() {
@@ -214,12 +198,7 @@
 </script>
 
 <style scoped>
-    #profile_image {
-        padding: 10px;
-    }
-
     .profile_img {
         margin-right: 5px;
     }
-
 </style>

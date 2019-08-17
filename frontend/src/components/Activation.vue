@@ -23,7 +23,6 @@
 </template>
 
 <script>
-	import axios from 'axios'
 
 	export default {
 		name: "Activation.vue",
@@ -38,24 +37,21 @@
 		methods: {
 			getToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/users/activate/' + this.token, {withCredentials: true})
+				this.$root.axios.get('/settings/activate_user/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
 							this.status = true;
 							this.$notify({group: 'foo', type: 'success', title: 'Activated!', text: 'Your account is activated, you can now login', duration: -1});
-							// console.log(response)
 						}
 					})
-					.catch(error => {
+					.catch(() => {
 						this.status = false;
-						// TODO: console
-						console.log(error)
 					})
 			},
 			resendActivation() {
 				this.email_sent = false;
-				axios.post(this.$root.API_URL + '/users/resend_activation', {
+				this.$root.axios.post('/recovery/resend_activation', {
 					email: this.email,
 				}, {withCredentials: true})
 					.then(response => {
@@ -65,14 +61,11 @@
 							this.email = null;
 							this.email_sent = true;
 						}
-						// console.log(response)
 					})
 					.catch(error => {
 						if (error.response.status === 404) {
 							this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: 3000});
 						}
-						// TODO: console
-						console.log(error)
 					})
 			}
 		},

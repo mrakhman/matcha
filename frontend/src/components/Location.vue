@@ -4,11 +4,6 @@
         <p>We will be able to show you closest users</p>
         <p class="text-info" id="demo">{{geo_info}}</p>
         <p v-if="no_permissions" class="text-warning">Allow location in your browser so that we can find you</p>
-<!--        <b-button class="mb-3" size="lg" variant="success"-->
-<!--                  v-bind:disabled="(!lat || !lon) && (!search_lat || !search_lon)"-->
-<!--                  v-on:click="saveLocation(search_lat ? search_lat : lat, search_lon ? search_lon : lon)"-->
-<!--        >Save my location</b-button>-->
-        <!--        <pre class="text-danger">Update location, {{watchID}}</pre>-->
         <b-button class="mb-3" v-on:click="handler('getLocation', 'handlePermission')" variant="outline-primary">Find me</b-button>
         <h4 class="mt-2">Search your location</h4>
         <p class="text-danger m-2" v-if="error_request">Nothing found for your search</p>
@@ -62,8 +57,9 @@
 </template>
 
 <script>
-	import axios from 'axios';
-	export default {
+    import axios from 'axios';
+
+    export default {
 		name: "Location.vue",
 		data () {
 			return {
@@ -78,16 +74,14 @@
 				watchID: null,
 
 				address: null,
-				// search_lat: 48.896652,
-				// search_lon: 2.318356,
 				search_lat: null,
 				search_lon: null,
 				empty_address: null,
 				error_request: null,
 				no_permissions: null,
 
-                // ip_lat: null,
-                // ip_lon: null,
+                ip_lat: null,
+                ip_lon: null,
 			}
 		},
 		methods: {
@@ -123,7 +117,6 @@
 				});
 			},
 			getLocation() {
-				// this.handlePermission();
 				if(navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
 					this.search_lat = null;
@@ -145,8 +138,6 @@
 					googleMapsClient.geocode({address: this.address})
 						.asPromise()
 						.then((response) => {
-							// console.log(response.json);
-
 							if (response.json.status === "ZERO_RESULTS" ||
 								response.json.status === "REQUEST_DENIED" ||
 								response.json.status === "ERROR") {
@@ -158,17 +149,14 @@
 							}
 
 						})
-						.catch((err) => {
-							// TODO: console
-							console.log(err);
-						});
+						.catch(() => {});
 				}
 				else {
 					this.empty_address = true
 				}
 			},
 			saveLocation(lat, lon) {
-				axios.post(this.$root.API_URL + '/users/location', {
+                this.$root.axios.post('/settings/location', {
 					latitude: lat,
 					longitude: lon
 				}, {withCredentials: true})
@@ -177,12 +165,9 @@
 						{
 							this.$notify({group: 'foo', type: 'success', title: 'Saved', text: 'Location updated!', duration:3000});
 						}
-						// console.log(response)
 					})
-					.catch(error => {
+					.catch(() => {
 						this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
-						// TODO: console
-						console.log(error)
 					})
 			},
 			ipLocation() {
@@ -196,27 +181,11 @@
 							this.ip_lon = lat_long[1];
 						}
 					})
-					.catch(error => {
-						// TODO: console
-						console.log(error)
-					})
-			},
-
-			watchLocation() {
-				if(navigator.geolocation) {
-					this.watchID = navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback, this.geo_options);
-				}
-				// this.saveLocation();
-			},
-
-
-
+					.catch(() => {})
+			}
 	},
 		created() {
 			this.getLocation();
-		},
-		beforeUpdate() {
-			// this.watchLocation(); // TODO: figure our when to update me !!!!!
 		}
 	}
 </script>

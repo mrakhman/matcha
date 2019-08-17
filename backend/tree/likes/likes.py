@@ -1,12 +1,11 @@
 import http
 
-from flask import blueprints, jsonify, abort, g
+from flask import abort, blueprints, g, jsonify
 
 from models.like import Like
-from models.user import User
 from models.notification import Notification
+from models.user import User
 from utils.security import authorised_only
-
 
 likes = blueprints.Blueprint("likes", __name__)
 
@@ -14,7 +13,6 @@ likes = blueprints.Blueprint("likes", __name__)
 @likes.route('/<int:user_id>', methods=['POST'])
 @authorised_only
 def create_like(user_id):
-	# current_app.logger.info(f"Here we are, the request is: {user_id}")
 	liked_user = User.get_by_id(user_id)  # Check if user exists
 	has_photo = Like.able_to_like(g.current_user.id)  # Check if user has profile image
 	is_blocked = User.user_is_blocked(g.current_user.id, user_id)  # Check if user was blocked

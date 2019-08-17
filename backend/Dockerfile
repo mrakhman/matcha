@@ -8,17 +8,21 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apk update \
 	&& apk upgrade --no-cache \
-	&& apk add --no-cache git \
+	&& apk add --no-cache git curl \
 	&& pip install --no-cache-dir pipenv \
-	&& mkdir /app
+	&& mkdir /app \
+	&& curl https://raw.githubusercontent.com/eficode/wait-for/master/wait-for >> /usr/bin/wait-for \
+	&& chmod +x /usr/bin/wait-for
 
 WORKDIR /app
 
 COPY Pipfile* /app/
 
 RUN pipenv install --deploy --system
+ENV FLASK_APP app
 
 COPY . .
 
+HEALTHCHECK --interval=10s --timeout=3s CMD curl --fail http://localhost:5000/health || exit 1
 EXPOSE 5000
-ENTRYPOINT ["python3", "/app/app.py"]
+ENTRYPOINT ["./entrypoint.sh"]

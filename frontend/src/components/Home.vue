@@ -6,6 +6,7 @@
 
 <script>
     import Location from './Location';
+
     export default {
         name: "Home.vue",
         components: {

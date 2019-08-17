@@ -8,7 +8,7 @@
         />
 <!--        <pre class="mt-3 mb-0">total: {{ total_users }}, per_page: {{ per_page }}</pre>-->
         <h3> Users List </h3>
-        <b-row v-if="users.length > 0">
+        <b-row v-if="!loading && users.length > 0">
             <div id="users_list"
                  v-for="user in users"
                  :key="user.id"
@@ -16,7 +16,6 @@
                  :per-page="per_page"
                  :items="users"
             >
-
                 <b-card v-bind:title="user.first_name + ' ' + user.last_name"
                         v-bind:img-src="user.profile_image"
                         img-alt="profile picture"
@@ -34,6 +33,9 @@
                 </b-card>
             </div>
         </b-row>
+        <div v-else-if="loading">
+            <img src="@/assets/loader.gif" class="search-loader" alt="loading" />
+        </div>
         <div v-else class="mb-3"> No users matched your search :( </div>
         <div>
             <b-pagination
@@ -50,11 +52,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-import Search from "./Search";
-import Location from './Location';
+    import axios from 'axios';
+    import Search from "./Search";
+    import Location from './Location';
 
-export default {
+    export default {
     name: "UsersList.vue",
     components: {
         Search,
@@ -81,7 +83,8 @@ export default {
 			ip_location: {
 				ip_lat: null,
 				ip_lon: null
-			}
+			},
+            loading: true
 		}
 	},
 
@@ -93,7 +96,8 @@ export default {
             this.getUsers();
         },
         getUsers() {
-            axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
+            this.loading = true;
+            this.$root.axios.post('/users/filter/page/' + (this.current_page - 1), {
                 filter: this.filter,
                 sort: this.sort_form,
                 ip_location: this.ip_location
@@ -102,11 +106,8 @@ export default {
                     this.users = response.data["users"];
                     this.total_users = response.data["total_users"];
                     this.per_page = response.data["per_page"];
-                    // console.log(response);
-                })
-                // TODO: console
-                // eslint-disable-next-line
-                .catch(error => console.log(error));
+                    this.loading = false;
+                }).catch(() => {});
         },
 
         ipLocation() {
@@ -118,11 +119,7 @@ export default {
                         this.ip_location.ip_lat = lat_long[0];
                         this.ip_location.ip_lon = lat_long[1];
                     }
-                })
-                .catch(error => {
-                    // TODO: console
-                    console.log(error)
-                })
+                }).catch(() => {});
         },
     },
 
@@ -137,4 +134,8 @@ export default {
         margin: 10px;
     }
 
+    .search-loader {
+        margin: 20px;
+        max-width: 350px;
+    }
 </style>

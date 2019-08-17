@@ -25,7 +25,6 @@
 </template>
 
 <script>
-	import axios from 'axios'
 
 	export default {
 		name: "ResetPassword.vue",
@@ -41,22 +40,19 @@
 		methods: {
 			getResetToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/users/check_passreset_token/' + this.token, {withCredentials: true})
+				this.$root.axios.get('/recovery/reset_password/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
 							this.status = true;
-							// console.log(response)
 						}
 					})
-					.catch(error => {
+					.catch(() => {
 						this.status = false;
-						// TODO: console
-						console.log(error)
 					})
 			},
 			validateFields() {
-				var has_error = 0;
+				let has_error = 0;
 
 				// Show alert on empty input
 				if (!this.password || !this.repeat_password)
@@ -78,25 +74,23 @@
 					has_error = 1;
 				}
 
-				// TODO: Uncomment me later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				// // Show alert on weak password
-				// var reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-				// if (!this.password.match(reg2))
-				// {
-				//     this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
-				//     has_error = 1;
-				// }
+				// Show alert on weak password
+				const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+				if (!this.password.match(reg2))
+				{
+					this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, symbol, number', duration: -1});
+					has_error = 1;
+				}
 
-				if (has_error === 1)
-					return true;
-				return false;
+				return has_error === 1;
+
 			},
 			resetPassword() {
 				this.reset_success = false;
 				if (this.validateFields())
 					return false;
 
-				axios.post(this.$root.API_URL + '/users/reset_password/' + this.token, {
+				this.$root.axios.post('/users/reset_password/' + this.token, {
 					password: this.password,
 				}, {withCredentials: true})
 					.then(response => {
@@ -107,12 +101,8 @@
 							this.password = null;
 							this.repeat_password = null;
 						}
-						// console.log(response)
 					})
-					.catch(error => {
-						// TODO: console
-						console.log(error);
-					})
+					.catch(() => {})
 			}
 		},
 		created() {

@@ -35,10 +35,10 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {Socket} from "../socket";
-    const moment = require('moment');
     import EventBus from '../event-bus';
+
+    const moment = require('moment');
 
     export default {
         name: "Notifications.vue",
@@ -56,7 +56,7 @@
         },
         methods: {
             getNotifications() {
-                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
 
@@ -66,34 +66,26 @@
 
                         this.notifications2 = this.notifications;
                     })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    // .catch(error => console.log(error));
             },
             markAllRead() {
-                axios.get(this.$root.API_URL + '/notifications/all_read', {withCredentials: true})
-                    .then(response => {
+                this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
+                    .then(() => {
                         this.getNotifications();
                         EventBus.$emit('markRead');
-                        // this.$router.go();
-                        // console.log(response);
-                    })
-                    // TODO: console
-                    // eslint-disable-next-line
-                    .catch(error => console.log(error));
+                    }).catch(() => {});
             },
             filterByType(type) {
                 if (this.notifications) {
                     this.notifications = this.notifications2;
-                    let notifs = this.notifications;
-                    notifs = notifs.filter(notif => notif.type === type);
-                    this.notifications = notifs;
+                    let notifications = this.notifications;
+                    notifications = notifications.filter(notif => notif.type === type);
+                    this.notifications = notifications;
                 }
             },
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "notification") {
-                    var last_notif = payload.data;
+                    let last_notif = payload.data;
                     last_notif.created_at = moment.utc(last_notif.created_at).tz("Europe/Paris").format('LLL');
                     this.notifications.unshift(last_notif);
                     this.notifications2 = this.notifications;

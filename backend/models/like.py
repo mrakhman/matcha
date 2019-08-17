@@ -1,4 +1,3 @@
-from datetime import datetime
 from .model import Model, Queries
 
 
@@ -6,11 +5,10 @@ class LikeQueries(Queries):
     def __init__(self):
         self.create = self.query("INSERT INTO likes (f_party, s_party, f2s, s2f) VALUES ($1, $2, $3, $4)")
         self.update = lambda field: \
-            self.query(f"UPDATE likes SET {field} = $3 WHERE f_party = $1 AND s_party = $2") if field in ('f2s', 's2f') else None
+            self.query(f"UPDATE likes SET {field} = $3 WHERE f_party = $1 AND s_party = $2") \
+            if field in ('f2s', 's2f') else None
         self.get = self.query("SELECT * FROM likes WHERE f_party = $1 AND s_party = $2", one=True)
         self.able_to_like = self.query("SELECT profile_image FROM users WHERE profile_image IS NOT NULL AND id = $1")
-        # self.get_user_likes = self.query("SELECT * FROM likes WHERE user_id = $1")
-        # self.delete = self.query("DELETE FROM tags_array WHERE user_id = $1")
 
 
 class Like(Model):
@@ -55,7 +53,6 @@ class Like(Model):
     _update_watch_fields = ()
 
     queries = LikeQueries()
-
 
     @classmethod
     def _create(cls, user1: int, user2: int, f2s: bool, s2f: bool):
@@ -119,5 +116,3 @@ class Like(Model):
         if not result:
             return False
         return True
-
-

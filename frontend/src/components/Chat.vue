@@ -5,14 +5,8 @@
         <!--    Something for smooth chat scroll    -->
         <div class="messages" v-chat-scroll="{always: false, smooth: true}">
             <div v-for="message in messages" :key="message.id">
-<!--                <b-row>-->
-                    <b-col v-if="message.sender_id === user.id" xl="2"></b-col>
-<!--                    <b-col>-->
-                        <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
-
-<!--                    </b-col>-->
-
-<!--                </b-row>-->
+                <b-col v-if="message.sender_id === user.id" xl="2"></b-col>
+                <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
                 <span v-else class="text-info">[{{ chat_users[message.sender_id].username }}]: </span>
                 <span>{{ message.text }}</span>
                 <span class="text-secondary time">{{ message.created_at }}</span>
@@ -36,8 +30,8 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {Socket} from "../socket";
+
     const moment = require('moment');
     export default {
         name: "Chat.vue",
@@ -53,7 +47,8 @@
             }
         },
         methods: {
-            loadMessages() {axios.get(this.$root.API_URL + '/messages/' + this.id, {withCredentials: true})
+            loadMessages() {
+                this.$root.axios.get('/messages/' + this.id, {withCredentials: true})
                 .then(response => {
                     this.messages = response.data.messages;
                     this.chat_users = response.data.users;
@@ -61,25 +56,16 @@
                     this.messages.forEach(function (message) {
                         message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
                     });
-                    // console.log(response.data.messages);
                 })
-                // TODO: console
-                // eslint-disable-next-line
-		        //     .catch(error => console.log(error));
             },
             createMessage() {
                 if(this.new_message.text) {
-                    axios.post(this.$root.API_URL + '/messages/new', {
+                    this.$root.axios.post('/messages', {
                         text: this.new_message.text,
                         receiver_id: this.id
                     }, {withCredentials: true})
-                        .then(() => {
-                            // console.log(response)
-                        })
-                        .catch(error => {
-                            // TODO: console
+                        .catch(() => {
                             this.error_text = "Two users are blocked or not connected, you can't chat";
-                            // console.log(error)
                         });
                     this.new_message.text = null;
                     this.error_text = null;

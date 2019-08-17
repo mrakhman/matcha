@@ -17,15 +17,12 @@
                         </router-link>
                     </b-col>
                 </b-row>
-
             </b-col></b-row>
         </b-container>
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
-
     export default {
         name: "CreateMessage.vue",
         props: ['username'],
@@ -38,14 +35,10 @@
         },
         methods: {
             getChatList() {
-                axios.get(this.$root.API_URL + '/messages/chats', {withCredentials: true})
+                this.$root.axios.get('/messages', {withCredentials: true})
                 .then(response => {
                     this.users_list = response.data.chats;
-                    // console.log(response.data);
-                })
-                    // TODO: console
-                    // eslint-disable-next-line
-		            .catch(error => console.log(error));
+                }).catch(() => {});
             }
         },
         created() {

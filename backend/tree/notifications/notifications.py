@@ -17,7 +17,7 @@ def get_my_notifications():
     return jsonify(notifications=my_notifications)
 
 
-@notifications.route("/<int:notification_id>/is_read", methods=['POST'])
+@notifications.route("/<int:notification_id>/read", methods=['POST'])
 @authorised_only
 def mark_as_read(notification_id):
     notification = Notification.get_by_id(notification_id)
@@ -28,16 +28,10 @@ def mark_as_read(notification_id):
     return jsonify(ok=True)
 
 
-@notifications.route("/all_read", methods=["GET"])
+@notifications.route("/all_read", methods=["POST"])
 @authorised_only
 def all_read():
     if Notification.mark_all_read(g.current_user.id):
         return jsonify({"ok": True})
     return jsonify({"ok": False})
 
-
-@notifications.route("/add_history/<int:profile_id>", methods=["GET"])
-@authorised_only
-def add_history(profile_id):
-    Notification.add_to_history(g.current_user.id, profile_id)
-    return jsonify({"ok": True})
