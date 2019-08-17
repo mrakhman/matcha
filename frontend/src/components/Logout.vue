@@ -7,8 +7,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
-
     export default {
         name: "Logout.vue",
         data () {
@@ -17,7 +15,7 @@
         },
         methods: {
             logout() {
-                axios.post(this.$root.API_URL + '/auth/logout', {}, {withCredentials: true})
+                this.$root.axios.post('/auth/logout', {}, {withCredentials: true})
                     .then(response => {
                         if (response.status === 200)
                         {

@@ -104,7 +104,6 @@
 
 <script>
     import FileUpload from './FileUpload';
-    import axios from 'axios';
 
     export default {
         name: "AboutMe.vue",
@@ -136,7 +135,7 @@
             submitAboutMe() {
                 this.edit_success_alert = null;
                 this.edit_error_alert = null;
-                axios.post(this.$root.API_URL + '/settings/profile', {
+                this.$root.axios.post('/settings/profile', {
                     gender: this.user_details.gender,
                     sex_pref: this.user_details.sex_pref,
                     bio_text: this.user_details.bio_text,
@@ -166,7 +165,7 @@
                 if (confirm("Delete image?")) {
                     let del_img_id = this.$refs['big_photo'].id;
 
-                    axios.delete(this.$root.API_URL + '/images/' + del_img_id,
+                    this.$root.axios.delete('/images/' + del_img_id,
                         {
                             withCredentials: true
                         })
@@ -182,7 +181,7 @@
                 }
             },
             updateImageList() {
-                axios.get(this.$root.API_URL + '/users/' + this.$root.$data.user_id, {
+                this.$root.axios.get('/users/' + this.$root.$data.user_id, {
                     params: {with_images: true},
                     withCredentials: true
                 })

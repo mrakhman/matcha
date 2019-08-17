@@ -28,7 +28,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
         name: "Login.vue",
@@ -52,13 +51,13 @@
                     return this.input_error = true;
 
                 // If no error on front - Axios requests
-                axios.post(this.$root.API_URL + '/auth/login', {
+                this.$root.axios.post('/auth/login', {
                     username: this.form.username,
                     password: this.form.password
                 }, {withCredentials: true})
                     .then(() => {
                         // Nested Axios request - whoami data
-                        axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                        this.$root.axios.get('/users/me', {withCredentials: true})
                             .then(response => {
                                 localStorage.setItem('user_id', response.data.user.id);
                                 localStorage.setItem('user', JSON.stringify(response.data.user));

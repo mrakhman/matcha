@@ -23,8 +23,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
-
     export default {
         name: "CreateMessage.vue",
         props: ['username'],
@@ -40,7 +38,7 @@
         },
         methods: {
             getChatList() {
-                axios.get(this.$root.API_URL + '/messages', {withCredentials: true})
+                this.$root.axios.get('/messages', {withCredentials: true})
                 .then(response => {
                     this.users_list = response.data.chats;
                 }).catch(() => {});

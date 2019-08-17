@@ -19,7 +19,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
         name: "FileUpload.vue",
@@ -70,7 +69,7 @@
                     const data = new FormData();
                     data.append(this.uploadFieldName, this.selected_file, this.selected_file.name);
 
-                    axios.post(this.$root.API_URL + '/images/upload',
+                    this.$root.axios.post('/images/upload',
                         data,
                         {
                             headers: {

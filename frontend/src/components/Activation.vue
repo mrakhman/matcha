@@ -23,9 +23,8 @@
 </template>
 
 <script>
-    import axios from 'axios'
 
-    export default {
+	export default {
 		name: "Activation.vue",
 		data () {
 			return {
@@ -38,7 +37,7 @@
 		methods: {
 			getToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/settings/activate_user/' + this.token, {withCredentials: true})
+				this.$root.axios.get('/settings/activate_user/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
@@ -52,7 +51,7 @@
 			},
 			resendActivation() {
 				this.email_sent = false;
-				axios.post(this.$root.API_URL + '/recovery/resend_activation', {
+				this.$root.axios.post('/recovery/resend_activation', {
 					email: this.email,
 				}, {withCredentials: true})
 					.then(response => {

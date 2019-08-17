@@ -97,7 +97,7 @@
         },
         getUsers() {
             this.loading = true;
-            axios.post(this.$root.API_URL + '/users/filter/page/' + (this.current_page - 1), {
+            this.$root.axios.post('/users/filter/page/' + (this.current_page - 1), {
                 filter: this.filter,
                 sort: this.sort_form,
                 ip_location: this.ip_location

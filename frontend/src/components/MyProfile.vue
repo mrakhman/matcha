@@ -26,7 +26,6 @@
 <script>
     import AboutMe from "./AboutMe";
     import Settings from "./Settings";
-    import axios from 'axios';
 
     export default {
         name: "MyProfile.vue",
@@ -95,7 +94,7 @@
         },
         methods: {
             getMe() {
-                axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                this.$root.axios.get('/users/me', {withCredentials: true})
                     .then(response => {
                         this.user_details = response.data["user"];
                         this.user_details.dob = this.user_details.dob.substring(0, 10);

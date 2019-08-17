@@ -24,9 +24,8 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
-    export default {
+	export default {
 		name: "History.vue",
 		data() {
 			return {
@@ -48,7 +47,7 @@
 		},
 		methods: {
 			getHistory() {
-				axios.get(this.$root.API_URL + '/history', {withCredentials: true})
+				this.$root.axios.get('/history', {withCredentials: true})
 					.then(response => {
 						this.history = response.data["history"];
 
@@ -59,7 +58,7 @@
 					}).catch(() => {});
 			},
 			deleteHistory() {
-				axios.delete(this.$root.API_URL + '/history', {withCredentials: true})
+				this.$root.axios.delete('/history', {withCredentials: true})
 					.then(() => {
 						this.getHistory();
 						this.$router.go(0);

@@ -85,7 +85,6 @@
 </template>
 
 <script>
-	import axios from 'axios';
 
 	export default {
 		name: "CheckProfile.vue",
@@ -128,7 +127,7 @@
 				}
 			},
 			getUser() {
-				axios.get(this.$root.API_URL + '/users/' + this.id, {
+				this.$root.axios.get('/users/' + this.id, {
 					params: {
 						with_images: true,
 						with_like: true,
@@ -151,7 +150,7 @@
 			changeLikeState() {
 				// Add like
 				if (this.user.has_like === false) {
-					axios.post(this.$root.API_URL + '/likes/' + this.id, {}, {
+					this.$root.axios.post('/likes/' + this.id, {}, {
 						withCredentials: true
 					})
 						.then(() => {
@@ -171,7 +170,7 @@
 				}
 				// Remove like
 				else if (this.user.has_like === true) {
-					axios.delete(this.$root.API_URL + '/likes/' + this.id, {
+					this.$root.axios.delete('/likes/' + this.id, {
 						withCredentials: true
 					})
 						.then(() => {
@@ -181,7 +180,7 @@
 				}
 			},
 			sendBlockRequest() {
-				axios.post(this.$root.API_URL + '/users/block/' + this.id, {}, {
+				this.$root.axios.post('/users/block/' + this.id, {}, {
 					withCredentials: true
 				})
 					.then(() => {
@@ -202,7 +201,7 @@
 				}
 			},
 			undoBlock() {
-				axios.delete(this.$root.API_URL + '/users/block/' + this.id, {
+				this.$root.axios.delete('/users/block/' + this.id, {
 					withCredentials: true
 				})
 					.then(() => {
@@ -211,7 +210,7 @@
 					}).catch(() => {});
 			},
 			usersCanChat() {
-				axios.get(this.$root.API_URL + '/messages/'+ this.id + '/allowed', {
+				this.$root.axios.get('/messages/'+ this.id + '/allowed', {
 					withCredentials: true
 				})
 				.then(response => {

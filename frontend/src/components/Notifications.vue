@@ -35,7 +35,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {Socket} from "../socket";
     import EventBus from '../event-bus';
 
@@ -57,7 +56,7 @@
         },
         methods: {
             getNotifications() {
-                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
 
@@ -69,7 +68,7 @@
                     })
             },
             markAllRead() {
-                axios.post(this.$root.API_URL + '/notifications/all_read', {}, {withCredentials: true})
+                this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
                     .then(() => {
                         this.getNotifications();
                         EventBus.$emit('markRead');

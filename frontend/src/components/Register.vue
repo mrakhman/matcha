@@ -67,8 +67,6 @@
 
 <script>
 
-    import axios from 'axios';
-
     export default {
         name: "Register.vue",
         data() {
@@ -150,7 +148,7 @@
 
                 this.register_success_alert = false;
 
-                axios.post(this.$root.API_URL + '/users/register', {
+                this.$root.axios.post('/users/register', {
                     first_name: this.form.first_name,
                     last_name: this.form.last_name,
                     email: this.form.email,

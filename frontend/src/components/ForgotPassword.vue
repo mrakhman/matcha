@@ -17,8 +17,6 @@
 
 <script>
 
-    import axios from 'axios';
-
     export default {
         name: "ForgotPassword.vue",
         data() {
@@ -30,7 +28,7 @@
         methods: {
             forgotPassword() {
                 this.email_sent = false;
-                axios.post(this.$root.API_URL + '/recovery/password', {
+                this.$root.axios.post('/recovery/password', {
                     email: this.email,
                 }, {withCredentials: true})
                     .then(response => {

@@ -25,9 +25,8 @@
 </template>
 
 <script>
-    import axios from 'axios'
 
-    export default {
+	export default {
 		name: "ResetPassword.vue",
 		data () {
 			return {
@@ -41,7 +40,7 @@
 		methods: {
 			getResetToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/recovery/reset_password/' + this.token, {withCredentials: true})
+				this.$root.axios.get('/recovery/reset_password/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
@@ -91,7 +90,7 @@
 				if (this.validateFields())
 					return false;
 
-				axios.post(this.$root.API_URL + '/users/reset_password/' + this.token, {
+				this.$root.axios.post('/users/reset_password/' + this.token, {
 					password: this.password,
 				}, {withCredentials: true})
 					.then(response => {

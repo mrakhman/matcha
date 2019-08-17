@@ -85,7 +85,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
         name: "Settings.vue",
@@ -120,7 +119,7 @@
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/settings/name', {
+                this.$root.axios.post('/settings/name', {
                     first_name: this.form_edit.first_name,
                     last_name: this.form_edit.last_name,
                     username: this.form_edit.username,
@@ -163,7 +162,7 @@
                     return this.alerts.invalid_symbols = true;
                 }
 
-                axios.post(this.$root.API_URL + '/settings/email', {
+                this.$root.axios.post('/settings/email', {
                     email: this.form_edit.email,
                     password: this.form_edit.email_password
                 }, {withCredentials: true})
@@ -222,7 +221,7 @@
                     return this.alerts.weak_password = true;
                 }
 
-                axios.post(this.$root.API_URL + '/settings/password', {
+                this.$root.axios.post('/settings/password', {
                     old_password: this.form_edit.old_password,
                     new_password: this.form_edit.new_password
                 }, {withCredentials: true})

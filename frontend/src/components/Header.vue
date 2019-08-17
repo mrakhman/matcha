@@ -52,7 +52,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import Logout from "./Logout";
     import {Socket} from "../socket";
     import EventBus from '../event-bus';
@@ -73,20 +72,20 @@
         },
         methods: {
             getNotifications() {
-                axios.get(this.$root.API_URL + '/notifications/', {withCredentials: true})
+                this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
                     })
                     .catch(() => {});
             },
             getUserFirstName() {
-                axios.get(this.$root.API_URL + '/users/me', {withCredentials: true})
+                this.$root.axios.get('/users/me', {withCredentials: true})
                     .then(response => {
                         this.display_first_name = response.data.user.first_name;
                     }).catch(() => {});
             },
             markAllRead() {
-                axios.post(this.$root.API_URL + '/notifications/all_read', {}, {withCredentials: true})
+                this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
                     .then(() => {
                         this.getNotifications();
                         EventBus.$emit('markRead2');

@@ -30,7 +30,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import {Socket} from "../socket";
 
     const moment = require('moment');
@@ -50,7 +49,8 @@
             }
         },
         methods: {
-            loadMessages() {axios.get(this.$root.API_URL + '/messages/' + this.id, {withCredentials: true})
+            loadMessages() {
+                this.$root.axios.get('/messages/' + this.id, {withCredentials: true})
                 .then(response => {
                     this.messages = response.data.messages;
                     this.chat_users = response.data.users;
@@ -62,7 +62,7 @@
             },
             createMessage() {
                 if(this.new_message.text) {
-                    axios.post(this.$root.API_URL + '/messages', {
+                    this.$root.axios.post('/messages', {
                         text: this.new_message.text,
                         receiver_id: this.id
                     }, {withCredentials: true})

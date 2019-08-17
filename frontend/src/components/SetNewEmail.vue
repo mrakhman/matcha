@@ -11,9 +11,8 @@
 </template>
 
 <script>
-    import axios from 'axios'
 
-    export default {
+	export default {
 		name: "SetNewEmail.vue",
 		data () {
 			return {
@@ -24,7 +23,7 @@
 		methods: {
 			getToken() {
 				this.status = null;
-				axios.get(this.$root.API_URL + '/settings/activate_email/' + this.token, {withCredentials: true})
+				this.$root.axios.get('/settings/activate_email/' + this.token, {withCredentials: true})
 					.then(response => {
 						if(response.status === 200)
 						{
