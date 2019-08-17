@@ -35,8 +35,6 @@
     const moment = require('moment');
     export default {
         name: "Chat.vue",
-        components: {
-        },
         props: ['username'],
         data () {
             return {
@@ -119,8 +117,5 @@
     .messages {
         max-height: 300px;
         overflow: auto;
-    }
-    .my_message {
-        float: right;
     }
 </style>

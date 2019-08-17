@@ -1,6 +1,6 @@
 import http
 
-from flask import blueprints, jsonify, abort, g
+from flask import abort, blueprints, g, jsonify
 
 from models.like import Like
 from models.notification import Notification

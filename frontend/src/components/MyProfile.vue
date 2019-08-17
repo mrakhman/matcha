@@ -59,21 +59,6 @@
                         new_password: '',
                     repeat_password: '',
                 },
-
-                // options: {
-                //     gender: [
-                //         { value: 'female', text: 'Female'},
-                //         { value: 'male', text: 'Male'},
-                //         { value: 'not mention', text: 'Not mentioned'}
-                //     ],
-                //     sex_pref: ['hetero', 'homo', 'bi'],
-                //     tags: [
-                //         { text: '#vegan', value: 'vegan' },
-                //         { text: '#geek', value: 'geek' },
-                //         { text: '#tattoos', value: 'tattoos' },
-                //         { text: '#eco', value: 'eco' }
-                //     ]
-                // },
                 alerts: {
                     unauthorized: false,
                     empty_input: false,

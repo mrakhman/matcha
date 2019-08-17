@@ -33,6 +33,7 @@ const router = new VueRouter({
   routes: Routes,
   mode: 'history'
 });
+
 const userId = localStorage.getItem('user_id');
 const userData = localStorage.getItem('user');
 
