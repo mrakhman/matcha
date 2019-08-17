@@ -1,7 +1,7 @@
 import http
 
 import itsdangerous
-from flask import abort, blueprints, jsonify, request
+from flask import abort, blueprints, current_app, jsonify, request
 
 from models.user import User
 from modules import serializer
@@ -29,7 +29,7 @@ def send_token(token_type):
 
 	# Send activation email
 	token = serializer.create_token(req_data['email'], token_type)
-	send_token_email(token_type, req_data['email'], token)
+	send_token_email(current_app.config.get('FRONTEND_URL'), token_type, req_data['email'], token)
 	return jsonify({"ok": True})
 
 

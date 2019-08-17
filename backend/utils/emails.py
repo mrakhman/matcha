@@ -9,8 +9,7 @@ def send_email(to_email, subject, message):
     mail.send(msg)
 
 
-def send_token_email(token_type, to, token):
-    front_url = mail.app.configs.get('FRONTEND_URL')
+def send_token_email(front_url, token_type, to, token):
     data = {
         'activate_user': {
             'subject': 'Matcha - confirm your email',

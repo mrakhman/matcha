@@ -10,13 +10,16 @@ RUN apk update \
 	&& apk upgrade --no-cache \
 	&& apk add --no-cache git curl \
 	&& pip install --no-cache-dir pipenv \
-	&& mkdir /app
+	&& mkdir /app \
+	&& curl https://raw.githubusercontent.com/eficode/wait-for/master/wait-for >> /usr/bin/wait-for \
+	&& chmod +x /usr/bin/wait-for
 
 WORKDIR /app
 
 COPY Pipfile* /app/
 
 RUN pipenv install --deploy --system
+ENV FLASK_APP app
 
 COPY . .
 

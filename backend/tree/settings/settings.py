@@ -226,7 +226,7 @@ def update_email():
 
 			# Send activation email
 			token = serializer.create_token(req_data['email'], 'update_email')
-			send_token_email('update_email', req_data['email'], token)
+			send_token_email(current_app.config.get('FRONTEND_URL'), 'update_email', req_data['email'], token)
 
 		return jsonify({"ok": True})
 	abort(http.HTTPStatus.UNAUTHORIZED)
@@ -247,7 +247,8 @@ def activate_email(token):
 @settings.route('/activate_user/<token>', methods=['GET'])
 def activate_user(token):
 	try:
-		email = serializer.verify_token(token, 'activate_user').get('email')
+		token_content = serializer.verify_token(token, 'activate_user')
+		email = token_content.get('email')
 		if not email:
 			abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
 

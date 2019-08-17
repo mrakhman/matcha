@@ -2,7 +2,7 @@ import http
 import os
 import uuid
 
-from flask import blueprints, jsonify, abort, g, request, current_app, url_for, redirect
+from flask import abort, blueprints, current_app, g, jsonify, redirect, request, url_for
 from minio.signer import presign_v4
 
 from models.image import Image
@@ -56,8 +56,9 @@ def upload_image():
 
 		if source == 'profile_image':
 			# Delete old from bucket
-			old_filename = current_user.profile_image.split('/')[-1]
-			storage.connection.remove_object(bucket_name, old_filename)
+			if current_user.profile_image:
+				old_filename = current_user.profile_image.split('/')[-1]
+				storage.connection.remove_object(bucket_name, old_filename)
 			# Update
 			current_user.profile_image = url_for('images.get_image', filename=filename, _external=True)
 			current_user.update()

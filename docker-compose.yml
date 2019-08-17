@@ -28,6 +28,8 @@ services:
     links:
       - minio
       - postgres
+    depends_on:
+      - postgres
   nginx:
     build:
       context: .

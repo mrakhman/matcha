@@ -1,7 +1,7 @@
 import glob
 
 import postgresql
-from flask import current_app, _app_ctx_stack, Flask
+from flask import Flask, _app_ctx_stack, current_app
 
 
 class Postgres(object):
@@ -30,8 +30,9 @@ class Postgres(object):
         app.config.setdefault('PSQL_DATABASE_URI', None)
         app.config.setdefault('PSQL_DATABASE_INIT_FOLDER', './database')
         app.teardown_appcontext(self.teardown)
-        with app.app_context():
-            self._initialize_tables(app.config.get('PSQL_DATABASE_INIT_FOLDER'))
+
+    def init_db(self, app):
+	    self._initialize_tables(app.config.get('PSQL_DATABASE_INIT_FOLDER'))
 
     @staticmethod
     def connect():

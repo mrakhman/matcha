@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b3b9bc489454c6d6cb116c28d2ff4becb1df19ac9112575c6f19d54368ac83ec"
+            "sha256": "94cdd9e9a68935e5e03e81a657a061d61f29a756b3b71cdd025a56098697ce83"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,6 +41,7 @@
                 "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
                 "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
             ],
+            "index": "pypi",
             "version": "==7.0"
         },
         "flask": {
@@ -152,10 +153,10 @@
         },
         "minio": {
             "hashes": [
-                "sha256:68587114e92d236f5844b4c4906c17ac162c459743158f5998c98b23dfa23574",
-                "sha256:75a14cfbbfb734ff60d925987ec1f3ab5bbded7734ab20ef59cde5e2aac062ff"
+                "sha256:2911d32bb95acb0dc2fe5d1a2f3a2690cb954017e7d365ce2587f6137334e90f",
+                "sha256:5e2d445fcffce041b992523886961880c6cfc2d4e18904136874898723d9b620"
             ],
-            "version": "==4.0.19"
+            "version": "==4.0.20"
         },
         "py-postgresql": {
             "hashes": [
@@ -180,11 +181,11 @@
         },
         "redis": {
             "hashes": [
-                "sha256:45682ecf226c7611efe731974c4fa3390170ba045b9cdb26f0051114a5c2a68b",
-                "sha256:f2609a85e5f37f489ba3b5652e1175dc3711c4d7a7818c4f657615810afd23df"
+                "sha256:0607faf60d44768e17f65e506fe390679b54be6fd6d5f0c2d28f3ebf4f0535e7",
+                "sha256:9c96c5bf11a8c47eb33cefdefd41c47cf1ff68db41c51b56b3ec7938b7c627f7"
             ],
             "index": "pypi",
-            "version": "==3.3.6"
+            "version": "==3.3.7"
         },
         "requests": {
             "hashes": [

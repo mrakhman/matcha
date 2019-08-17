@@ -25,7 +25,7 @@ alter table users owner to matcha;
 
 do $$ begin
 	create trigger trg_rating
-		after insert or update
+    after insert or update of bio_text, profile_image, tags
 		on users
 		for each row
 		execute procedure update_user_rating_trigger();

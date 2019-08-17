@@ -15,6 +15,7 @@ redis = "*"
 flask-minio = "*"
 requests = "*"
 gunicorn = "*"
+click = "*"
 
 [requires]
 python_version = "3.7"

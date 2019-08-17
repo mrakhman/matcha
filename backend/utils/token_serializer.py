@@ -43,5 +43,5 @@ class MySerializer:
 		if expiration is None:
 			expiration = self.expiration
 		payload = self.loads(token, max_age=expiration)
-		assert payload.get('token_type') == token_type
+		assert payload.get('type') == token_type
 		return payload

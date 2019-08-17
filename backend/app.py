@@ -1,14 +1,16 @@
 import logging
 
-from flask import Flask, jsonify, session, g
+import click
+from flask import Flask, g, jsonify, session
 from flask import request
+from flask.cli import AppGroup, with_appcontext
 from flask.logging import default_handler
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, abort
 
 from models.user import User
-from modules import db, redis_client, mail, serializer, storage
-from tree import auth, images, notifications, users, likes, history, messages, settings, recovery
+from modules import db, mail, redis_client, serializer, storage
+from tree import auth, history, images, likes, messages, notifications, recovery, settings, users
 from utils.json_encoder import CustomJSONEncoder
 
 APP_NAME = "matcha"
@@ -98,6 +100,29 @@ def teapot():
 def health():
     return "OK"
 
+
+db_cli = AppGroup('db')
+
+
+@db_cli.command('init')
+@with_appcontext
+def init_db():
+	db.init_db(app)
+
+
+@db_cli.command('populate')
+@click.argument('amount', type=click.INT)
+@with_appcontext
+def populate(amount):
+	from populate import RandomUser
+	params = {
+		'results': amount,
+		'nat': 'fr',
+	}
+	RandomUser().create_users(**params)
+
+
+app.cli.add_command(db_cli)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")

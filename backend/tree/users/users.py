@@ -260,7 +260,7 @@ def create_user():
 
 	# Send activation email
 	token = serializer.create_token(req_data['email'], 'activate_user')
-	send_token_email('activate_user', new_user.email, token)
+	send_token_email(current_app.config.get('FRONTEND_URL'), 'activate_user', new_user.email, token)
 
 	return jsonify({"ok": True, "user": new_user.get_view("personal")})
 

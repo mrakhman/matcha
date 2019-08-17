@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
 import random
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 import requests
 
-from app import app
 from models.user import User
 
 
@@ -60,22 +58,3 @@ class RandomUser:
 			user.update()
 			users.append(user)
 		return users
-
-
-def populate(n: int):
-	print(f"Populating DB with {n} users")
-	with app.app_context():
-		params = {
-			'results': n,
-			'nat': 'fr',
-		}
-		RandomUser().create_users(**params)
-
-
-if __name__ == '__main__':
-	import argparse
-
-	parser = argparse.ArgumentParser(description="Populate DB with fake users")
-	parser.add_argument('amount', type=int, help="how many users to add")
-	args = parser.parse_args()
-	populate(args.amount)
