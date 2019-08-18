@@ -88,7 +88,7 @@
                 </b-form-group>
                 <b-form-group id="birthday_2" label-cols-sm="2" label-cols-lg="2" label="Date of birth:" label-for="input-horizontal" required>
                     <b-form-input v-model="user_details.dob" type="date"></b-form-input>
-                    <small class="text-danger" v-if="!user_details.dob">Add date of birth to appear in users' search </small>
+                    <small class="text-danger" v-if="!user_details.dob">Add date of birth to appear in other users searches </small>
                 </b-form-group>
 
                 <b-button type="submit" variant="primary">Save</b-button>
@@ -135,6 +135,14 @@
             submitAboutMe() {
                 this.edit_success_alert = null;
                 this.edit_error_alert = null;
+
+                let min_limit = new Date().setFullYear(new Date().getFullYear() - 99);
+                let max_limit = Date.now();
+                let user_dob = new Date(this.user_details.dob);
+                if (user_dob >= max_limit || user_dob <= min_limit) {
+                    this.$notify({group: 'foo', type: 'error', title: 'Age error', text: 'Age must me between 0 and 99', duration: 5000});
+                    return ;
+                }
                 this.$root.axios.post('/settings/profile', {
                     gender: this.user_details.gender,
                     sex_pref: this.user_details.sex_pref,
@@ -147,7 +155,7 @@
                         if(response.status === 200)
                         {
                             this.edit_success_alert = true;
-                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: -1})
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: 5000})
                         }
                     })
                     .catch(error => {

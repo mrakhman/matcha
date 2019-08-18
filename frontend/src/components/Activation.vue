@@ -4,8 +4,10 @@
 			<p> Your account is activated! You can now <router-link v-bind:to="'/login'">login</router-link></p>
 		</div>
 		<div v-else>
-			<p class="text-danger m-3"> Activation link is damaged or has expired </p>
-			<br>
+			<div v-if="status === false">
+				<p class="text-danger m-3"> Activation link is damaged or has expired </p>
+				<br>
+			</div>
 			<div class="main"><b-row><b-col xl="5">
 				<h4 class=""> Send new link: </h4>
 				<p> Enter email you registered your account with </p>
@@ -70,7 +72,10 @@
 			}
 		},
 		created() {
-			this.getToken();
+			if (this.
+				token !== "resend") {
+				this.getToken();
+			}
 		}
 	}
 </script>
