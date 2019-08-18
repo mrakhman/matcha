@@ -1,3 +1,5 @@
+import smtplib
+
 from flask_mail import Message
 
 from modules import mail
@@ -6,7 +8,11 @@ from modules import mail
 def send_email(to_email, subject, message):
     msg = Message(subject=subject, recipients=[to_email])
     msg.body = message
-    mail.send(msg)
+    try:
+        mail.send(msg)
+    except smtplib.SMTPException:
+        return False
+    return True
 
 
 def send_token_email(front_url, token_type, to, token):
@@ -24,4 +30,4 @@ def send_token_email(front_url, token_type, to, token):
             'message': f'Click the link to reset your password: {front_url}/reset_password/{token}'
         }
     }
-    send_email(to, **data[token_type])
+    return send_email(to, **data[token_type])
