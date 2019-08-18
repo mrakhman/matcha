@@ -36,18 +36,6 @@ def update_personal_details():
 			'type': str,
 			'validator': None
 		},
-		"profile_image": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
-		"images": {
-			'required': False,
-			'default': None,
-			'type': str,
-			'validator': None
-		},
 		"tags": {
 			'required': False,
 			'default': None,
@@ -69,17 +57,15 @@ def update_personal_details():
 		current_user.gender = req_data['gender']
 	if getattr(current_user, 'sex_pref') != req_data['sex_pref']:
 		current_user.sex_pref = req_data['sex_pref']
-	try:
-		dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
-		current_user.dob = dob
-	except ValueError:
-		abort(http.HTTPStatus.BAD_REQUEST)
+	if req_data.get('dob') and type(req_data['dob']) == str:
+		try:
+			dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
+			current_user.dob = dob
+		except ValueError:
+			abort(http.HTTPStatus.BAD_REQUEST)
 
 	if getattr(current_user, 'bio_text') != req_data['bio_text']:
 		current_user.bio_text = req_data['bio_text']
-
-	if getattr(current_user, 'profile_image') != req_data['profile_image']:
-		current_user.profile_image = req_data['profile_image']
 
 	allowed_tags = {'42', 'eco', 'geek', 'veggie', 'music', 'travel'}
 	for tag in req_data['tags']:
