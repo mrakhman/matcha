@@ -29,7 +29,7 @@ def create_like(user_id):
 		# If user is not blocked [blocked, blocker]
 		# Notification
 		if not is_blocked:
-			text = Notification.notification_text('like', g.current_user.id)
+			text = Notification.notification_text('like', g.current_user)
 			notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "like"})
 			notification.create()
 
@@ -47,7 +47,7 @@ def remove_like(user_id):
 		# If user is not blocked [blocked, blocker]
 		# Notification
 		if not User.user_is_blocked(g.current_user.id, user_id):
-			text = Notification.notification_text('unlike', g.current_user.id)
+			text = Notification.notification_text('unlike', g.current_user)
 			notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "like"})
 			notification.create()
 

@@ -9,7 +9,7 @@
                 <span v-if="message.sender_id === user.id" class="text-warning">[me]: </span>
                 <span v-else class="text-info">[{{ chat_users[message.sender_id].username }}]: </span>
                 <span>{{ message.text }}</span>
-                <span class="text-secondary time">{{ message.created_at }}</span>
+                <span class="text-secondary time">{{ message.created_at | moment('timezone', "Europe/Paris", 'LLLL') }}</span>
             </div>
         </div>
         <b-row><b-col xl="5">
@@ -32,7 +32,6 @@
 <script>
     import {Socket} from "../socket";
 
-    const moment = require('moment');
     export default {
         name: "Chat.vue",
         props: ['username'],
@@ -52,10 +51,6 @@
                 .then(response => {
                     this.messages = response.data.messages;
                     this.chat_users = response.data.users;
-
-                    this.messages.forEach(function (message) {
-                        message.created_at =  moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
-                    });
                 })
             },
             createMessage() {
@@ -77,7 +72,6 @@
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "message") {
-                    payload.data.created_at =  moment.utc(payload.data.created_at).tz("Europe/Paris").format('LLL');
                     this.messages.push(payload.data)
                 }
             }

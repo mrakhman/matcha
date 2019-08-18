@@ -5,7 +5,9 @@ import VueRouter from 'vue-router'
 import Routes from './router'
 import Notifications from 'vue-notification'
 import VueChatScroll from 'vue-chat-scroll'
-import Moment from 'moment-timezone'
+
+import VueMoment from 'vue-moment'
+import moment from 'moment-timezone'
 
 import VueNativeSock from 'vue-native-websocket'
 
@@ -25,8 +27,7 @@ Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
-Vue.use(Moment);
-
+Vue.use(VueMoment, {moment,});
 Vue.use(VueNativeSock, WS_URL, { format: 'json' });
 
 const router = new VueRouter({

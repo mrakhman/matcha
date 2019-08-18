@@ -4,6 +4,7 @@ from flask import abort, blueprints, g, jsonify, request
 
 from models.like import Like
 from models.message import Message
+from models.notification import Notification
 from models.user import User
 from utils.form_validator import check_fields
 from utils.security import authorised_only
@@ -22,7 +23,7 @@ def users_can_chat(user_id):
 	return jsonify(ok=False)
 
 
-@messages.route("/", methods=['POST'])
+@messages.route("", methods=['POST'])
 @authorised_only
 def create_message():
 	req_data = request.get_json()
@@ -48,12 +49,15 @@ def create_message():
 			and (not User.user_is_blocked(sender_id, receiver_id) and not User.user_is_blocked(receiver_id, sender_id)):
 		message = Message.from_dict({"sender_id": sender_id, "receiver_id": receiver_id, "text": req_data["text"]})
 		message.create()
+		text = Notification.notification_text('message', g.current_user)
+		notification = Notification.from_dict({"user_id": receiver_id, "text": text, "type": "message"})
+		notification.create()
 
 		return jsonify(ok=True)
 	abort(http.HTTPStatus.UNAUTHORIZED)
 
 
-@messages.route("/chats", methods=['GET'])
+@messages.route("", methods=['GET'])
 @authorised_only
 def get_my_chats():
 	my_chats = Message.get_user_chats(g.current_user.id)

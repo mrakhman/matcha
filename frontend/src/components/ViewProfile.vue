@@ -7,7 +7,8 @@
 		<div id="user_exists" v-else>
 			<h3 class="title"> View profile: <b>{{ user.username }}</b> </h3>
 			<p v-if="user.online" class="text-success ml-3"><b> Online </b></p>
-			<p v-else class="text-danger ml-3"><b> Offline <br> <small v-if="user.last_connection">Last seen: {{last_online_timezone}}</small></b></p>
+			<p v-else class="text-danger ml-3"><b> Offline <br> <small v-if="user.last_connection">
+				Last seen: {{user.last_connection | moment('timezone', "Europe/Paris", 'LLLL')}}</small></b></p>
 			<b-row id="photos">
 				<b-col>
 					<b-img v-if="user.profile_image" v-bind:src="user.profile_image" fluid alt="Profile image" width="300"></b-img>
@@ -137,9 +138,6 @@
 				})
 					.then(response => {
 						this.user = response.data.user;
-
-						const moment = require('moment');
-						this.last_online_timezone =  moment.utc(this.user.last_connection).tz("Europe/Paris").format('LLL');
 					})
 					.catch(error => {
 						if (error.response.status === 404) {

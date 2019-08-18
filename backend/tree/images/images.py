@@ -60,14 +60,14 @@ def upload_image():
 				old_filename = current_user.profile_image.split('/')[-1]
 				storage.connection.remove_object(bucket_name, old_filename)
 			# Update
-			current_user.profile_image = url_for('images.get_image', filename=filename, _external=True)
+			current_user.profile_image = url_for('images.get_image', filename=filename, _external=True, _scheme='https')
 			current_user.update()
 			return jsonify({"ok": True})
 
 		if source == 'user_image':
 			new_image = Image.from_dict({
 				'user_id': current_user.id,
-				'image_src': url_for('images.get_image', filename=filename, _external=True)
+				'image_src': url_for('images.get_image', filename=filename, _external=True, _scheme='https')
 			})
 			new_image.create()
 			return jsonify(ok=True)

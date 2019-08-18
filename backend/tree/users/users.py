@@ -45,7 +45,7 @@ def get_user_by_id(user_id):
 		# Send notification
 		if not User.user_is_blocked(g.current_user.id, user_id):
 			if g.current_user.id != user_id:
-				text = Notification.notification_text('view', g.current_user.id)
+				text = Notification.notification_text('view', g.current_user)
 				notification = Notification.from_dict({"user_id": user_id, "text": text, "type": "view"})
 				notification.create()
 
@@ -118,7 +118,16 @@ def users_filter(page_number):
 	# Distance
 	filter_validation["max"]["default"] = 10000
 	check_fields(req_data["filter"]["distance"], filter_validation)
-
+	# Set location based on ip_location if user doesn't have
+	g.current_user: User
+	req_data.setdefault("ip_location", {})
+	location_from_ip = False
+	if (not getattr(g.current_user, 'latitude') or not getattr(g.current_user, 'longitude')) \
+		and req_data['ip_location'].get('ip_lat') and req_data['ip_location'].get('ip_lon'):
+		location_from_ip = True
+		g.current_user.latitude = req_data['ip_location'].get('ip_lat')
+		g.current_user.longitude = req_data['ip_location'].get('ip_lon')
+		g.current_user.update()
 	# Sort
 	req_data.setdefault("sort", {})
 	req_data["sort"].setdefault("order_by", "desc")
@@ -195,6 +204,10 @@ def users_filter(page_number):
 		if result:
 			search_users = result
 			count_users = g.current_user.count_filtered(**payload)
+	if location_from_ip:
+		g.current_user.latitude = None
+		g.current_user.longitude = None
+		g.current_user.update()
 	search_users = [u.get_view(with_attr={"distance"}) for u in search_users]
 	return jsonify(users=search_users, total_users=count_users, per_page=per_page)
 

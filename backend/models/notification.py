@@ -1,11 +1,9 @@
-# from datetime import datetime
 import datetime
 
 from flask import json
 
 from modules import redis_client
 from .model import Model, Queries
-from .user import User
 
 
 class NotificationQueries(Queries):
@@ -97,9 +95,8 @@ class Notification(Model):
         self.queries.update_field(field)(value, self.id)
 
     @staticmethod
-    def notification_text(notif_type, sender_id):
-        sender_user = User.get_by_id(sender_id)
-        sender_username = sender_user.username
+    def notification_text(notif_type, sender):
+        sender_username = sender.username
         text: str = "unknown_notification"
         if notif_type == 'like':
             text = sender_username + " liked your profile"

@@ -2,7 +2,8 @@
 <div class="main">
     <h3 class="title"> My profile </h3>
     <p v-if="user_details.online" class="text-success ml-3"><b> Online </b></p>
-    <p v-else class="text-danger ml-3"><b> Offline <br> <small v-if="user_details.last_connection">Last seen: {{last_online_timezone}}</small></b></p>
+    <p v-else class="text-danger ml-3"><b> Offline <br> <small v-if="user_details.last_connection">
+        Last seen: {{last_online_timezone | moment('timezone', "Europe/Paris", 'LLLL')}}</small></b></p>
     <b-tabs content-class="mt-3">
         <b-tab title="About me" active>
             <AboutMe
@@ -86,14 +87,9 @@
                     })
                     .catch(() => {});
             },
-            editTimezone() {
-                const moment = require('moment');
-                this.last_online_timezone = moment.tz(this.user_details.last_connection, "Europe/Paris").format('LLL');
-            }
         },
         created() {
             this.getMe();
-            this.editTimezone();
         },
 
     }

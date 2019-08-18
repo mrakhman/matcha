@@ -60,7 +60,7 @@ def update_personal_details():
 	if req_data.get('dob') and type(req_data['dob']) == str:
 		try:
 			dob = datetime.datetime.strptime(req_data['dob'][:10], '%Y-%m-%d')
-			if not (datetime.date.today() - datetime.timedelta(365 * 99) < dob < datetime.date.today()):
+			if not (datetime.date.today() - datetime.timedelta(365 * 99) < dob.date() < datetime.date.today()):
 				abort(http.HTTPStatus.BAD_REQUEST)
 			current_user.dob = dob
 		except ValueError:

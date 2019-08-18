@@ -57,8 +57,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
-
     export default {
 		name: "Location.vue",
 		data () {
@@ -169,19 +167,6 @@
 					.catch(() => {
 						this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Some error...', duration: 3000});
 					})
-			},
-			ipLocation() {
-				axios.get('https://europe-west1-matcha-246115.cloudfunctions.net/geolocation')
-					.then(response => {
-						if(response.status === 200)
-						{
-							let lat_long = response.data.cityLatLong;
-							lat_long = lat_long.split(",");
-							this.ip_lat = lat_long[0];
-							this.ip_lon = lat_long[1];
-						}
-					})
-					.catch(() => {})
 			}
 	},
 		created() {

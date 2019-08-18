@@ -30,7 +30,7 @@
                                 <img alt="Notifications" src="../assets/bell.png" width="30">
                             </template>
                             <b-dropdown-item-button href="#"
-                                                    v-if="notifications"
+                                                    v-if="notifications && notifications.length"
                                                     v-on:click="markAllRead"
                             >Mark all read</b-dropdown-item-button>
                             <b-dropdown-text v-else>No notifications</b-dropdown-text>

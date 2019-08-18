@@ -14,7 +14,7 @@
 							<router-link v-bind:to="data.value">link</router-link>
 						</template>
 						<template slot="created_at" slot-scope="data">
-							{{ data.value }}
+							{{ data.value | moment('timezone', "Europe/Paris", 'LLLL') }}
 						</template>
 					</b-table>
 				</b-col>
@@ -47,21 +47,15 @@
 		},
 		methods: {
 			getHistory() {
-				this.$root.axios.get('/history', {withCredentials: true})
+				this.$root.axios.get('/history/', {withCredentials: true})
 					.then(response => {
 						this.history = response.data["history"];
-
-						let moment = require('moment');
-						this.history.forEach(function (message) {
-							message.created_at = moment.utc(message.created_at).tz("Europe/Paris").format('LLL');
-						});
 					}).catch(() => {});
 			},
 			deleteHistory() {
-				this.$root.axios.delete('/history', {withCredentials: true})
+				this.$root.axios.delete('/history/', {withCredentials: true})
 					.then(() => {
 						this.getHistory();
-						this.$router.go(0);
 					}).catch(() => {});
 			}
 		},
