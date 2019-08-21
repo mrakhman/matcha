@@ -54,7 +54,7 @@ def create_message():
 		notification.create()
 
 		return jsonify(ok=True)
-	abort(http.HTTPStatus.UNAUTHORIZED)
+	abort(http.HTTPStatus.FORBIDDEN)
 
 
 @messages.route("", methods=['GET'])

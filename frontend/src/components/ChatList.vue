@@ -5,7 +5,7 @@
             <b-row><b-col xl="6">
                 <b-row class="message_block p-2 mb-3" v-for="user in users_list" :key="user.id" align-v="center">
                     <b-col>
-                        <b-img v-if="user.profile_image" v-bind="image_style" :src="user.profile_image" rounded="circle" alt="Circle image"></b-img>
+                        <b-img v-if="user && user.profile_image" v-bind="image_style" :src="user.profile_image" rounded="circle" alt="Circle image"></b-img>
                         <b-img v-else v-bind="no_image" rounded="circle" alt="Circle image"></b-img>
                     </b-col>
                     <b-col>
