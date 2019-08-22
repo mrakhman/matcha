@@ -8,7 +8,19 @@
                 <div class="m-3">
                     <span class="text-secondary time">{{ message.created_at | moment('timezone', "Europe/Paris", 'LLLL') }}</span>
                     <span v-if="message.sender_id === user.id" class="text-warning">
-                        <b-img v-bind="image_style" :src="chat_users[user.id].profile_image" rounded="circle" alt="Circle image"></b-img>
+                        <b-img
+                                v-if="chat_users[message.sender_id].profile_image"
+                                v-bind="image_style"
+                                :src="chat_users[user.id].profile_image"
+                                rounded="circle"
+                                alt="Circle image">
+                        </b-img>
+                        <b-img
+                            v-else
+                            v-bind="no_image"
+                            rounded="circle"
+                            alt="Circle image">
+                        </b-img>
                         [me]:
                     </span>
                     <span v-else>
