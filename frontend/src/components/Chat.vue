@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <b-row><b-col xl="5">
+        <b-row><b-col md="6">
             <form v-on:submit.prevent="createMessage">
                 <b-form-textarea
                     class="mt-3 mb-3"
