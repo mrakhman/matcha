@@ -3,7 +3,7 @@
 		<h3 class="title"> Visit history </h3>
 		<div class="table">
 			<b-row>
-				<b-col xl="6">
+				<b-col md="9">
 					<a class="ml-4" v-if="history" href="#" v-on:click="deleteHistory">Delete history</a>
 					<a class="ml-4" v-else>No history</a>
 					<b-table striped bordered :items="history" :fields="fields">

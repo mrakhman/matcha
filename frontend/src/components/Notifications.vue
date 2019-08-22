@@ -17,7 +17,7 @@
         </div>
         <div class="table">
             <b-row>
-                <b-col xl="8">
+                <b-col md="10">
                     <a class="ml-4" v-if="all_notifications.length" href="#" v-on:click="markAllRead">Delete all notifications</a>
                     <a class="ml-4" v-else>No unread notifications</a>
                     <b-table striped bordered :items="filtered_notifications" :fields="fields">
