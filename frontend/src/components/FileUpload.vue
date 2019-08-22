@@ -83,11 +83,11 @@
                             {
                                 this.$emit('ImageUploadSuccess');
                                 this.successText =  "Image uploaded!";
-                                this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: -1});
+                                this.$notify({group: 'foo', type: 'success', title: 'Success', text: 'Image is uploaded!', duration: 3000});
                             }
                         })
                         .catch(() => {
-                            this.$notify({group: 'foo', type: 'error', title: 'Fail', text: 'There is an error', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Fail', text: 'There is an error', duration: 4000});
                         }).finally(() => {
                             this.selected_file = null;
                             this.imageURL = null;

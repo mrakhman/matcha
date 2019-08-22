@@ -34,14 +34,14 @@
                     .then(response => {
                         if(response.status === 200)
                         {
-                            this.$notify({group: 'foo', type: 'success', title: 'Sent', text: 'Link to reset your password is sent to your email', duration: -1});
+                            this.$notify({group: 'foo', type: 'success', title: 'Sent', text: 'Link to reset your password is sent to your email', duration: 3000});
                             this.email = null;
                             this.email_sent = true;
                         }
                     })
                     .catch(error => {
                         if (error.response.status === 404) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #404', text: 'User with this email doesn\'t exist', duration: 4000});
                         }
                     })
             }

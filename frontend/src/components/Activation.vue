@@ -44,7 +44,7 @@
 						if(response.status === 200)
 						{
 							this.status = true;
-							this.$notify({group: 'foo', type: 'success', title: 'Activated!', text: 'Your account is activated, you can now login', duration: -1});
+							this.$notify({group: 'foo', type: 'success', title: 'Activated!', text: 'Your account is activated, you can now login', duration: 4000});
 						}
 					})
 					.catch(() => {

@@ -180,7 +180,7 @@
                         .then(response => {
                             if(response.status === 200)
                             {
-                                this.$notify({group: 'foo', type: 'success', title: 'Deleted', text: 'Image deleted', duration: -1});
+                                this.$notify({group: 'foo', type: 'success', title: 'Deleted', text: 'Image deleted', duration: 3000});
                                 this.updateImageList();
                                 this.$refs['big_photo'].id = this.images[0].id;
                                 this.$refs['big_photo'].src = this.images[0].src;

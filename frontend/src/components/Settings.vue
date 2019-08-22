@@ -13,7 +13,7 @@
 
             <b-form v-on:submit.prevent="submitChangeNames">
                 <b-card class="card_section" bg-variant="light">
-                    <h4 align="center">Name</h4>
+                    <h4 class="align-center">Name</h4>
                     <b-form-group id="1" label-cols-sm="2" label-cols-lg="2" label="First name" label-for="input-horizontal">
                         <b-form-input
                                 v-model="form_edit.first_name"
@@ -47,7 +47,7 @@
 
             <b-form v-on:submit.prevent="submitChangeEmail">
                 <b-card class="card_section" bg-variant="light">
-                    <h4 align="center">New email</h4>
+                    <h4 class="align-center">New email</h4>
                     <b-form-group id="4" label-cols-sm="2" label-cols-lg="2" label="Email" label-for="input-horizontal" required>
                         <b-form-input required v-model="form_edit.email" type="email"></b-form-input>
                         <b-form-text>You will receive email confirmation link</b-form-text>
@@ -63,7 +63,7 @@
 
             <b-form v-on:submit.prevent="submitChangePassword">
                 <b-card class="card_section" bg-variant="light">
-                    <h4 align="center">Password</h4>
+                    <h4 class="align-center">Password</h4>
                     <b-form-group id="6" label-cols-sm="2" label-cols-lg="2" label="Old password" label-for="input-horizontal" required>
                         <b-form-input required v-model="form_edit.old_password" type="password"></b-form-input>
                     </b-form-group>
@@ -100,7 +100,7 @@
                 // I let 2 out of 3 be empty cause I might want to change just one. On backend: if field is empty - keep old value
                 if (!this.form_edit.first_name && !this.form_edit.last_name && !this.form_edit.username)
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: 4000});
                     return this.alerts.empty_input = true;
 
                 }
@@ -108,7 +108,7 @@
                 // Show alert on space
                 if (this.form_edit.first_name.match(/( )/) || this.form_edit.last_name.match(/( )/) || this.form_edit.username.match(/( )/))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: 4000});
                     return this.alerts.spaces = true;
                 }
 
@@ -116,7 +116,7 @@
                 const reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form_edit.first_name.match(reg1) || this.form_edit.last_name.match(reg1) || this.form_edit.username.match(reg1))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Names must only include [a-z + A-Z] [0-9] and @', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Names must only include [a-z + A-Z] [0-9] and @', duration: 4000});
                     return this.alerts.invalid_symbols = true;
                 }
 
@@ -136,7 +136,7 @@
                     })
                     .catch(error => {
                         if (error.response.status === 409) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this username', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this username', duration: 4000});
                         }
                     })
             },
@@ -145,14 +145,14 @@
                 // Show alert on empty input
                 if (!this.form_edit.email || !this.form_edit.email_password)
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: 4000});
                     return this.alerts.empty_input = true;
                 }
 
                 // Show alert on space
                 if (this.form_edit.email.match(/( )/) || this.form_edit.email_password.match(/( )/))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: 4000});
                     return this.alerts.spaces = true;
                 }
 
@@ -160,7 +160,7 @@
                 const reg1 = /(?=.*[#$%^&+=§!*?><(){[\]}'";:~])/;
                 if (this.form_edit.email.match(reg1))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Email must only include [a-z + A-Z] [0-9] and @', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Email must only include [a-z + A-Z] [0-9] and @', duration: 4000});
                     return this.alerts.invalid_symbols = true;
                 }
 
@@ -177,11 +177,11 @@
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong password', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong password', duration: 4000});
                             this.alerts.unauthorized = true;
                         }
                         if (error.response.status === 409) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this email', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this email', duration: 4000});
                         }
                     })
             },
@@ -190,28 +190,28 @@
                 // Empty old password
                 if (!this.form_edit.old_password)
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty old password', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty old password', duration: 4000});
                     return this.alerts.empty_old_password = true;
                 }
 
                 // Show alert on empty input
                 if (!this.form_edit.new_password || !this.form_edit.repeat_password)
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Empty input field', duration: 4000});
                     return this.alerts.empty_input = true;
                 }
 
                 // Show alert if passwords don't match
                 if (this.form_edit.new_password !== this.form_edit.repeat_password)
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: '2 passwords didn\'t match', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: '2 passwords didn\'t match', duration: 4000});
                     return this.alerts.password_repeat = true;
                 }
 
                 // Show alert on space
                 if (this.form_edit.new_password.match(/( )/))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Don\'t use spaces', duration: 4000});
                     return this.alerts.spaces = true;
                 }
 
@@ -219,7 +219,7 @@
                 const reg2 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
                 if (!this.form_edit.new_password.match(reg2))
                 {
-                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, number and no symbols', duration: -1});
+                    this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Weak password: password must be at least 8 chars long, include uppercase, lowercase, number and no symbols', duration: 4000});
                     return this.alerts.weak_password = true;
                 }
 
@@ -230,12 +230,12 @@
                     .then(response => {
                         if(response.status === 200)
                         {
-                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Password changed!', duration: -1});
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Password changed!', duration: 4000});
                         }
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: -1});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: 4000});
                         }
                     })
             },
@@ -247,6 +247,9 @@
 <style scoped>
     .card_section {
         margin-bottom: 20px;
+    }
+    .align-center {
+        text-align: center;
     }
 
 
