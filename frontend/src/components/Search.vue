@@ -6,14 +6,14 @@
     <!-- AGE container -->
             <b-container id="age" class="bv-example-row" fluid>
                 <b-row class="mb-3">
-                    <b-col xl="5">
+                    <b-col md="6">
                         <b-row>
                             <h4><b>Age:</b></h4>
-                            <b-col xl="2">
+                            <b-col cols="3">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.age.min"></b-form-input>
                             </b-col>
                             <h4>&ndash;</h4>
-                            <b-col xl="2">
+                            <b-col cols="3">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.age.max"></b-form-input>
                             </b-col>
                         </b-row>
@@ -21,10 +21,10 @@
                 </b-row>
 
                 <b-row>
-                    <b-col xl="8">
+                    <b-col cols="10">
                         <b-row>
                         <label for="age_min">From</label>
-                            <b-col xl="4">
+                            <b-col cols="5">
                                 <b-form-input id="age_min" type="range"
                                               v-model="filter.age.min"
                                               v-bind:min="sort_options[1].min"
@@ -32,7 +32,7 @@
                                 ></b-form-input>
                             </b-col>
                             <label for="age_max">To</label>
-                            <b-col xl="4">
+                            <b-col cols="5">
                                 <b-form-input id="age_max" type="range"
                                           v-model="filter.age.max"
                                           v-bind:min="Math.max(sort_options[1].min, filter.age.min)"
@@ -50,25 +50,27 @@
     <!-- RATING container -->
             <b-container id="rating" class="bv-example-row" fluid>
                 <b-row class="mb-3">
-                    <b-col xl="5">
+                    <b-col md="6">
                         <b-row>
                             <h4><b>Fame rating:</b></h4>
-                            <b-col xl="2">
+                            <b-col cols="3">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.rating.min"></b-form-input>
                             </b-col>
                             <h4>&ndash;</h4>
-                            <b-col xl="2">
+                            <b-col cols="3">
                                 <b-form-input size="sm" type="number" disabled v-model="filter.rating.max"></b-form-input>
                             </b-col>
                         </b-row>
                     </b-col>
+<!--                    <b-col xl="7"></b-col>-->
+
                 </b-row>
 
                 <b-row>
-                    <b-col xl="8">
+                    <b-col cols="10">
                         <b-row>
                             <label for="rating_min">From</label>
-                            <b-col xl="4">
+                            <b-col cols="5">
                                 <b-form-input id="rating_min" type="range"
                                               v-model="filter.rating.min"
                                               v-bind:min="sort_options[2].min"
@@ -76,7 +78,7 @@
                                 ></b-form-input>
                             </b-col>
                             <label for="rating_max">To</label>
-                            <b-col xl="4">
+                            <b-col cols="5">
                                 <b-form-input id="rating_max" type="range"
                                               v-model="filter.rating.max"
                                               v-bind:max="sort_options[2].max"
@@ -85,6 +87,8 @@
                             </b-col>
                         </b-row>
                     </b-col>
+<!--                    <b-col xl="4"></b-col>-->
+
                 </b-row>
             </b-container>
 
@@ -94,14 +98,15 @@
     <!-- DISTANCE container -->
             <b-container id="distance" class="bv-example-row" fluid>
                 <b-row>
-                    <b-col xl="6">
+                    <b-col md="12">
                         <b-row>
                             <h4><b>Max distance (km):</b></h4>
-                            <b-col xl="4">
+                            <b-col md="4">
                                 <b-form-input type="number" v-model="filter.distance.max"></b-form-input>
                             </b-col>
                         </b-row>
                     </b-col>
+<!--                    <b-col xl="6"></b-col>-->
                 </b-row>
             </b-container>
 
