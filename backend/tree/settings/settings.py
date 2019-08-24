@@ -176,13 +176,13 @@ def edit_password():
 	current_user = g.current_user
 
 	if current_user.check_password(req_data["old_password"]):
-		if not current_user.check_password_strength(req_data["password"]):
+		if not current_user.check_password_strength(req_data["new_password"]):
 			abort(http.HTTPStatus.BAD_REQUEST)
 		current_user.set_password(req_data["new_password"])
 		current_user.update()
 
 		return jsonify({"ok": True})
-	abort(http.HTTPStatus.UNAUTHORIZED)
+	abort(http.HTTPStatus.FORBIDDEN)
 
 
 @settings.route('/email', methods=['POST'])
@@ -213,23 +213,23 @@ def update_email():
 				abort(http.HTTPStatus.CONFLICT)  # If another user has this email
 
 			# Send activation email
-			token = serializer.create_token(req_data['email'], 'update_email')
-			send_token_email(current_app.config.get('FRONTEND_URL'), 'update_email', req_data['email'], token)
+			token = serializer.create_token(req_data['email'], 'activate_email')
+			send_token_email(current_app.config.get('FRONTEND_URL'), 'activate_email', req_data['email'], token)
 
 		return jsonify({"ok": True})
-	abort(http.HTTPStatus.UNAUTHORIZED)
+	abort(http.HTTPStatus.FORBIDDEN)
 
 
 @settings.route('/activate_email/<token>', methods=['GET'])
 @authorised_only
 def activate_email(token):
 	try:
-		email = serializer.verify_token(token, 'update_email').get('email')
+		email = serializer.verify_token(token, 'activate_email').get('email')
 		g.current_user.email = email
 		g.current_user.update()
 		return jsonify({"ok": True})
 	except (itsdangerous.BadData, AssertionError):
-		abort(http.HTTPStatus.UNAUTHORIZED)
+		abort(http.HTTPStatus.BAD_REQUEST)
 
 
 @settings.route('/activate_user/<token>', methods=['GET'])
@@ -238,7 +238,7 @@ def activate_user(token):
 		token_content = serializer.verify_token(token, 'activate_user')
 		email = token_content.get('email')
 		if not email:
-			abort(http.HTTPStatus.UNAUTHORIZED)  # The confirmation link is invalid or has expired
+			abort(http.HTTPStatus.BAD_REQUEST)  # The confirmation link is invalid or has expired
 
 		current_user = User.get_by_email(email)
 
@@ -252,4 +252,4 @@ def activate_user(token):
 			current_user.update()
 			return jsonify(ok=True)
 	except (itsdangerous.BadData, AssertionError):
-		abort(http.HTTPStatus.UNAUTHORIZED)
+		abort(http.HTTPStatus.BAD_REQUEST)

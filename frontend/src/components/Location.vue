@@ -10,7 +10,7 @@
         <b-row>
             <b-col xl="6">
                 <b-row class="m-2">
-                    <label for="address">Enter address</label>
+                    <label for="address" >Enter address</label>
                     <b-form-input class="mb-2" id="address" type="text" v-model="address"></b-form-input>
                     <b-button variant="outline-primary"
                               v-bind:disabled="!address"
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
 		name: "Location.vue",
 		data () {
@@ -65,7 +67,7 @@
 				lat: null,
 				lon: null,
 				geo_options: {
-					enableHighAccuracy: true,
+					enableHighAccuracy: false,
 					maximumAge        : 300000, // 5 * 60 * 1000 = 5 min
 					timeout           : 27000 // 27 * 1000 = 27 sec
 				},
@@ -125,8 +127,8 @@
 				}
 			},
 			getLocationByAddress() {
-				this.empty_address = null;
-				this.error_request = null;
+                this.empty_address = null;
+                this.error_request = null;
 				if(this.address) {
 					const googleMapsClient = require('@google/maps').createClient({
 						key: 'AIzaSyDxxEhAC0zLdWys3h-ry5jBzbcQObyrDOY',
@@ -135,6 +137,10 @@
 
 					googleMapsClient.geocode({address: this.address})
 						.asPromise()
+                        .catch(() => {
+                            return axios.get(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDxxEhAC0zLdWys3h-ry5jBzbcQObyrDOY&address=${this.address}`)
+                                    .then((result) => {return {json: result.data}})
+                        })
 						.then((response) => {
 							if (response.json.status === "ZERO_RESULTS" ||
 								response.json.status === "REQUEST_DENIED" ||
@@ -146,8 +152,7 @@
 								this.search_lon = response.json.results[0].geometry.location.lng;
 							}
 
-						})
-						.catch(() => {});
+						});
 				}
 				else {
 					this.empty_address = true

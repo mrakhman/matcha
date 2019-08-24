@@ -21,7 +21,7 @@ def create_like(user_id):
 		abort(http.HTTPStatus.FORBIDDEN)
 
 	if not has_photo:
-		abort(http.HTTPStatus.UNAUTHORIZED)
+		abort(http.HTTPStatus.FORBIDDEN)
 
 	if liked_user and has_photo:
 		Like.like(g.current_user.id, user_id)

@@ -9,7 +9,7 @@
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav v-if="user_id">
                     <b-nav-item v-bind:to="'/my_profile'">My profile</b-nav-item>
-                    <b-nav-item v-bind:to="'/search'">Search</b-nav-item>
+                    <b-nav-item v-if="userCanSearch()" v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifications</b-nav-item>
                     <b-nav-item v-bind:to="'/history'">History</b-nav-item>
@@ -96,6 +96,10 @@
                 if (payload.type === "notification") {
                     this.notifications.unshift(payload.data)
                 }
+            },
+            userCanSearch() {
+                console.log(this.user);
+                return this.user && this.user.dob && this.gender;
             }
         },
         created() {

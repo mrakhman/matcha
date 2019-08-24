@@ -2,12 +2,8 @@
     <div>
         <b-container class="bv-example-row"><b-row><b-col xl="8">
             <b-alert v-model="alerts.empty_input" variant="danger" dismissible>Empty input field</b-alert>
-            <b-alert v-model="alerts.empty_old_password" variant="danger" dismissible>Enter old password</b-alert>
-            <b-alert v-model="alerts.password_repeat" variant="danger" dismissible>2 passwords didn't match</b-alert>
             <b-alert v-model="alerts.invalid_symbols" variant="danger" dismissible>Names and email must only include [a-z + A-Z] [0-9] and @</b-alert>
             <b-alert v-model="alerts.spaces" variant="danger" dismissible>Don't use spaces</b-alert>
-            <b-alert v-model="alerts.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, number</b-alert>
-
             <b-alert v-model="alerts.names_saved" variant="success" dismissible>Name settings are saved!</b-alert>
 
 
@@ -61,6 +57,9 @@
                 </b-card>
             </b-form>
 
+            <b-alert v-model="alerts.weak_password" variant="danger" dismissible>Password must be 8 chars long, include uppercase, lowercase, number</b-alert>
+            <b-alert v-model="alerts.password_repeat" variant="danger" dismissible>2 passwords didn't match</b-alert>
+            <b-alert v-model="alerts.empty_old_password" variant="danger" dismissible>Enter old password</b-alert>
             <b-form v-on:submit.prevent="submitChangePassword">
                 <b-card class="card_section" bg-variant="light">
                     <h4 class="align-center">Password</h4>
@@ -89,13 +88,51 @@
 
     export default {
         name: "Settings.vue",
+        data() {
+            return {
+                alerts: {
+                    unauthorized: false,
+                    empty_input: false,
+                    password_repeat: false,
+                    invalid_symbols: false,
+                    spaces: false,
+                    weak_password: false,
+                    wrong_old_password: false,
+                    empty_old_password: false,
+                    old_new_email_same: false,
+                    username_exists: false,
+                    email_exists: false,
+                    names_saved: false,
+                    email_saved: false,
+                    password_saved: false,
+                }
+            }
+        },
         props: {
             form_edit: Object,
-            alerts: Object,
-            user_details: Object
+            user_details: Object,
         },
         methods: {
+            clearAllAlerts() {
+                this.alerts = {
+                    unauthorized: false,
+                    empty_input: false,
+                    password_repeat: false,
+                    invalid_symbols: false,
+                    spaces: false,
+                    weak_password: false,
+                    wrong_old_password: false,
+                    empty_old_password: false,
+                    old_new_email_same: false,
+                    username_exists: false,
+                    email_exists: false,
+                    names_saved: false,
+                    email_saved: false,
+                    password_saved: false,
+                };
+            },
             submitChangeNames() {
+                this.clearAllAlerts();
                 // Show alert on empty input
                 // I let 2 out of 3 be empty cause I might want to change just one. On backend: if field is empty - keep old value
                 if (!this.form_edit.first_name && !this.form_edit.last_name && !this.form_edit.username)
@@ -142,6 +179,7 @@
             },
 
             submitChangeEmail() {
+                this.clearAllAlerts();
                 // Show alert on empty input
                 if (!this.form_edit.email || !this.form_edit.email_password)
                 {
@@ -171,22 +209,23 @@
                     .then(response => {
                         if(response.status === 200)
                         {
-                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email and press activation link!', duration: -1});
+                            this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Email will be changed after you confirm it, check your email and press activation link!', duration: 4000});
                             this.alerts.email_saved = true;
                         }
                     })
                     .catch(error => {
-                        if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong password', duration: 4000});
+                        if (error.response.status === 403) {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Unauthorized - wrong password', duration: 4000});
                             this.alerts.unauthorized = true;
                         }
                         if (error.response.status === 409) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this email', duration: 4000});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Another user has this email', duration: 4000});
                         }
                     })
             },
 
             submitChangePassword() {
+                this.clearAllAlerts();
                 // Empty old password
                 if (!this.form_edit.old_password)
                 {
@@ -234,8 +273,8 @@
                         }
                     })
                     .catch(error => {
-                        if (error.response.status === 401) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #401', text: 'Unauthorized - wrong old password', duration: 4000});
+                        if (error.response.status === 403) {
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Unauthorized - wrong old password', duration: 4000});
                         }
                     })
             },

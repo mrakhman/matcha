@@ -213,13 +213,9 @@ def users_filter(page_number):
 
 
 @users.route('/me', methods=['GET'])
+@authorised_only
 def get_me():
-	current_user_id = session.get('user_id')
-	if current_user_id:
-		current_user = User.get_by_id(int(current_user_id))
-		if current_user:
-			return jsonify({"user": current_user.get_view('personal')})
-	abort(401)
+	return jsonify({"user": g.current_user.get_view('personal')})
 
 
 @users.route('/register', methods=['POST'])
@@ -279,20 +275,16 @@ def create_user():
 
 
 @users.route('/block/<int:blocked_id>', methods=['POST'])
+@authorised_only
 def block_user(blocked_id):
-	current_user = User.get_by_id(session['user_id'])
-	if not current_user:
-		abort(http.HTTPStatus.UNAUTHORIZED)
-	blocker_id = current_user.id
+	blocker_id = g.current_user.id
 	User.block_user(blocked_id, blocker_id)
 	return jsonify({"ok": True})
 
 
 @users.route('/block/<int:blocked_id>', methods=['DELETE'])
+@authorised_only
 def unblock_user(blocked_id):
-	current_user = User.get_by_id(session['user_id'])
-	if not current_user:
-		abort(http.HTTPStatus.UNAUTHORIZED)
-	blocker_id = current_user.id
+	blocker_id = g.current_user.id
 	User.unblock_user(blocked_id, blocker_id)
 	return jsonify({"ok": True})

@@ -16,7 +16,6 @@
         <b-tab title="Settings">
             <Settings
                     v-bind:form_edit="form_edit"
-                    v-bind:alerts="alerts"
                     v-bind:user_details="user_details"
             />
         </b-tab>
@@ -40,8 +39,6 @@
                 user_details: {
                     last_connection: ''
                 },
-
-
                 form: {
                     gender_selected: null,
                     sexual_selected: null,
@@ -59,22 +56,6 @@
                         old_password: '',
                         new_password: '',
                     repeat_password: '',
-                },
-                alerts: {
-                    unauthorized: false,
-                    empty_input: false,
-                    password_repeat: false,
-                    invalid_symbols: false,
-                    spaces: false,
-                    weak_password: false,
-                    wrong_old_password: false,
-                    empty_old_password: false,
-                    old_new_email_same: false,
-                    username_exists: false,
-                    email_exists: false,
-                    names_saved: false,
-                    email_saved: false,
-                    password_saved: false,
                 },
             }
         },

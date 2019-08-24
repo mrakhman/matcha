@@ -4,6 +4,7 @@ import uuid
 
 from flask import abort, blueprints, current_app, g, jsonify, redirect, request, url_for
 from minio.signer import presign_v4
+from minio.error import MinioError
 
 from models.image import Image
 from modules import storage
@@ -51,7 +52,10 @@ def upload_image():
 		file.seek(0, os.SEEK_END)
 		file_length = file.tell()
 		file.seek(0, os.SEEK_SET)
-		storage.connection.put_object(bucket_name, filename, file, file_length, file.mimetype)
+		try:
+			storage.connection.put_object(bucket_name, filename, file, file_length, file.mimetype)
+		except MinioError:
+			abort(http.HTTPStatus.BAD_REQUEST)
 		current_user = g.current_user
 
 		if source == 'profile_image':
