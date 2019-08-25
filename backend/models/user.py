@@ -56,7 +56,7 @@ class UserQueries(Queries):
 			AND tags @> $7
 			AND dist.distance BETWEEN $11 AND $12
 			AND users.id != $10
-			ORDER BY {order_by_field} {order_by}, users.rating, users.distance, users.id {nulls_behavior}
+			ORDER BY {order_by_field} {order_by}, users.rating, dist.distance, users.id {nulls_behavior}
 			LIMIT $8 OFFSET $9
 			""")
 
