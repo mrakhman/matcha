@@ -38,6 +38,18 @@ const router = new VueRouter({
 const userId = localStorage.getItem('user_id');
 const userData = localStorage.getItem('user');
 
+let myAxios = init_axios(API_URL, null, (err) => {
+  if (err.response.status === 401) {
+    localStorage.removeItem('user');
+    localStorage.removeItem('user_id');
+    if (router.currentRoute.matched.length > 0 && router.currentRoute.matched[0].meta.auth) {
+      router.push('/login');
+      router.go(0);
+    }
+  }
+  throw err;
+});
+
 let vue = new Vue({
   router: router,
   data: {
@@ -45,17 +57,7 @@ let vue = new Vue({
     user: userData ? JSON.parse(userData) : {},
     API_URL: API_URL,
     LOCAL_URL: LOCAL_URL,
-    axios: init_axios(API_URL, null, (err) => {
-      if (err.response.status === 401) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('user_id');
-        if (router.currentRoute.matched.length > 0 && router.currentRoute.matched[0].meta.auth) {
-          router.push('/login');
-          router.go(0);
-        }
-      }
-      throw err;
-    })
+    axios: myAxios
   },
   render: h => h(App)
 }).$mount('#app');

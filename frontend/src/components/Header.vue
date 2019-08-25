@@ -72,6 +72,7 @@
         },
         methods: {
             getNotifications() {
+                if (!this.user_id) { return }
                 this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
@@ -79,10 +80,11 @@
                     .catch(() => {});
             },
             getUserFirstName() {
-                this.$root.axios.get('/users/me', {withCredentials: true})
-                    .then(response => {
-                        this.display_first_name = response.data.user.first_name;
-                    }).catch(() => {});
+                this.display_first_name = this.user.first_name;
+                // this.$root.axios.get('/users/me', {withCredentials: true})
+                //     .then(response => {
+                //         this.display_first_name = response.data.user.first_name;
+                //     }).catch(() => {});
             },
             markAllRead() {
                 this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
@@ -98,8 +100,8 @@
                 }
             },
             userCanSearch() {
-                console.log(this.user);
-                return this.user && this.user.dob && this.gender;
+            	console.log(this.user);
+                return this.user && this.user.dob && this.user.gender;
             }
         },
         created() {
