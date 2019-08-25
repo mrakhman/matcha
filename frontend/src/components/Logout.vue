@@ -21,7 +21,6 @@
                         {
                             this.$store.commit('logout');
                             this.$router.push('/login');
-                            // this.$router.go(0); // Need it because we stopped $emit action to App data.session
                         }
                     })
                     .catch(() => {});
