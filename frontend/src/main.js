@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import Routes from './router'
 import Notifications from 'vue-notification'
 import VueChatScroll from 'vue-chat-scroll'
+import store from './store'
 
 import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
@@ -15,11 +16,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import {Socket} from './socket'
 import init_axios from "./axios";
-
-
-const API_URL = "https://matchaaa.tk/api";
-const WS_URL = "wss://matchaaa.tk/ws";
-const LOCAL_URL = "https://matchaaa.tk";
+import {API_URL, LOCAL_URL, WS_URL} from "./vars";
 
 
 Vue.use(BootstrapVue);
@@ -35,13 +32,21 @@ const router = new VueRouter({
   mode: 'history'
 });
 
-const userId = localStorage.getItem('user_id');
-const userData = localStorage.getItem('user');
+router.beforeEach((to, from, next) => {
+  if (!store.state.initialized){
+    store.dispatch('update_user').then(() => {
+      next()
+    })
+  }
+  else {
+    next();
+  }
+});
+
 
 let myAxios = init_axios(API_URL, null, (err) => {
   if (err.response.status === 401) {
-    localStorage.removeItem('user');
-    localStorage.removeItem('user_id');
+    store.commit('logout');
     if (router.currentRoute.matched.length > 0 && router.currentRoute.matched[0].meta.auth) {
       router.push('/login');
       router.go(0);
@@ -50,15 +55,16 @@ let myAxios = init_axios(API_URL, null, (err) => {
   throw err;
 });
 
+
+
 let vue = new Vue({
   router: router,
+  store,
+  render: h => h(App),
   data: {
-    user_id: userId ? userId : null,
-    user: userData ? JSON.parse(userData) : {},
     API_URL: API_URL,
     LOCAL_URL: LOCAL_URL,
     axios: myAxios
-  },
-  render: h => h(App)
+  }
 }).$mount('#app');
 vue.$options.sockets.onmessage = Socket.socketHandler;

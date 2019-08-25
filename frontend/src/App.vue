@@ -2,7 +2,7 @@
   <div id="app">
     <AppHeader/>
     <router-view></router-view>
-      <notifications group="foo"/>
+      <notifications group="foo" />
     <Footer/>
   </div>
 </template>
@@ -18,13 +18,8 @@ export default {
       AppHeader: Header,
       Footer,
   },
-    data() {
-      return {
-      }
-    },
-    methods: {
-    },
 }
+
 </script>
 
 <style lang="scss">

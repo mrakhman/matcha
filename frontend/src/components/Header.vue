@@ -7,9 +7,9 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
-                <b-navbar-nav v-if="user_id">
+                <b-navbar-nav v-if="logged_in">
                     <b-nav-item v-bind:to="'/my_profile'">My profile</b-nav-item>
-                    <b-nav-item v-if="userCanSearch()" v-bind:to="'/search'">Search</b-nav-item>
+                    <b-nav-item v-if="userCanSearch" v-bind:to="'/search'">Search</b-nav-item>
                     <b-nav-item v-bind:to="'/chat'">Chat</b-nav-item>
                     <b-nav-item v-bind:to="'/notifications'">Notifications</b-nav-item>
                     <b-nav-item v-bind:to="'/history'">History</b-nav-item>
@@ -17,12 +17,12 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                    <b-button-group v-if="!user_id">
+                    <b-button-group v-if="!logged_in">
                         <b-button to="/register" variant="outline-primary">Register</b-button>
                         <b-button to="/login" variant="outline-primary">Login</b-button>
                     </b-button-group>
 
-                    <div class="text-center" v-if="user_id">
+                    <div class="text-center" v-if="logged_in">
                         <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none" no-caret right>
                             <template slot="button-content">
                                 <b-badge variant="warning" v-if="notifications">{{notifications.length}}</b-badge>
@@ -40,8 +40,8 @@
                             </div>
                         </b-dropdown>
                     </div>
-                    <b-nav-item v-if="user_id">Hello, {{ display_first_name }}!</b-nav-item>
-                    <Logout v-if="user_id"/>
+                    <b-nav-item v-if="logged_in && user">Hello, {{ user.first_name }}!</b-nav-item>
+                    <Logout v-if="logged_in"/>
 
                 </b-navbar-nav>
             </b-collapse>
@@ -55,6 +55,7 @@
     import Logout from "./Logout";
     import {Socket} from "../socket";
     import EventBus from '../event-bus';
+    import { mapState } from 'vuex';
 
     export default {
         name: "Header.vue",
@@ -63,28 +64,22 @@
         },
         data () {
             return {
-                display_first_name: null,
-                user: this.$root.$data.user,
-                user_id: this.$root.$data.user_id,
-
                 notifications: []
             }
         },
+        computed: mapState({
+            userCanSearch: state => (state.user && state.user.dob && state.user.gender),
+            user: state => (state.user),
+            logged_in: state => (state.logged_in)
+        }),
         methods: {
             getNotifications() {
-                if (!this.user_id) { return }
+                if (!this.logged_in) { return }
                 this.$root.axios.get('/notifications/', {withCredentials: true})
                     .then(response => {
                         this.notifications = response.data["notifications"];
                     })
                     .catch(() => {});
-            },
-            getUserFirstName() {
-                this.display_first_name = this.user.first_name;
-                // this.$root.axios.get('/users/me', {withCredentials: true})
-                //     .then(response => {
-                //         this.display_first_name = response.data.user.first_name;
-                //     }).catch(() => {});
             },
             markAllRead() {
                 this.$root.axios.post('/notifications/all_read', {}, {withCredentials: true})
@@ -99,14 +94,10 @@
                     this.notifications.unshift(payload.data);
                     this.$notify({group: 'foo', type: 'success', title: 'New notification', text: `${payload.data.text}`, duration: 3000});
                 }
-            },
-            userCanSearch() {
-                return this.user && this.user.dob && this.user.gender;
             }
         },
         created() {
             this.getNotifications();
-            this.getUserFirstName();
             Socket.registerHandler(this.newSocketMsg, 'headerNotifications')
         },
         mounted() {

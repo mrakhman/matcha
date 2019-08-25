@@ -14,11 +14,13 @@ import SetNewEmail from "./components/SetNewEmail";
 import History from "./components/History";
 import ChatList from "./components/ChatList";
 
+import store from './store';
+
 // We can just register the array [{}, {}] in main.js inside "const router = new VueRouter({ ..."
 // without creating a separate file router.js
 
 const ifAuthenticated = (to, from, next) => {
-    if (localStorage.getItem('user_id'))
+    if (store.state.logged_in)
     {
         next();
         return
@@ -27,7 +29,16 @@ const ifAuthenticated = (to, from, next) => {
 };
 
 const ifNotAuthenticated = (to, from, next) => {
-    if (!localStorage.getItem('user_id'))
+    if (!store.state.logged_in)
+    {
+        next();
+        return
+    }
+    next('/')
+};
+
+const canSearch = (to, from, next) => {
+    if (store.state.logged_in && store.state.user && store.state.user.dob && store.state.user.gender)
     {
         next();
         return
@@ -40,8 +51,8 @@ export default [
     { path: '/login', component: Login, beforeEnter: ifNotAuthenticated},
     { path: '/my_profile', component: MyProfile, beforeEnter: ifAuthenticated, meta: {auth: true}},
     { path: '/forgot_password', component: ForgotPassword, beforeEnter: ifNotAuthenticated},
-    { path: '/search/', component: UsersList, beforeEnter: ifAuthenticated, meta: {auth: true}},
-    { path: '/search/:page_n', component: UsersList, beforeEnter: ifAuthenticated, meta: {auth: true}},
+    { path: '/search/', component: UsersList, beforeEnter: canSearch, meta: {auth: true}},
+    { path: '/search/:page_n', component: UsersList, beforeEnter: canSearch, meta: {auth: true}},
     { path: '/users/:id', component: ViewProfile, beforeEnter: ifAuthenticated, meta: {auth: true}},
     { path: '/', component: Home, beforeEnter: ifAuthenticated, meta: {auth: true}},
     { path: '/home', component: Home, beforeEnter: ifAuthenticated, meta: {auth: true}},

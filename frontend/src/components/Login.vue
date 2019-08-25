@@ -59,14 +59,7 @@
 					password: this.form.password
 				}, {withCredentials: true})
 					.then(() => {
-						// Nested Axios request - whoami data
-						this.$root.axios.get('/users/me', {withCredentials: true})
-							.then(response => {
-								localStorage.setItem('user_id', response.data.user.id);
-								localStorage.setItem('user', JSON.stringify(response.data.user));
-								this.$router.push('/my_profile');
-								this.$router.go(0);
-							}).catch(() => {});
+						this.$store.dispatch('update_user').then(() => this.$router.push('/my_profile'));
 					})
 					.catch(error => {
 						if (error.response.status === 401) {
