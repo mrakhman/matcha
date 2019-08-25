@@ -96,18 +96,18 @@
             newSocketMsg(data) {
                 const payload = JSON.parse(data.data);
                 if (payload.type === "notification") {
-                    this.notifications.unshift(payload.data)
+                    this.notifications.unshift(payload.data);
+                    this.$notify({group: 'foo', type: 'success', title: 'New notification', text: `${payload.data.text}`, duration: 3000});
                 }
             },
             userCanSearch() {
-            	console.log(this.user);
                 return this.user && this.user.dob && this.user.gender;
             }
         },
         created() {
             this.getNotifications();
             this.getUserFirstName();
-            Socket.registerHandler(this.newSocketMsg)
+            Socket.registerHandler(this.newSocketMsg, 'headerNotifications')
         },
         mounted() {
             EventBus.$on('markRead', () => {
@@ -116,6 +116,9 @@
             EventBus.$on('firstNameChange', (name) => {
                 this.display_first_name = name;
             });
+        },
+        beforeDestroy() {
+            Socket.unregisterHandler('headerNotifications');
         }
     }
 </script>

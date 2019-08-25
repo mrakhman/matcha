@@ -89,12 +89,15 @@
         },
         created() {
             this.getNotifications();
-            Socket.registerHandler(this.newSocketMsg)
+            Socket.registerHandler(this.newSocketMsg, 'notificationsPage')
         },
         mounted() {
             EventBus.$on('markRead2', () => {
                 this.getNotifications();
             });
+        },
+        beforeDestroy() {
+            Socket.unregisterHandler('notificationsPage')
         }
     }
 </script>

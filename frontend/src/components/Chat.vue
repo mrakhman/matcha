@@ -128,13 +128,14 @@
         created() {
 			this.loadMessages();
 			this.usersCanChat();
-            Socket.registerHandler(this.newSocketMsg);
+            Socket.registerHandler(this.newSocketMsg, 'chat');
         },
         mounted() {
             setTimeout(() => this.$socket.sendObj({"action": "open_chat", "companion_id": this.id}), 4000);
         },
         beforeDestroy() {
             this.$socket.sendObj({"action": "close_chat"});
+            Socket.unregisterHandler('chat');
         }
     }
 </script>
