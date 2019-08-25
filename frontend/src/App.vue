@@ -11,6 +11,7 @@
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { mapState } from 'vuex';
 
 export default {
   name: 'app',
@@ -18,6 +19,18 @@ export default {
       AppHeader: Header,
       Footer,
   },
+  computed: mapState(['logged_in']),
+  watch: {
+    logged_in(newValue, oldValue) {
+      if (newValue === oldValue)
+        return ;
+      if (newValue) {
+        this.$connect()
+      } else {
+        this.$disconnect()
+      }
+    }
+  }
 }
 
 </script>
