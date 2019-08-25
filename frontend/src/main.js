@@ -25,7 +25,10 @@ Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueChatScroll);
 Vue.use(VueMoment, {moment,});
-Vue.use(VueNativeSock, WS_URL, { format: 'json' });
+Vue.use(VueNativeSock, WS_URL, {
+  format: 'json',
+  connectManually: true
+});
 
 const router = new VueRouter({
   routes: Routes,
