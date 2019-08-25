@@ -86,6 +86,7 @@
 </template>
 
 <script>
+	import {mapState} from 'vuex'
 
 	export default {
 		name: "CheckProfile.vue",
@@ -104,6 +105,9 @@
 				},
 			}
 		},
+		computed: mapState({
+			userHasPhoto: state => (state.user && state.user.profile_image)
+		}),
 		methods: {
 			selectPhoto(src, id) {
 				this.$refs['big_photo'].src = src;
@@ -148,25 +152,33 @@
 			changeLikeState() {
 				// Add like
 				if (this.user.has_like === false) {
-					this.$root.axios.post('/likes/' + this.id, {}, {
-						withCredentials: true
-					})
-						.then(() => {
-							this.user.has_like = true;
-							this.usersCanChat();
+					if (!this.userHasPhoto) {
+						this.no_photo = true;
+						this.$notify({group: 'foo', type: 'error', title: 'Upload profile image', text: 'You cannot connect with another user without profile image', duration: 3000});
+					}
+					else {
+						this.$root.axios.post('/likes/' + this.id, {}, {
+							withCredentials: true
 						})
-						.catch(error => {
-							if (error.response.status === 403) {
-								this.is_blocked = true;
-								this.$notify({group: 'foo', type: 'error', title: 'User blocked you', text: 'You cannot connect with user who blocked you', duration: 3000});
-							}
-							if (error.response.status === 401) {
-								this.no_photo = true;
-								this.$notify({group: 'foo', type: 'error', title: 'Upload profile image', text: 'You cannot connect with another user without profile image', duration: 3000});
-							}
-						});
+							.then(() => {
+								this.user.has_like = true;
+								this.usersCanChat();
+							})
+							.catch(error => {
+								if (error.response.status === 403) {
+									this.is_blocked = true;
+									this.$notify({
+										group: 'foo',
+										type: 'error',
+										title: 'User blocked you',
+										text: 'You cannot connect with user who blocked you',
+										duration: 3000
+									});
+								}
+							});
+					}
 				}
-				// Remove like
+				// Unlike
 				else if (this.user.has_like === true) {
 					this.$root.axios.delete('/likes/' + this.id, {
 						withCredentials: true

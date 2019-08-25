@@ -16,7 +16,7 @@
                             :max="1"
                             :many="false"
                             v-bind:images="user_details.profile_image"
-                            v-on:ImageUploadSuccess="() => {this.$emit('ProfileImageUpdated')}"
+                            v-on:ImageUploadSuccess="() => {this.$store.dispatch('update_user')}"
                     ></FileUpload>
                 </b-col>
             </b-row>
@@ -104,16 +104,16 @@
 
 <script>
     import FileUpload from './FileUpload';
+    import {mapState} from 'vuex'
 
     export default {
         name: "AboutMe.vue",
         components: {
             FileUpload
         },
-        props: {
-            form: Object,
-            user_details: Object
-        },
+        computed: mapState({
+            user: state => state.user,
+        }),
         data () {
             return {
                 edit_success_alert: null,
@@ -129,6 +129,14 @@
                 images: [
                     {id: null, src: null}
                 ],
+                form: {
+                    gender_selected: null,
+                    sexual_selected: null,
+                    tags_selected: [],
+                    bio_text: '',
+                    dob: ''
+                },
+                user_details: {}
             }
         },
         methods: {
@@ -156,6 +164,7 @@
                         {
                             this.edit_success_alert = true;
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'personal details are updated', duration: 5000})
+                            this.$store.dispatch('update_user');
                         }
                     })
                     .catch(error => {
@@ -189,7 +198,7 @@
                 }
             },
             updateImageList() {
-                this.$root.axios.get('/users/' + this.$root.$data.user_id, {
+                this.$root.axios.get('/users/' + this.$store.state.user.id, {
                     params: {with_images: true},
                     withCredentials: true
                 })
@@ -200,7 +209,7 @@
         },
         created() {
             this.updateImageList();
-
+            this.user_details = { ...this.user }
         }
     }
 </script>

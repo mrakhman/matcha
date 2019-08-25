@@ -85,6 +85,7 @@
 
 <script>
     import EventBus from '../event-bus'
+    import {mapState} from 'vuex'
 
     export default {
         name: "Settings.vue",
@@ -105,13 +106,22 @@
                     names_saved: false,
                     email_saved: false,
                     password_saved: false,
+                },
+                form_edit: {
+                    first_name: '',
+                    last_name: '',
+                    username: '',
+                    email: '',
+                    email_password: '',
+                    old_password: '',
+                    new_password: '',
+                    repeat_password: '',
                 }
             }
         },
-        props: {
-            form_edit: Object,
-            user_details: Object,
-        },
+        computed: mapState({
+            user_details: state => state.user,
+        }),
         methods: {
             clearAllAlerts() {
                 this.alerts = {
