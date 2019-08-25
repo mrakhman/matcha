@@ -215,7 +215,7 @@
                     })
                     .catch(error => {
                         if (error.response.status === 403) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Unauthorized - wrong password', duration: 4000});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Can\'t change email - wrong password', duration: 4000});
                             this.alerts.unauthorized = true;
                         }
                         if (error.response.status === 409) {
