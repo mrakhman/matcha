@@ -191,8 +191,10 @@
                             {
                                 this.$notify({group: 'foo', type: 'success', title: 'Deleted', text: 'Image deleted', duration: 3000});
                                 this.updateImageList().then(() => {
-                                    this.$refs['big_photo'].id = this.images[0].id;
-                                    this.$refs['big_photo'].src = this.images[0].src;
+                                    if (this.images && this.images.length > 0) {
+                                        this.$refs['big_photo'].id = this.images[0].id;
+                                        this.$refs['big_photo'].src = this.images[0].src;
+                                    }
                                 });
                             }
                         }).catch(() => {})
