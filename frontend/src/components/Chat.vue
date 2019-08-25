@@ -66,6 +66,7 @@
 
 <script>
     import {Socket} from "../socket";
+    import {mapState} from 'vuex';
 
     export default {
         name: "Chat.vue",
@@ -78,11 +79,11 @@
                 messages: [],
                 new_message: {sender_id: null, text: null},
                 error_text: null,
-                user: this.$root.$data.user,
                 chat_users: [],
                 users_can_chat: null
             }
         },
+        computed: mapState(['user']),
         methods: {
             loadMessages() {
                 this.$root.axios.get('/messages/' + this.id, {withCredentials: true})

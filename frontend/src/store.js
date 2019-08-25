@@ -50,7 +50,6 @@ const store = new Vuex.Store({
                     if (initialized) {
                         commit('initialize');
                     }
-                    return
                 });
         }
     }

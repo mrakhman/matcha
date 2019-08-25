@@ -178,6 +178,7 @@
                             this.$notify({group: 'foo', type: 'success', title: 'Saved!', text: 'Name settings are saved', duration: 1000});
                             this.alerts.names_saved = true;
                             EventBus.$emit('firstNameChange', this.form_edit.first_name);
+                            this.$store.dispatch('update_user');
                         }
                     })
                     .catch(error => {

@@ -16,7 +16,7 @@
                             :max="1"
                             :many="false"
                             v-bind:images="user_details.profile_image"
-                            v-on:ImageUploadSuccess="() => {this.$store.dispatch('update_user')}"
+                            v-on:ImageUploadSuccess="updateUser"
                     ></FileUpload>
                 </b-col>
             </b-row>
@@ -206,6 +206,11 @@
                     .then(response => {
                         this.images = response.data.user.images;
                     }).catch(() => {});
+            },
+            updateUser() {
+                this.$store.dispatch('update_user').then(() => {
+                    this.user_details = { ...this.user }
+                });
             }
         },
         created() {
