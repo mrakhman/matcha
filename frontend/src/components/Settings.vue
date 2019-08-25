@@ -173,7 +173,7 @@
                     })
                     .catch(error => {
                         if (error.response.status === 409) {
-                            this.$notify({group: 'foo', type: 'error', title: 'Error #409', text: 'Another user has this username', duration: 4000});
+                            this.$notify({group: 'foo', type: 'error', title: 'Error', text: 'Another user has this username', duration: 4000});
                         }
                     })
             },
