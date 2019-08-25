@@ -179,7 +179,6 @@
                             this.alerts.names_saved = true;
                             EventBus.$emit('firstNameChange', this.form_edit.first_name);
                         }
-                        // console.log(response)
                     })
                     .catch(error => {
                         if (error.response.status === 409) {
