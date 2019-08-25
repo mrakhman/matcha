@@ -90,7 +90,7 @@
 				if (this.validateFields())
 					return false;
 
-				this.$root.axios.post('/users/reset_password/' + this.token, {
+				this.$root.axios.post('/recovery/reset_password/' + this.token, {
 					password: this.password,
 				}, {withCredentials: true})
 					.then(response => {
